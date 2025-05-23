@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+* {
+  @apply box-border;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-pretendard);
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.003em;
+}
+
+a {
+  @apply text-blue-500 hover:text-blue-600 underline;
+}
+
+button {
+  @apply bg-transparent border-none cursor-pointer;
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  @apply outline-none;
+  font: inherit;
+  background: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 rounded-md;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+.text-heading {
+  @apply text-xl font-bold tracking-tight;
+}
+
+.container-center {
+  @apply max-w-[420px] mx-auto px-4;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
