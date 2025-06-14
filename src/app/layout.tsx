@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "../styles/globals.css";
+import type { Metadata } from 'next';
+import localFont from 'next/font/local';
+import '../styles/globals.css';
 
 const pretendard = localFont({
-  src: "../../public/fonts/pretendard-variable.woff2",
-  display: "swap",
-  weight: "45 920",
-  variable: "--font-pretendard",
+  src: '../../public/fonts/pretendard-variable.woff2',
+  display: 'swap',
+  weight: '45 920',
+  variable: '--font-pretendard',
 });
 
 export const metadata: Metadata = {
-  title: "플레이링크",
-  description: "당신의 운동 친구! 플레이 링크에서 만나세요.",
+  title: '플레이링크',
+  description: '당신의 운동 친구! 플레이 링크에서 만나세요.',
   // icons: {
   //   icon: "images/퍼블릭폴더 내부 파일 이름",
   // },
@@ -33,14 +33,16 @@ export const metadata: Metadata = {
   // },
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
-    <html lang="ko-KR" className="h-full w-full">
+    <html lang='ko-KR' className='h-full w-full'>
       <body className={`${pretendard.variable} antialiased`}>{children}</body>
     </html>
   );
-}
+};
+
+export default RootLayout;

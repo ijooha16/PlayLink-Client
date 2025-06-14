@@ -28,7 +28,7 @@ const SignIn = () => {
               placeholder='비밀번호 입력'
               className='my-1 w-full rounded-lg border border-gray-200 px-4 py-2'
             />
-            <button className='my-2 h-12 w-full rounded-lg bg-blue-500 font-semibold text-white active:bg-blue-700'>
+            <button className='my-2 h-12 w-full rounded-lg bg-blue-500 font-semibold text-white transition-colors ease-in-out focus:bg-blue-700'>
               로그인
             </button>
           </div>
