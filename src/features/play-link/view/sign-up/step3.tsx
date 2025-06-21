@@ -5,8 +5,33 @@ import {
   signUpStep3Schema,
 } from '../../types/sign-up/sign-up-schema';
 
-const SPORTS_LIST = ['축구', '야구', '농구', '수영', '요가', '펜싱', '테니스'];
-
+const SPORTS_LIST = [
+  '축구',
+  '야구',
+  '농구',
+  '배구',
+  '테니스',
+  '골프',
+  '수영',
+  '탁구',
+  '배드민턴',
+  '복싱',
+  '사이클',
+  '스키',
+  '펜싱',
+  '육상',
+  '등산',
+  '서핑',
+  '요트',
+  '투척',
+  '양궁',
+  '스쿠버',
+  '스케이트',
+  '프리스비',
+  '요가',
+  '체스',
+  '트로피',
+];
 export default function Step3({
   onNext,
   defaultValues,
@@ -61,7 +86,7 @@ export default function Step3({
               />
               <label
                 htmlFor={`sport-${idx}`}
-                className={`flex aspect-square h-full w-full flex-col items-center justify-center rounded-full bg-gray-100 p-3 text-sm text-gray-600 transition-all peer-checked:bg-blue-500 peer-checked:text-white`}
+                className={`flex aspect-square h-full w-full flex-col items-center justify-center truncate rounded-full bg-gray-100 p-3 text-sm text-gray-600 transition-colors peer-checked:bg-blue-500 peer-checked:text-white`}
               >
                 <span className='text-xl'>🎯</span>
                 {sport}
