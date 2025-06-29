@@ -1,4 +1,4 @@
-import { SocialIconButton } from '@/shares/common-components/social-icon-button';
+import SocialIconButton from '@/shares/common-components/social-icon-button';
 import Link from 'next/link';
 
 const SignIn = () => {

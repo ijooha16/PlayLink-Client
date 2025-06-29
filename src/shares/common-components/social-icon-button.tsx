@@ -9,7 +9,7 @@ type SocialIconButtonProps = {
   size?: number;
 };
 
-export const SocialIconButton = ({
+const SocialIconButton = ({
   src,
   alt,
   // onClick,
@@ -25,3 +25,5 @@ export const SocialIconButton = ({
     </button>
   );
 };
+
+export default SocialIconButton;

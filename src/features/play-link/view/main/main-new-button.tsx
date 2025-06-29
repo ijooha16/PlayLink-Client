@@ -1,0 +1,18 @@
+import { PlusIcon } from 'lucide-react';
+import Link from 'next/link';
+
+const MainNewButton = () => {
+  return (
+    <div className='fixed bottom-24 right-6'>
+      <Link
+        href={'/create-match'}
+        className='flex h-12 w-fit place-items-center justify-center gap-2 rounded-full bg-blue-500 px-3'
+      >
+        <PlusIcon color='white' size={28} />
+        <span className='font-medium text-white'>글쓰기</span>
+      </Link>
+    </div>
+  );
+};
+
+export default MainNewButton;

@@ -18,11 +18,13 @@ body {
   font-size: 16px;
   line-height: 1.5;
   letter-spacing: -0.003em;
+  max-width: 640px;
 }
 
 button {
-  @apply bg-transparent border-none cursor-pointer;
+  @apply cursor-pointer border-none bg-transparent;
   font: inherit;
+  select: none;
 }
 
 input,
@@ -36,5 +38,11 @@ select {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@media (hover: none) {
+  button[data-pressed='true'] {
+    transform: scale(0.95);
   }
 }

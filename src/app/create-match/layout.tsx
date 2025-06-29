@@ -1,16 +1,16 @@
 import CommonHeader from '@/shares/common-components/common-header';
 
-const SignUpLayout = ({
+const CreateMatchLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
   return (
     <div className='h-full w-full'>
-      <CommonHeader title={'회원가입'} />
+      <CommonHeader title={'매치 생성하기'} />
       {children}
     </div>
   );
 };
 
-export default SignUpLayout;
+export default CreateMatchLayout;

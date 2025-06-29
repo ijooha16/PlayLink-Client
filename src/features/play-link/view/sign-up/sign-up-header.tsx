@@ -3,10 +3,10 @@
 import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-const Header = () => {
+const SignUpHeader = () => {
   const router = useRouter();
   return (
-    <div className='flex h-12 w-full items-center justify-center shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.2)]'>
+    <div className='relative flex h-12 w-full items-center justify-center shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.2)]'>
       <button
         onClick={() => {
           router.back();
@@ -20,4 +20,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default SignUpHeader;

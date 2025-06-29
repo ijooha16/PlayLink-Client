@@ -39,7 +39,7 @@ const RootLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <html lang='ko-KR' className='h-full w-full'>
+    <html lang='ko-KR' className='mx-auto h-full w-full max-w-screen-sm'>
       <body className={`${pretendard.variable} antialiased`}>{children}</body>
     </html>
   );
