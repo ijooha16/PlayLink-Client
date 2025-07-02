@@ -8,6 +8,7 @@ import {
   SignUpStep2,
   signUpStep2Schema,
 } from '../../types/sign-up/sign-up-schema';
+import Input from '@/shares/common-components/input';
 
 const Step2 = ({
   onNext,
@@ -105,11 +106,12 @@ const Step2 = ({
       </div>
 
       <div className='flex flex-col space-y-2'>
-        <input
+        <Input
           id='nickname'
           type='text'
           placeholder='닉네임을 입력해주세요'
-          className='w-full rounded-lg border-2 border-gray-100 px-4 py-3 text-sm placeholder:text-gray-400'
+          variant={'default'}
+          sizes={'sm'}
           {...register('nickname')}
         />
 

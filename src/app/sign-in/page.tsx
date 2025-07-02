@@ -1,3 +1,4 @@
+import Input from '@/shares/common-components/input';
 import SocialIconButton from '@/shares/common-components/social-icon-button';
 import Link from 'next/link';
 
@@ -17,18 +18,20 @@ const SignIn = () => {
       </div>
       <div>
         <div className=''>
-          <div className='mx-4'>
-            <input
+          <div className='mx-4 flex flex-col gap-y-1'>
+            <Input
               type='email'
+              variant={'default'}
+              sizes={'md'}
               placeholder='이메일 입력'
-              className='my-1 w-full rounded-lg border border-gray-200 px-4 py-2'
             />
-            <input
+            <Input
               type='password'
+              variant={'default'}
+              sizes={'md'}
               placeholder='비밀번호 입력'
-              className='my-1 w-full rounded-lg border border-gray-200 px-4 py-2'
             />
-            <button className='my-2 h-12 w-full rounded-lg bg-blue-500 font-semibold text-white transition-colors ease-in-out focus:bg-blue-700'>
+            <button className='my-2 h-12 w-full rounded-lg bg-blue-500 font-semibold text-white transition-colors ease-in-out'>
               로그인
             </button>
           </div>
@@ -44,7 +47,6 @@ const SignIn = () => {
             <Link href={'/sign-up'}>
               <p>회원가입</p>
             </Link>
-            {'  '}
           </div>
         </div>
         <div>

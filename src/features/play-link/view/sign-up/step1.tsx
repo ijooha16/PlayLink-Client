@@ -7,6 +7,7 @@ import {
   signUpStep1Schema,
 } from '../../types/sign-up/sign-up-schema';
 import { useState } from 'react';
+import Input from '@/shares/common-components/input';
 
 const Step1 = ({
   onNext,
@@ -51,10 +52,11 @@ const Step1 = ({
           아이디
         </label>
         <div>
-          <input
+          <Input
             id='email-id'
-            className='w-full rounded-lg border-2 border-gray-100 px-2 py-2'
             type='email'
+            variant={'default'}
+            sizes={'md'}
             placeholder='이메일'
             {...register('email')}
           />
@@ -72,35 +74,38 @@ const Step1 = ({
           </p>
         </div>
 
-        <div className='flex flex-col'>
+        <div className='flex flex-col gap-y-2'>
           <label htmlFor='password' className='sr-only'>
             비밀번호
           </label>
-          <input
+          <Input
             id='password'
             type='password'
-            className='w-full rounded-lg border-2 border-gray-100 px-2 py-2'
+            variant={'default'}
+            sizes={'md'}
             placeholder='비밀번호'
             {...register('password')}
           />
 
-          <p className='h-[20px] text-sm text-red-500'>
+          {/* <p className='h-[20px] text-sm text-red-500'>
             {errors.password && errors.password.message}
-          </p>
+          </p> */}
 
           <label htmlFor='confirmPassword' className='sr-only'>
             비밀번호 확인
           </label>
-          <input
+          <Input
             id='confirmPassword'
             type='password'
-            className='w-full rounded-lg border-2 border-gray-100 px-2 py-2'
+            variant={'default'}
+            sizes={'md'}
             placeholder='비밀번호 확인'
             {...register('confirmPassword')}
           />
 
           <p className='h-[20px] text-sm text-red-500'>
-            {errors.confirmPassword && errors.confirmPassword.message}
+            {(errors.password && errors.password.message) ||
+              (errors.confirmPassword && errors.confirmPassword.message)}
           </p>
         </div>
       </fieldset>
@@ -110,10 +115,11 @@ const Step1 = ({
           휴대폰 번호
         </label>
         <div>
-          <input
+          <Input
             id='tel'
             type='tel'
-            className='w-full rounded-lg border-2 border-gray-100 px-2 py-2'
+            variant={'default'}
+            sizes={'md'}
             placeholder='휴대폰 번호'
             {...register('phone')}
           />

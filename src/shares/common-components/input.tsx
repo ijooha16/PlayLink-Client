@@ -1,20 +1,27 @@
-import React, { forwardRef } from "react";
-import { cva, VariantProps } from "class-variance-authority";
-import { twMerge } from "tailwind-merge";
+import React, { forwardRef } from 'react';
+import { cva, VariantProps } from 'class-variance-authority';
+import { twMerge } from 'tailwind-merge';
 
 const inputVariants = cva(
-  " w-full py-2 px-0 bg-transparent border-0 border-b border-black focus:ring-0 focus:outline-none placeholder-gray-300 text-inherit",
+  'w-full px-4 py-2 focus:ring-0 focus:outline-none text-inherit',
   {
     variants: {
-      variant: {},
-      sizes: {},
+      variant: {
+        default:
+          'bg-transparnent rounded-lg border border-gray-300 placeholder-gray-400 disabled:bg-gray-200',
+      },
+      sizes: {
+        lg: 'text-lg',
+        md: 'text-md',
+        sm: 'text-sm',
+        xs: 'text-xs',
+      },
       line: {
-        underline: "underline",
-        cancelLine: "line-through",
-        default: "no-underline",
+        underline: 'underline',
+        cancelLine: 'line-through',
+        default: 'no-underline',
       },
     },
-    defaultVariants: {},
   }
 );
 
@@ -42,5 +49,5 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = "Input";
+Input.displayName = 'Input';
 export default Input;

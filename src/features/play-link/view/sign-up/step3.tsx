@@ -4,34 +4,8 @@ import {
   SignUpStep3,
   signUpStep3Schema,
 } from '../../types/sign-up/sign-up-schema';
+import { SPORTS_LIST } from '@/shares/dummy-data/dummy-data';
 
-const SPORTS_LIST = [
-  '축구',
-  '야구',
-  '농구',
-  '배구',
-  '테니스',
-  '골프',
-  '수영',
-  '탁구',
-  '배드민턴',
-  '복싱',
-  '사이클',
-  '스키',
-  '펜싱',
-  '육상',
-  '등산',
-  '서핑',
-  '요트',
-  '투척',
-  '양궁',
-  '스쿠버',
-  '스케이트',
-  '프리스비',
-  '요가',
-  '체스',
-  '트로피',
-];
 export default function Step3({
   onNext,
   defaultValues,

@@ -1,7 +1,7 @@
 'use client';
 
 import DropDown from '@/shares/common-components/drop-down';
-import { BellIcon, Search } from 'lucide-react';
+import { BellIcon, SearchIcon } from 'lucide-react';
 
 const options = ['강남구', '추가 설정'];
 
@@ -19,7 +19,7 @@ const MainHeader = () => {
             console.log('검색');
           }}
         >
-          <Search size={24} />
+          <SearchIcon size={24} />
         </button>
         <button
           onClick={() => {
