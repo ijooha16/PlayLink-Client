@@ -8,7 +8,12 @@ declare global {
   }
 }
 
-const NaverMap = () => {
+interface NaverMapProps {
+  lat?: number;
+  lng?: number;
+}
+
+const NaverMap = ({ lat = 37.4979, lng = 127.0276 }: NaverMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -17,18 +22,30 @@ const NaverMap = () => {
     script.async = true;
     script.onload = () => {
       if (mapRef.current && window.naver) {
-        new window.naver.maps.Map(mapRef.current, {
-          center: new window.naver.maps.LatLng(37.5665, 126.978),
-          zoom: 14,
+        const map = new window.naver.maps.Map(mapRef.current, {
+          center: new window.naver.maps.LatLng(lat, lng),
+          zoom: 15,
+        });
+        new window.naver.maps.Marker({
+          position: new window.naver.maps.LatLng(lat, lng),
+          map: map,
         });
       }
     };
 
     document.head.appendChild(script);
     return () => {
-      document.head.removeChild(script);
+      // Clean up the script to avoid memory leaks
+      const scripts = document.head.getElementsByTagName('script');
+      for (let i = 0; i < scripts.length; i++) {
+        if (
+          scripts[i].src.includes('oapi.map.naver.com')
+        ) {
+          document.head.removeChild(scripts[i]);
+        }
+      }
     };
-  }, []);
+  }, [lat, lng]);
 
   return (
     <div className='h-[400px] w-full overflow-hidden rounded-md shadow-md sm:h-[500px]'>

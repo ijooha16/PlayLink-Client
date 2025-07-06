@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import '../styles/globals.css';
+import LayoutClientSide from '@/features/play-link/view/main/layout-client-side';
 
 const pretendard = localFont({
   src: '../../public/fonts/pretendard-variable.woff2',
@@ -40,7 +41,10 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang='ko-KR' className='mx-auto h-full w-full max-w-screen-sm'>
-      <body className={`${pretendard.variable} antialiased`}>{children}</body>
+      <body className={`${pretendard.variable} antialiased`}>
+        <LayoutClientSide />
+        {children}
+      </body>
     </html>
   );
 };
