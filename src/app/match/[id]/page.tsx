@@ -2,15 +2,15 @@
 
 import Link from 'next/link';
 import DynamicNaverMapForDetail from '@/shares/common-components/dynamic-naver-map-for-detail';
-import { tempCard } from '@/shares/dummy-data/dummy-data';
 import { Heart, MapPin, Share2 } from 'lucide-react';
-import Image from 'next/image';
 import { useParams } from 'next/navigation';
+import { useTempStore } from '@/shares/stores/temp-store';
 
 export default function MatchDetailPage() {
   const params = useParams();
   const { id } = params;
-  const cardData = tempCard[Number(id)];
+  const tempDate = useTempStore((state) => state.matchCards);
+  const cardData = tempDate[Number(id)];
 
   if (!cardData) {
     return <div>매치 정보를 찾을 수 없습니다.</div>;
@@ -19,11 +19,10 @@ export default function MatchDetailPage() {
   return (
     <div className='relative flex flex-col'>
       <div className='relative h-[40dvh] w-full'>
-        <Image
+        <img
           src={cardData.이미지}
           alt={cardData.제목}
-          layout='fill'
-          objectFit='cover'
+          className='h-full w-full object-cover'
         />
       </div>
 
@@ -90,11 +89,19 @@ export default function MatchDetailPage() {
           <Heart />
           <Share2 />
         </div>
-        <Link href={`/apply/${id}`}>
-          <button className='rounded-lg bg-blue-500 px-6 py-3 font-bold text-white'>
-            참가하기
-          </button>
-        </Link>
+        {id !== '5' ? (
+          <Link href={`/apply/${id}`}>
+            <button className='rounded-lg bg-blue-500 px-6 py-3 font-bold text-white'>
+              참가하기
+            </button>
+          </Link>
+        ) : (
+          <Link href={`/apply/${id}`}>
+            <button className='rounded-lg bg-blue-500 px-6 py-3 font-bold text-white'>
+              매치 관리하기
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );

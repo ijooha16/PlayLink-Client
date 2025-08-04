@@ -2,21 +2,29 @@
 
 import DropdownInput from '@/features/play-link/view/create-match/dropdown-input';
 import Input from '@/shares/common-components/input';
-import {
-  DUMMY_PLACE,
-  generateDateRange,
-  SPORTS_LIST,
-} from '@/shares/dummy-data/dummy-data';
-import { useState } from 'react';
+import { DUMMY_PLACE, SPORTS_LIST } from '@/shares/dummy-data/dummy-data';
+import { FormEvent, useState } from 'react';
+import { useTempStore } from '@/shares/stores/temp-store';
+import { useAlertStore } from '@/shares/stores/alert-store';
+import { useRouter } from 'next/navigation';
+import DatePickerModal from '@/shares/common-components/date-picker-modal';
+import SelectExerciseModal from '@/shares/common-components/select-exercise-modal';
 
 const CreateMatch = () => {
-  const [sport, setSport] = useState<string>('');
-  const [date, setDate] = useState<string>('');
+  const [sport, setSport] = useState<number | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedStart, setSelectedStart] = useState<string>('');
+  const [selectedEnd, setSelectedEnd] = useState<string>('');
   const [place, setPlace] = useState<string>('');
   const [maxDisable, setMaxDisable] = useState<boolean>(false);
   const [minPeople, setMinPeople] = useState<string>('');
   const [maxPeople, setMaxPeople] = useState<string>('');
   const [explain, setExplain] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+
+  const router = useRouter();
+  const createMatch = useTempStore((state) => state.addMatchCard);
+  const openAlert = useAlertStore((state) => state.openAlert);
 
   const peopleCount: number | '제한 없음' | false = maxDisable
     ? '제한 없음'
@@ -26,22 +34,57 @@ const CreateMatch = () => {
 
   const isFormValid = [
     sport,
-    date,
+    selectedDate,
+    selectedStart,
+    selectedEnd,
     place,
     minPeople,
     peopleCount,
     explain,
   ].every(Boolean);
 
+  const generateTimeOptions = () => {
+    const times = [];
+    for (let i = 0; i < 24; i++) {
+      for (let j = 0; j < 60; j += 30) {
+        const hour = i;
+        const minute = j;
+        const formattedMinute = minute < 10 ? `0${minute}` : minute;
+        times.push(`${hour}:${formattedMinute}`);
+      }
+    }
+    return times;
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    openAlert(
+      '매치 생성 완료!',
+      `${title} 매칭이 생성 되었습니다! 즐거운 운동되세요!`
+    );
+    console.log({
+      userId: '유저uuid',
+      leastSize: minPeople,
+      maxSize: peopleCount,
+      placeId: place,
+      placeAddress: '임시주소',
+      placeLocation: '임시위도/경도',
+      date: selectedDate,
+      startTime: selectedStart,
+      endTime: selectedEnd,
+      sportType: sport,
+      title: title,
+      contents: explain,
+      image: '이미지',
+    });
+    createMatch();
+    router.push('/');
+  };
+
   return (
     <form
       className='mx-auto flex max-w-md flex-col gap-y-4 p-4'
-      onSubmit={(e) => {
-        e.preventDefault();
-        alert(
-          `${sport} | ${date} | ${place} | ${maxDisable} | ${minPeople} | ${maxPeople} | ${explain} | ${peopleCount}`
-        );
-      }}
+      onSubmit={(e) => handleSubmit(e)}
     >
       <div className='flex flex-col space-y-2'>
         <label className='text-lg font-bold'>제목</label>
@@ -50,28 +93,42 @@ const CreateMatch = () => {
           variant={'default'}
           sizes={'md'}
           placeholder='제목'
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
       </div>
       <div className='flex flex-col space-y-2'>
         <label className='text-lg font-bold'>종목 선택</label>
-        <DropdownInput
-          dummyData={SPORTS_LIST}
-          keyword={sport}
-          setKeyword={setSport}
-          placeholderText='운동을 검색해보세요.'
+        <SelectExerciseModal
+          selectedSport={sport}
+          onChange={(sport: number | null) => setSport(sport)}
         />
       </div>
       <div className='flex flex-col space-y-2'>
         <label className='text-lg font-bold'>날짜 선택</label>
-        <DropdownInput
-          dummyData={generateDateRange({
-            startDate: new Date('2024-01-01'),
-            days: 730,
-          })}
-          keyword={date}
-          setKeyword={setDate}
-          placeholderText='날짜를 지정해주세요.'
+        <DatePickerModal
+          selectedDate={selectedDate}
+          onChange={(date: Date | null) => setSelectedDate(date)}
         />
+      </div>
+      <div className='flex flex-col space-y-2'>
+        <label className='text-lg font-bold'>시간 선택</label>
+        <div className='grid grid-cols-2 gap-2'>
+          <DropdownInput
+            dummyData={generateTimeOptions()}
+            keyword={selectedStart}
+            setKeyword={setSelectedStart}
+            placeholderText='시작 시간'
+            isSearchable={false}
+          />
+          <DropdownInput
+            dummyData={generateTimeOptions()}
+            keyword={selectedEnd}
+            setKeyword={setSelectedEnd}
+            placeholderText='종료 시간'
+            isSearchable={false}
+          />
+        </div>
       </div>
       <div className='flex flex-col space-y-2'>
         <label className='text-lg font-bold'>장소</label>
@@ -84,7 +141,7 @@ const CreateMatch = () => {
       </div>
       <div className='flex flex-col space-y-2'>
         <h3 className='text-lg font-bold'>함께할 인원</h3>
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-2 gap-2'>
           <div className='flex flex-col'>
             <label className='text-sm'>최소인원</label>
             <Input

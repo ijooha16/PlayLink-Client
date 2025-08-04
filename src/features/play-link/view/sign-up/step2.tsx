@@ -36,6 +36,7 @@ const Step2 = ({
       const file = imageFile[0];
       const url = URL.createObjectURL(file);
       setPreview(url);
+      console.log(file);
       return () => URL.revokeObjectURL(url);
     } else {
       setPreview(null);
@@ -53,7 +54,7 @@ const Step2 = ({
   const onSubmit = (data: SignUpStep2) => {
     onNext({
       nickname: data.nickname,
-      profileImage: imageFile,
+      profileImage: imageFile[0],
     });
   };
 

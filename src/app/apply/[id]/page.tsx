@@ -3,7 +3,6 @@
 import { tempCard } from '@/shares/dummy-data/dummy-data';
 import { useParams, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
-import Image from 'next/image';
 import { useAlertStore } from '@/shares/stores/alert-store';
 
 export default function ApplyPage() {
@@ -40,11 +39,10 @@ export default function ApplyPage() {
         <h2 className='mb-4 text-2xl font-bold'>신청 매치 정보</h2>
         <div className='mb-4 flex items-center gap-4'>
           <div className='relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg'>
-            <Image
+            <img
               src={matchData.이미지}
               alt={matchData.제목}
-              layout='fill'
-              objectFit='cover'
+              className='h-full w-full object-cover'
             />
           </div>
           <div className='flex flex-col'>

@@ -1,8 +1,58 @@
+'use client';
+
 import Input from '@/shares/common-components/input';
 import SocialIconButton from '@/shares/common-components/social-icon-button';
+import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';
+import { useAlertStore } from '@/shares/stores/alert-store';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useState } from 'react';
 
 const SignIn = () => {
+  const [emailID, setEmailID] = useState<string>();
+  const [password, setPassword] = useState<string>();
+  const openAlert = useAlertStore((state) => state.openAlert);
+  const router = useRouter();
+
+  const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!emailID || !password) return;
+
+    const infos = await getDeviceInfo();
+
+    const payload = {
+      email: emailID,
+      password: password,
+      ip: infos.ip,
+      device_id: infos.deviceId,
+    };
+
+    console.log(JSON.stringify(payload));
+
+    try {
+      const result = await fetch('/api/signin', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      const resJson = await result.json();
+
+      //조건에 http 응답 코드 200 넣기
+      if (true) {
+        openAlert(
+          '로그인 성공!',
+          '매너 있는 플레이링크 플레이! 부탁드립니다 :D'
+        );
+        router.replace('/');
+      }
+
+      console.log('JSON', resJson);
+      console.log('result', result);
+    } catch (err) {
+      console.error('서버 전송 실패', err);
+    }
+  };
+
   return (
     <div className='mx-auto flex h-full w-full max-w-screen-sm flex-col'>
       <div className='mx-auto w-2/3 break-keep p-2 text-center'>
@@ -18,23 +68,32 @@ const SignIn = () => {
       </div>
       <div>
         <div className=''>
-          <div className='mx-4 flex flex-col gap-y-1'>
+          <form
+            onSubmit={(e) => handleLoginSubmit(e)}
+            className='mx-4 flex flex-col gap-y-1'
+          >
             <Input
               type='email'
               variant={'default'}
               sizes={'md'}
+              onChange={(e) => setEmailID(e.target.value)}
               placeholder='이메일 입력'
             />
             <Input
               type='password'
               variant={'default'}
               sizes={'md'}
+              autoComplete='current-password'
+              onChange={(e) => setPassword(e.target.value)}
               placeholder='비밀번호 입력'
             />
-            <button className='my-2 h-12 w-full rounded-lg bg-blue-500 font-semibold text-white transition-colors ease-in-out'>
+            <button
+              type='submit'
+              className='my-2 h-12 w-full rounded-lg bg-blue-500 font-semibold text-white transition-colors ease-in-out'
+            >
               로그인
             </button>
-          </div>
+          </form>
           <div className='mx-auto flex w-3/4 justify-around text-gray-500'>
             <Link href={'/find-account'}>
               <p>아이디 찾기</p>

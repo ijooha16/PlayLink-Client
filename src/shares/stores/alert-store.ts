@@ -26,6 +26,7 @@ export const useAlertStore = create<AlertStore>((set, get) => ({
     }, 3000);
     set({ timerId: newTimerId });
   },
+
   closeAlert: () => {
     const { timerId } = get();
     if (timerId) {
