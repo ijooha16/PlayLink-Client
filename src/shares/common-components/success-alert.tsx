@@ -8,8 +8,8 @@ const SuccessAlert = () => {
   const content = useAlertStore((state) => state.content);
 
   return (
-    <div className='fixed top-0 z-[9999] flex h-dvh w-dvw flex-col place-content-center bg-gradient-to-br from-blue-500 to-blue-700 text-white'>
-      <div>
+    <div className='fixed left-0 top-0 z-[9999] flex h-dvh w-dvw flex-col place-content-center bg-gradient-to-br from-blue-500 to-blue-700 text-white'>
+      <div className=''>
         <svg
           className='checkmark'
           xmlns='http://www.w3.org/2000/svg'
