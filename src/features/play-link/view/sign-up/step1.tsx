@@ -6,8 +6,10 @@ import {
   SignUpStep1,
   signUpStep1Schema,
 } from '../../types/sign-up/sign-up-schema';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Input from '@/shares/common-components/input';
+import EmailOption from '@/features/play-link/view/sign-up/email-option';
+import useSelector from '@/hooks/useSelector';
 
 const Step1 = ({
   onNext,
@@ -29,6 +31,12 @@ const Step1 = ({
   const [toggle, setToggle] = useState<boolean>(false);
 
   const watched = useWatch({ control });
+
+  const { selectorValue, handleGetSelectorValueData } = useSelector();
+
+  useEffect(() => {
+    console.log(selectorValue);
+  }, [selectorValue]);
 
   const isAllRequiredFilled =
     watched.email?.trim() &&
@@ -52,14 +60,20 @@ const Step1 = ({
           아이디
         </label>
         <div>
-          <Input
-            id='email-id'
-            type='email'
-            variant={'default'}
-            sizes={'md'}
-            placeholder='이메일'
-            {...register('email')}
-          />
+          <div className='flex'>
+            <Input
+              id='email-id'
+              type='email'
+              variant={'default'}
+              sizes={'md'}
+              placeholder='이메일'
+              {...register('email')}
+            />
+            <EmailOption
+              onChange={handleGetSelectorValueData}
+              selectorValue={selectorValue}
+            />
+          </div>
           <p className='h-[20px] text-sm text-red-500'>
             {errors.email && errors.email.message}
           </p>
