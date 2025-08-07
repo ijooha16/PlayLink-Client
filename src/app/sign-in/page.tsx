@@ -60,7 +60,7 @@ const SignIn = () => {
           <h1 className='text-3xl'>안녕하세요 :)</h1>
           <h2 className='text-2xl'>플레이링크 입니다.</h2>
         </div>
-        <div className='text-center'>
+        <div className='mb-8 text-center'>
           <p className='text-base text-gray-400'>
             브랜드, 하이버, 마미의 통합회원으로 로그인이 가능합니다.
           </p>
