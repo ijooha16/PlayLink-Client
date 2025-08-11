@@ -4,7 +4,7 @@ type DeviceInfoResults = {
   deviceId: string;
   deviceType: 'computer' | 'mobile' | 'tablet' | 'unknown';
   platform: string;
-  ip: string | null;
+  // ip: string | null;
 };
 
 /**
@@ -46,7 +46,7 @@ export const getDeviceInfo = async (): Promise<DeviceInfoResults> => {
       throw new Error('IP 주소를 가져오는 데 실패했습니다.');
     }
     const data = await response.json();
-    ip = data.ip;
+    // ip = data.ip;
   } catch (error) {
     console.error('IP 주소 조회 오류 발생:', error);
   }
@@ -55,6 +55,6 @@ export const getDeviceInfo = async (): Promise<DeviceInfoResults> => {
     deviceId,
     deviceType,
     platform,
-    ip,
+    // ip,
   };
 };
