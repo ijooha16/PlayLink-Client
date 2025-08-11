@@ -29,7 +29,7 @@ const SearchView = ({
   ];
 
   return (
-    <div className='fixed top-0 z-50 h-screen w-full bg-white px-4'>
+    <div className='fixed top-0 left-0 z-50 h-screen w-full bg-white px-4'>
       <div className='flex max-w-[640px] items-center justify-between gap-6 py-4'>
         <ChevronLeft onClick={() => setSearchViewOpen(false)} />
         <input

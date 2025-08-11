@@ -11,7 +11,7 @@ const NotificationView = ({
   const tabs = ['activity', 'matching'] as const;
 
   return (
-    <div className='fixed top-0 z-50 h-screen w-full bg-white px-4'>
+    <div className='fixed top-0 left-0 z-50 h-screen w-full bg-white px-4'>
       <div className='h-17 flex max-w-[640px] items-center justify-start gap-6 py-6'>
         <ChevronLeft onClick={() => setNotificationViewOpen(false)} />
         알림
