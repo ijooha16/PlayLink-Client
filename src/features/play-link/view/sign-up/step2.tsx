@@ -77,7 +77,7 @@ const Step2 = ({
             {preview ? (
               <Image
                 src={preview}
-                alt='미리보기'
+                alt='user_profile_img'
                 width={100}
                 height={100}
                 className='object-cover'
@@ -85,7 +85,7 @@ const Step2 = ({
             ) : (
               <Image
                 src={randomProfileImage()}
-                alt='미리보기'
+                alt='random_profile_img'
                 width={100}
                 height={100}
                 className='object-cover'
