@@ -47,6 +47,8 @@ const config: Config = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+        primary: 'var(--color-primary)',
+        sub01: 'var(--color-sub-01)',
       },
     },
   },

@@ -3,11 +3,14 @@
 @tailwind utilities;
 
 /* react-datepicker styles */
-@import "react-datepicker/dist/react-datepicker.css";
+@import 'react-datepicker/dist/react-datepicker.css';
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --color-primary: #0C54DA;
+  --color-sub-01: #B5D3FF;
 }
 
 * {
@@ -22,6 +25,14 @@ body {
   line-height: 1.5;
   letter-spacing: -0.003em;
   max-width: 640px;
+
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
 }
 
 button {
