@@ -15,7 +15,7 @@ const CommonHeader = ({ title }: CommonHeaderProps) => {
   const router = useRouter();
   return (
     <>
-      <div className='fixed top-0 z-50 flex h-16 w-full max-w-[640px] items-center justify-start gap-4 bg-white px-4 shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.2)]'>
+      <div className='fixed top-0 left-0 z-50 flex h-16 w-full max-w-[640px] items-center justify-start gap-4 bg-white px-4 shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.2)]'>
         <button
           onClick={() => {
             router.back();

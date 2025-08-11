@@ -1,4 +1,5 @@
 import CommonHeader from '@/shares/common-components/common-header';
+import Header from '@/shares/common-components/header';
 
 const MyNearLayout = ({
   children,
@@ -7,7 +8,7 @@ const MyNearLayout = ({
 }>) => {
   return (
     <div className='h-full w-full'>
-      <CommonHeader title={'내 동네 설정'} />
+      <Header title='내 동네 설정' backbtn />
       {children}
     </div>
   );

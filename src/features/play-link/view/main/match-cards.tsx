@@ -10,7 +10,7 @@ const MatchCards = () => {
   return tempCard.map((item, idx) => {
     return (
       <Link key={item.제목 + idx} href={`/match/${idx}`}>
-        <div className='m-2 flex border'>
+        <div className='my-2 flex border'>
           <div className='aspect-square h-[128px] min-h-[128px] w-[128px] min-w-[128px] overflow-hidden p-2'>
             <img
               src={item.이미지}

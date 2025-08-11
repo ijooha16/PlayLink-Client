@@ -3,6 +3,8 @@ import localFont from 'next/font/local';
 import '../styles/globals.css';
 import LayoutClientSide from '@/features/play-link/view/main/layout-client-side';
 import Providers from './provider';
+import MainBottomNavigation from '@/features/play-link/view/main/main-bottom-navigation';
+import MainHeader from '@/features/play-link/view/main/main-header';
 
 const pretendard = localFont({
   src: '../../public/fonts/pretendard-variable.woff2',
@@ -44,7 +46,12 @@ const RootLayout = ({
     <html lang='ko-KR' className='mx-auto h-full w-full max-w-screen-sm'>
       <body className={`${pretendard.variable} antialiased`}>
         <LayoutClientSide />
-        <Providers>{children}</Providers>
+        <div className='flex h-full flex-col'>
+          <div className='flex-1 px-4 pb-16 pt-20'>
+            <Providers>{children}</Providers>
+          </div>
+          <MainBottomNavigation />
+        </div>
       </body>
     </html>
   );

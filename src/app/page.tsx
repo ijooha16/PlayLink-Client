@@ -5,13 +5,14 @@ import MatchCards from '@/features/play-link/view/main/match-cards';
 
 export default function Home() {
   return (
-    <div className='py-16'>
+    <div>
       <MainHeader />
       <div className='overflow-auto'>
         <MatchCards />
+        <MatchCards />
       </div>
       <MainNewButton />
-      <MainBottomNavigation />
+      {/* <MainBottomNavigation /> */}
     </div>
   );
 }
