@@ -4,6 +4,7 @@ import DropDown from '@/shares/common-components/drop-down';
 import { BellIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import SearchView from './search-view';
+import NotificationView from './notification-view';
 
 const options = ['강남구', '추가 설정'];
 
@@ -13,6 +14,7 @@ const click = (option: string) => {
 
 const MainHeader = () => {
   const [searchViewOpen, setSearchViewOpen] = useState(false);
+  const [notificationViewOpen, setNotificationViewOpen] = useState(false);
 
   return (
     <>
@@ -22,12 +24,15 @@ const MainHeader = () => {
           <button onClick={() => setSearchViewOpen(true)}>
             <SearchIcon size={24} />
           </button>
-          <button>
+          <button onClick={() => setNotificationViewOpen(true)}>
             <BellIcon size={24} />
           </button>
         </div>
       </div>
       {searchViewOpen && <SearchView setSearchViewOpen={setSearchViewOpen} />}
+      {notificationViewOpen && (
+        <NotificationView setNotificationViewOpen={setNotificationViewOpen} />
+      )}
     </>
   );
 };
