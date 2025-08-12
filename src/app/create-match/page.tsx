@@ -83,7 +83,7 @@ const CreateMatch = () => {
 
   return (
     <form
-      className='mx-auto flex max-w-md flex-col gap-y-4 p-4'
+      className='flex max-w-md flex-col gap-y-4'
       onSubmit={(e) => handleSubmit(e)}
     >
       <div className='flex flex-col space-y-2'>

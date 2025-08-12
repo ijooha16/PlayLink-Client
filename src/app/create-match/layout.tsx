@@ -1,4 +1,5 @@
 import CommonHeader from '@/shares/common-components/common-header';
+import Header from '@/shares/common-components/header';
 
 const CreateMatchLayout = ({
   children,
@@ -7,7 +8,7 @@ const CreateMatchLayout = ({
 }>) => {
   return (
     <div className='h-full w-full'>
-      <CommonHeader title={'매치 생성하기'} />
+      <Header title={'매치 생성하기'} backbtn />
       {children}
     </div>
   );

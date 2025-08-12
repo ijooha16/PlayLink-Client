@@ -17,8 +17,8 @@ export default function MatchDetailPage() {
   }
 
   return (
-    <div className='relative flex flex-col'>
-      <div className='relative h-[40dvh] w-full'>
+    <div className='flex flex-col'>
+      <div className='absolute left-0 top-16 z-40 h-[40dvh] w-full'>
         <img
           src={cardData.이미지}
           alt={cardData.제목}
@@ -26,8 +26,8 @@ export default function MatchDetailPage() {
         />
       </div>
 
-      <div className='flex h-24 items-center justify-between rounded-lg p-4'>
-        <div className='flex items-center gap-4 p-4'>
+      <div className='mt-[40dvh] flex h-24 items-center justify-between rounded-lg'>
+        <div className='flex items-center gap-4'>
           <div className='h-14 w-14 rounded-full bg-gray-300'>
             {/* 프로필 이미지 */}
           </div>
@@ -38,9 +38,9 @@ export default function MatchDetailPage() {
         </div>
       </div>
 
-      <div className='mx-6 h-px border-t border-gray-300' />
+      <div className='h-px border-t border-gray-300' />
 
-      <div className='flex flex-col gap-4 px-8 py-4'>
+      <div className='flex flex-col gap-4 py-4'>
         <div className='flex flex-col gap-2'>
           <span className='font-bold text-blue-500'>{cardData.운동종류}</span>
           <h1 className='text-2xl font-bold'>{cardData.제목}</h1>
