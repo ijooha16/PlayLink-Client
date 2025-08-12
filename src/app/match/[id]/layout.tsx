@@ -1,4 +1,3 @@
-import CommonHeader from '@/shares/common-components/common-header';
 import Header from '@/shares/common-components/header';
 
 const DetailLayout = ({
