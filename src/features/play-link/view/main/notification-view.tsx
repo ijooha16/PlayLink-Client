@@ -11,28 +11,32 @@ const NotificationView = ({
   const tabs = ['activity', 'matching'] as const;
 
   return (
-    <div className='fixed top-0 left-0 z-50 h-screen w-full bg-white px-4'>
-      <div className='h-17 flex max-w-[640px] items-center justify-start gap-6 py-6'>
+    <div className='fixed left-0 top-0 z-50 h-screen w-full bg-white'>
+      <div
+        className={`fixed left-0 top-0 z-50 flex h-16 w-full max-w-[640px] items-center gap-6 border-b border-gray-200 bg-white px-4`}
+      >
         <ChevronLeft onClick={() => setNotificationViewOpen(false)} />
-        알림
+        <div className='text-lg font-semibold'>알림</div>
       </div>
-      <hr className='h-[1px] bg-gray-400' />
-      <div className='flex'>
-        {tabs.map((t) => (
-          <div
-            key={t}
-            className={`flex-1 border-b-[2px] py-3 text-center font-semibold ${tab === t ? 'border-primary text-primary' : 'text-gray-400'}`}
-            onClick={() => setTab(t)}
-          >
-            {t === 'activity' ? '활동' : '매칭'}
-          </div>
-        ))}
-      </div>
-      <div>
-        <NotificationCard />
-        <NotificationCard />
-        <NotificationCard />
-        <NotificationCard />
+
+      <div className='mt-16 flex flex-col gap-4'>
+        <div className='flex'>
+          {tabs.map((t) => (
+            <div
+              key={t}
+              className={`flex-1 border-b-[2px] py-3 text-center font-semibold ${tab === t ? 'border-primary text-primary' : 'text-gray-400'}`}
+              onClick={() => setTab(t)}
+            >
+              {t === 'activity' ? '활동' : '매칭'}
+            </div>
+          ))}
+        </div>
+        <div className='px-4'>
+          <NotificationCard />
+          <NotificationCard />
+          <NotificationCard />
+          <NotificationCard />
+        </div>
       </div>
     </div>
   );

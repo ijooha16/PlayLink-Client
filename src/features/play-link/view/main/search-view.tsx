@@ -29,17 +29,19 @@ const SearchView = ({
   ];
 
   return (
-    <div className='fixed top-0 left-0 z-50 h-screen w-full bg-white px-4'>
-      <div className='flex max-w-[640px] items-center justify-between gap-6 py-4'>
+    <div className='fixed left-0 top-0 z-50 h-screen w-full bg-white px-4'>
+      <div
+        className={`fixed left-0 top-0 z-50 flex h-16 w-full max-w-[640px] items-center justify-between gap-6 bg-gray-100 px-4`}
+      >
         <ChevronLeft onClick={() => setSearchViewOpen(false)} />
         <input
           type='text'
-          className='h-10 flex-1 rounded-lg bg-gray-100 px-3'
+          className='h-10 flex-1 rounded-lg bg-gray-200 px-3'
           placeholder='스포츠 종목 검색'
         />
         <div onClick={() => setSearchViewOpen(false)}>닫기</div>
       </div>
-      <div className='flex flex-col gap-4'>
+      <div className='mt-20 flex flex-col gap-4'>
         <div className='scrollbar-hide flex gap-2 overflow-x-auto'>
           {categories.map((category) => (
             <Tag
@@ -52,7 +54,9 @@ const SearchView = ({
           ))}
         </div>
         <hr className='h-[1px] bg-gray-400' />
-        <div className='text-lg font-semibold'>전체 스포츠 종목 ({items.length}개)</div>
+        <div className='text-lg font-semibold'>
+          전체 스포츠 종목 ({items.length}개)
+        </div>
         <div className='flex flex-wrap justify-between gap-6'>
           {items.map((sport) => (
             <SportCard sport={sport} key={sport} />

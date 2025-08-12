@@ -1,3 +1,4 @@
+import MatchButton from '@/shares/common-components/match-button';
 import { LucideEllipsisVertical, UserPlus2Icon } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -28,7 +29,11 @@ const NotificationCard = () => {
           </div>
         </div>
         <div>내용</div>
-        <div>버튼들</div>
+        <div className='flex gap-3'>
+          <MatchButton type='수락' />
+          <MatchButton type='거절' />
+          <MatchButton type='상세' />
+        </div>
       </div>
     </div>
   );
