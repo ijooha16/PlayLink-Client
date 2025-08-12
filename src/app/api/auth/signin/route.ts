@@ -1,11 +1,51 @@
 import { NextResponse } from 'next/server';
 
+// export async function POST(request: Request) {
+//   try {
+//     const body = await request.json();
+
+//     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
+//     const backendApiUrl = `${fetchURL}playlink/login`;
+//     const response = await fetch(backendApiUrl, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(body),
+//     });
+
+//     const json = await response.json();
+//     const accessToken =
+//       response.headers.get('Authorization') ||
+//       response.headers.get('X-Access-Token') ||
+//       response.headers.get('access-token');
+
+//     console.log('받은 액세스 토큰:', accessToken);
+
+//     return NextResponse.json({
+//       status: 'success',
+//       msg: 'good',
+//     });
+//   } catch (err: any) {
+//     console.log('페칭 오류', err);
+//     return NextResponse.json(
+//       {
+//         status: 'error',
+//         message: 'An error occurred during sign-in',
+//       },
+//       {
+//         status: 500,
+//       }
+//     );
+//   }
+// }
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-    const backendApiUrl = `${fetchURL}/playlink/login`;
+    const backendApiUrl = `${fetchURL}playlink/login`;
 
     const response = await fetch(backendApiUrl, {
       method: 'POST',
