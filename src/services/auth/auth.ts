@@ -1,4 +1,4 @@
-import { handleSetSessionStorage } from '@/shares/libs/utills/wep-api';
+import { handleSetSessionStorage } from '@/shares/libs/utills/web-api';
 
 interface SignInType {
   email: string;
