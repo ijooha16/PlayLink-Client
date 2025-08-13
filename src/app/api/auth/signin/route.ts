@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     console.log('api 페칭댐');
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-    const backendApiUrl = `${fetchURL}playlink/login`;
+    const backendApiUrl = `${fetchURL}/playlink/login`;
 
     const response = await fetch(backendApiUrl, {
       method: 'POST',
