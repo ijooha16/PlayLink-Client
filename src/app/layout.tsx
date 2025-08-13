@@ -1,17 +1,21 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "../styles/globals.css";
+import type { Metadata } from 'next';
+import localFont from 'next/font/local';
+import '../styles/globals.css';
+import LayoutClientSide from '@/features/play-link/view/main/layout-client-side';
+import Providers from './provider';
+import MainBottomNavigation from '@/features/play-link/view/main/main-bottom-navigation';
+import MainHeader from '@/features/play-link/view/main/main-header';
 
 const pretendard = localFont({
-  src: "../../public/fonts/pretendard-variable.woff2",
-  display: "swap",
-  weight: "45 920",
-  variable: "--font-pretendard",
+  src: '../../public/fonts/pretendard-variable.woff2',
+  display: 'swap',
+  weight: '45 920',
+  variable: '--font-pretendard',
 });
 
 export const metadata: Metadata = {
-  title: "플레이링크",
-  description: "당신의 운동 친구! 플레이 링크에서 만나세요.",
+  title: '플레이링크',
+  description: '당신의 운동 친구! 플레이 링크에서 만나세요.',
   // icons: {
   //   icon: "images/퍼블릭폴더 내부 파일 이름",
   // },
@@ -33,14 +37,24 @@ export const metadata: Metadata = {
   // },
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
-    <html lang="ko-KR" className="h-full w-full">
-      <body className={`${pretendard.variable} antialiased`}>{children}</body>
+    <html lang='ko-KR' className='mx-auto h-full w-full max-w-screen-sm'>
+      <body className={`${pretendard.variable} antialiased`}>
+        <LayoutClientSide />
+        <div className='flex h-full flex-col'>
+          <div className='flex-1 px-4 pb-16 pt-20'>
+            <Providers>{children}</Providers>
+          </div>
+          <MainBottomNavigation />
+        </div>
+      </body>
     </html>
   );
-}
+};
+
+export default RootLayout;
