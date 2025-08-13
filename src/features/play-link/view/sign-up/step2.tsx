@@ -10,6 +10,9 @@ import {
 } from '../../types/sign-up/sign-up-schema';
 import Input from '@/shares/common-components/input';
 
+// util
+import randomProfileImage from '@/shares/libs/utills/random-profile-image';
+
 const Step2 = ({
   onNext,
   defaultValues,
@@ -74,13 +77,19 @@ const Step2 = ({
             {preview ? (
               <Image
                 src={preview}
-                alt='미리보기'
+                alt='user_profile_img'
                 width={100}
                 height={100}
                 className='object-cover'
               />
             ) : (
-              <span className='text-4xl text-gray-500'>🙂</span>
+              <Image
+                src={randomProfileImage()}
+                alt='random_profile_img'
+                width={100}
+                height={100}
+                className='object-cover'
+              />
             )}
           </div>
 
