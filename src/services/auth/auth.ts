@@ -1,3 +1,5 @@
+import { handleSetSessionStorage } from '@/shares/libs/utills/wep-api';
+
 interface SignInType {
   email: string;
   password: string;
@@ -25,12 +27,15 @@ export const fetchSignIn = async (req: SignInType) => {
       password: req.password,
       device_id: req.device_id,
     };
+
     const res = await fetch('/api/auth/signin', {
       method: 'POST',
       body: JSON.stringify(payload),
     });
 
     const json = await res.json();
+    console.log('서비스 레이어 json value', json);
+    handleSetSessionStorage(json.accessToken);
 
     if (!res.ok) {
       console.error('server signin api error');
@@ -69,7 +74,7 @@ export const fetchSignUp = async (signupData: SignUpType) => {
     });
 
     const json = await response.json();
-    console.log('리스폰스', response);
+    console.log('리스폰스', json);
 
     if (!response.ok) {
       const error = await response.json();
