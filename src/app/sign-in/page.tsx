@@ -7,9 +7,8 @@ import { useAlertStore } from '@/shares/stores/alert-store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { fetchSignIn } from '@/services/auth/auth';
 import { useSignin } from '@/hooks/auth/useSignin';
+import Loading from '@/shares/common-components/loading';
 
 const SignIn = () => {
   const [emailID, setEmailID] = useState<string>();
@@ -43,6 +42,7 @@ const SignIn = () => {
 
   return (
     <div className='mx-auto flex h-full w-full max-w-screen-sm flex-col'>
+      {isPending && <Loading />}
       <div className='mx-auto w-2/3 break-keep p-2 text-center'>
         <div className='animate-fadeInOnce py-6 text-center font-bold'>
           <h1 className='text-3xl'>안녕하세요 :)</h1>
