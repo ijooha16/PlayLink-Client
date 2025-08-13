@@ -7,6 +7,9 @@ import { useAlertStore } from '@/shares/stores/alert-store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { fetchSignIn } from '@/services/auth/auth';
+import { useSignin } from '@/hooks/auth/useSignin';
 
 const SignIn = () => {
   const [emailID, setEmailID] = useState<string>();
@@ -14,43 +17,28 @@ const SignIn = () => {
   const openAlert = useAlertStore((state) => state.openAlert);
   const router = useRouter();
 
+  const { mutate: signIn, isPending } = useSignin({
+    onSuccess: () => {
+      router.replace('/');
+      openAlert('로그인 성공!', '매너 있는 플레이링크 부탁드립니다 :D');
+    },
+    onError: (err) => {
+      console.error('로그인 실패:', err.message);
+      openAlert('로그인 실패', '이메일 또는 비밀번호를 확인해주세요.');
+    },
+  });
+
   const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!emailID || !password) return;
 
     const infos = await getDeviceInfo();
 
-    const payload = {
+    signIn({
       email: emailID,
       password: password,
-      ip: infos.ip,
       device_id: infos.deviceId,
-    };
-
-    console.log(JSON.stringify(payload));
-
-    try {
-      const result = await fetch('/api/signin', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
-      const resJson = await result.json();
-
-      //조건에 http 응답 코드 200 넣기
-      if (true) {
-        openAlert(
-          '로그인 성공!',
-          '매너 있는 플레이링크 플레이! 부탁드립니다 :D'
-        );
-        router.replace('/');
-      }
-
-      console.log('JSON', resJson);
-      console.log('result', result);
-    } catch (err) {
-      console.error('서버 전송 실패', err);
-    }
+    });
   };
 
   return (
