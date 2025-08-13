@@ -2,6 +2,7 @@
 
 import { X } from 'lucide-react';
 import { MouseEvent, useState } from 'react';
+import { SPORTS_LIST } from '../dummy-data/dummy-data';
 
 interface SelectExerciseModalProps {
   onChange: (sport: number | null) => void;
@@ -50,7 +51,7 @@ const SelectExerciseModal = ({
               <X onClick={handleClose} />
             </div>
             <div className='mx-2 border-t border-gray-300 p-2'>
-              <div></div>
+              {SPORTS_LIST.map((sport,idx) => <div key={sport} onClick={() => handleChange(idx)}>{sport}</div>)}
             </div>
           </div>
         </div>
