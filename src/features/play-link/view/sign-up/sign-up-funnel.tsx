@@ -51,7 +51,7 @@ const SignUpFunnel = () => {
   );
 
   return (
-    <div className='mx-auto max-w-md p-4'>
+    <div className='mx-auto max-w-md'>
       {step === 'step1' && (
         <Step1
           onNext={(data) => {

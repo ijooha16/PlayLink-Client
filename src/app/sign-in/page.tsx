@@ -43,7 +43,7 @@ const SignIn = () => {
   return (
     <div className='mx-auto flex h-full w-full max-w-screen-sm flex-col'>
       {isPending && <Loading variant='white' />}
-      <div className='mx-auto w-2/3 break-keep p-2 text-center'>
+      <div className='mx-auto w-2/3 break-keep text-center'>
         <div className='animate-fadeInOnce py-6 text-center font-bold'>
           <h1 className='text-3xl'>안녕하세요 :)</h1>
           <h2 className='text-2xl'>플레이링크 입니다.</h2>
@@ -58,7 +58,7 @@ const SignIn = () => {
         <div className=''>
           <form
             onSubmit={(e) => handleLoginSubmit(e)}
-            className='mx-4 flex flex-col gap-y-1'
+            className='flex flex-col gap-y-1'
           >
             <Input
               type='email'
