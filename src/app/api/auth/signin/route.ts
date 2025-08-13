@@ -44,6 +44,8 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
+    console.log('api 페칭댐');
+
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
     const backendApiUrl = `${fetchURL}playlink/login`;
 
@@ -85,7 +87,16 @@ export async function POST(request: Request) {
       });
     }
 
-    return finalResponse;
+    const accessToken = response.headers.get('Authorization');
+    console.log(accessToken);
+    console.log(finalResponse);
+    console.log({ response: finalResponse, accessToken: accessToken });
+
+    return NextResponse.json({
+      status: 'success',
+      response: finalResponse,
+      accessToken: accessToken,
+    });
   } catch (error: any) {
     console.error('Signin Route Handler error:', error);
     return NextResponse.json(
