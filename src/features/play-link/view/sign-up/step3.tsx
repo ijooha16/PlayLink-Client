@@ -46,7 +46,7 @@ export default function Step3({
         <h3 className='w-fit border-b-2 border-blue-500 text-lg font-semibold'>
           스포츠 종목
         </h3>
-        <div className='grid h-2/3 grid-cols-5 gap-2 overflow-y-scroll'>
+        <div className='box-border grid h-auto grid-cols-5 gap-2 overflow-y-scroll p-2'>
           {SPORTS_LIST.map((sport, idx) => (
             <div key={sport} className='relative'>
               <input

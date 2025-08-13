@@ -1,4 +1,4 @@
-import CommonHeader from '@/shares/common-components/common-header';
+import Header from '@/shares/common-components/header';
 
 const SignUpLayout = ({
   children,
@@ -7,7 +7,9 @@ const SignUpLayout = ({
 }>) => {
   return (
     <div className='h-full w-full'>
-      <CommonHeader title={'회원가입'} />
+      <div className='flex'>
+        <Header title={'회원가입'} backbtn={true} />
+      </div>
       {children}
     </div>
   );
