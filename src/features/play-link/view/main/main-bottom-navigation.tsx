@@ -39,7 +39,7 @@ const MainBottomNavigation = () => {
         채팅
       </Link>
       <Link
-        href={'/sign-in'}
+        href={'/my-page'}
         className='flex w-20 flex-col items-center text-center text-xs'
       >
         <CircleUserIcon size={24} />

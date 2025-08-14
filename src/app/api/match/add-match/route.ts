@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.formData();
+    const token = request.headers.get('Authorization');
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
@@ -11,7 +12,7 @@ export async function POST(request: Request) {
     const response = await fetch(backendApiUrl, {
       method: 'POST',
       headers: {
-        Authorization: 'Bearer Token..',
+        Authorization: `Bearer ${token}`,
       },
       body,
     });

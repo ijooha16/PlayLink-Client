@@ -8,9 +8,14 @@ import { useAlertStore } from '@/shares/stores/alert-store';
 import { useRouter } from 'next/navigation';
 import DatePickerModal from '@/shares/common-components/date-picker-modal';
 import SelectExerciseModal from '@/shares/common-components/select-exercise-modal';
-import { useAddMatchMutation } from '@/shares/libs/tanstack/mutations/use-add-match-mutation';
+import { useAddMatchMutation } from '@/hooks/match/use-add-match-mutation';
+import { handleGetSeesionStorage } from '@/shares/libs/utills/web-api';
 
 const CreateMatch = () => {
+  const token = handleGetSeesionStorage();
+
+  console.log('Token:', token);
+  
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [placeId, setPlaceId] = useState('');
@@ -34,7 +39,7 @@ const CreateMatch = () => {
   const router = useRouter();
   const openAlert = useAlertStore((state) => state.openAlert);
 
-  const isFormValid = Object.values(formData).every(Boolean);
+  // const isFormValid = Object.values(formData).every(Boolean);
 
   const generateTimeOptions = () => {
     const times = [];
@@ -56,17 +61,17 @@ const CreateMatch = () => {
       `${formData.title} 매칭이 생성 되었습니다! 즐거운 운동되세요!`
     );
 
-    if (!isFormValid) {
-      openAlert('오류', '모든 필드를 채워주세요.');
-      return;
-    }
+    // if (!isFormValid) {
+    //   openAlert('오류', '모든 필드를 채워주세요.');
+    //   return;
+    // }
 
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       data.append(key, value as string);
     });
 
-    addMatch(data);
+    addMatch({formData: data, token });
     // console.log('Form Data:', formData);
     router.push('/');
   };
@@ -195,7 +200,7 @@ const CreateMatch = () => {
       </div>
       <button
         type='submit'
-        disabled={!isFormValid}
+        // disabled={!isFormValid}
         className='fixed bottom-0 left-0 mx-4 my-4 h-12 w-[calc(100%-2rem)] rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow-md transition-colors ease-in-out focus:bg-blue-700 disabled:bg-[#E7E9EC] disabled:text-[#BDC0C6]'
       >
         작성완료

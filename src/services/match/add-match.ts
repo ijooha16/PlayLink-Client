@@ -1,10 +1,18 @@
-export const addMatch = async (data:any) => {
+
+
+export const addMatch = async ({
+  formData,
+  token,
+}: {
+  formData: FormData;
+  token: string | null;
+}) => {
   const response = await fetch(`/api/match/add-match`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-    body: data,
+    body: formData,
   });
 
   if (!response.ok) {
