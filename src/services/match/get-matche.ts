@@ -1,5 +1,5 @@
 export const getMatches = async () => {
-  const response = await fetch(`/api/match`);
+  const response = await fetch(`/api/match/get-matches`);
   if (!response.ok) {
     throw new Error('Failed to fetch matchs');
   }

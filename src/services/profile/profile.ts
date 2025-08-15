@@ -2,7 +2,7 @@ export const getProfile = async ({ token }: { token: string | null }) => {
   const response = await fetch(`/api/profile/get-profile`, {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: token!,
     },
   });
 
@@ -23,7 +23,7 @@ export const updateProfile = async ({
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      Authorization: token!,
     },
     body: JSON.stringify(profileData),
   });
