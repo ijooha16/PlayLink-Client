@@ -1,13 +1,24 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function PUT(
+  request: Request,
+  { params }: { params: { matchId: string } }
+) {
   try {
+    const token = request.headers.get('Authorization');
+    const body = await request.formData();
+    const matchId = params.matchId;
+
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
-    const backendApiUrl = `${fetchURL}/playlink/match`;
+    const backendApiUrl = `${fetchURL}/playlink/match/${matchId}/modify`;
 
     const response = await fetch(backendApiUrl, {
-      method: 'GET',
+      method: 'PUT',
+      headers: {
+        Authorization: token!,
+      },
+      body,
     });
 
     if (!response.ok) {
@@ -22,7 +33,7 @@ export async function GET() {
     const data = await response.json();
     return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: any) {
-    console.error('Get post Route Handler error:', error);
+    console.error('Update match Route Handler error:', error);
     return NextResponse.json(
       { status: 'error', message: error.message },
       { status: 500 }

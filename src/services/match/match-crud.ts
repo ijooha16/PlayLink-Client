@@ -10,7 +10,7 @@ export const addMatch = async ({
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    body: formData,
+    body: JSON.stringify(formData),
   });
 
   if (!response.ok) {
@@ -20,7 +20,7 @@ export const addMatch = async ({
 };
 
 export const deleteMatch = async (matchId: string, token: string | null) => {
-  const response = await fetch(`/api/match/:${matchId}`, {
+  const response = await fetch(`/api/match/remove-match/${matchId}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -42,12 +42,13 @@ export const updateMatch = async ({
   formData: FormData;
   token: string | null;
 }) => {
-  const response = await fetch(`/api/match/:${matchId}/modify`, {
+  const response = await fetch(`/api/match/update-match/${matchId}`, {
     method: 'PUT',
     headers: {
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: formData,
+    body: JSON.stringify(formData),
   });
 
   if (!response.ok) {

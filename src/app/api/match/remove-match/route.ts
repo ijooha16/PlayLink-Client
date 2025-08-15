@@ -1,20 +1,22 @@
 import { NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { matchId: string } }
+) {
   try {
-    const body = await request.formData();
     const token = request.headers.get('Authorization');
+    const matchId = params.matchId;
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
-    const backendApiUrl = `${fetchURL}/playlink/match`;
+    const backendApiUrl = `${fetchURL}/playlink/match/${matchId}`;
 
     const response = await fetch(backendApiUrl, {
-      method: 'POST',
+      method: 'DELETE',
       headers: {
         Authorization: token!,
       },
-      body,
     });
 
     if (!response.ok) {
@@ -29,7 +31,7 @@ export async function POST(request: Request) {
     const data = await response.json();
     return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: any) {
-    console.error('Add match Route Handler error:', error);
+    console.error('Delete match Route Handler error:', error);
     return NextResponse.json(
       { status: 'error', message: error.message },
       { status: 500 }

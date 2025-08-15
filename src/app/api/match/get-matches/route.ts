@@ -1,20 +1,13 @@
 import { NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
+export async function GET() {
   try {
-    const body = await request.formData();
-    const token = request.headers.get('Authorization');
-
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
     const backendApiUrl = `${fetchURL}/playlink/match`;
 
     const response = await fetch(backendApiUrl, {
-      method: 'POST',
-      headers: {
-        Authorization: token!,
-      },
-      body,
+      method: 'GET',
     });
 
     if (!response.ok) {
@@ -29,7 +22,7 @@ export async function POST(request: Request) {
     const data = await response.json();
     return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: any) {
-    console.error('Add match Route Handler error:', error);
+    console.error('Get match Route Handler error:', error);
     return NextResponse.json(
       { status: 'error', message: error.message },
       { status: 500 }
