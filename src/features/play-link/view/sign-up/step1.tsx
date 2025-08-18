@@ -14,6 +14,9 @@ import useSelector from '@/hooks/useSelector';
 import { useEmail } from '@/hooks/email/useEmail';
 import { useEmailVerify } from '@/hooks/email/useEmailVerify';
 
+import { useSms } from '@/hooks/sms/useSms';
+import { useSmsVerify } from '@/hooks/sms/useSmsVerify';
+
 import {
   TERMS_OF_SERVICE,
   PRIVACY_POLICY,
@@ -56,11 +59,29 @@ const Step1 = ({
       setEmailAuthView(true);
     },
     onError: (err) => {
-      console.error('로그인 실패:', err.message);
+      console.error('이메일 인증 코드 전송 실패:', err.message);
     },
   });
 
   const { mutate: emailVerify, isPending: isVerifying } = useEmailVerify({
+    onSuccess: () => {
+      setEmailAuthView(false);
+    },
+    onError: (err) => {
+      console.error('이메일 인증 확인 실패:', err.message);
+    },
+  });
+
+  const { mutate: smsSend, isPending: isSmsSending } = useEmail({
+    onSuccess: () => {
+      setEmailAuthView(true);
+    },
+    onError: (err) => {
+      console.error('로그인 실패:', err.message);
+    },
+  });
+
+  const { mutate: smsVerify, isPending: isSmsVerify } = useEmailVerify({
     onSuccess: () => {
       setEmailAuthView(false);
     },
@@ -88,7 +109,7 @@ const Step1 = ({
   const handleSendEmailCode = () => {
     if (!watched.email?.trim()) return;
     if (isSending) return;
-    emailSend({ email: watched.email.trim() }); // <- useEmail 훅에서 기대하는 payload에 맞춰주세요
+    emailSend({ email: watched.email.trim() }); //
   };
   // 이메일 인증코드 확인
   const handleEmailCodeCheck = () => {
@@ -99,19 +120,26 @@ const Step1 = ({
     emailVerify({
       email: watched.email.trim(),
       code: emailCode.trim(),
-    }); // <- useEmailVerify 훅의 payload 스펙에 맞춰주세요
+    }); //
   };
 
   // 핸드폰 인증코드 전송
   const handleSmsCodeCheck = () => {
-    try {
-    } catch (err) {}
+    if (!watched.email?.trim()) return;
+    if (isSending) return;
+    smsSend({ email: watched.email.trim() }); // <- useEmail 훅에서 기대하는 payload에 맞춰주세요
   };
 
   // 핸드폰 인증코드 확인
   const handleSendSmsCode = () => {
-    try {
-    } catch (err) {}
+    if (!watched.email?.trim()) return;
+    if (!emailCode.trim()) return;
+    if (isVerifying) return;
+
+    smsVerify({
+      email: watched.email.trim(),
+      code: emailCode.trim(),
+    }); //
   };
 
   const checkboxClass =
