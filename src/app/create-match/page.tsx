@@ -8,9 +8,13 @@ import { useAlertStore } from '@/shares/stores/alert-store';
 import { useRouter } from 'next/navigation';
 import DatePickerModal from '@/shares/common-components/date-picker-modal';
 import SelectExerciseModal from '@/shares/common-components/select-exercise-modal';
-import { useAddMatchMutation } from '@/shares/libs/tanstack/mutations/use-add-match-mutation';
+import { useAddMatchMutation } from '@/hooks/match/use-add-match-mutation';
+import { handleGetSeesionStorage } from '@/shares/libs/utills/web-api';
+import { timeFormat } from '@/shares/libs/utills/create-match-formats';
 
 const CreateMatch = () => {
+  const token = handleGetSeesionStorage();
+
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [placeId, setPlaceId] = useState('');
@@ -23,10 +27,9 @@ const CreateMatch = () => {
     endTime,
     leastSize: '',
     maxSize: '',
-    place_id: placeId,
+    place_id: '',
     placeAddress: '',
-    placeLocation: '',
-    img: '',
+    placeLocation: '35.15001, 126.8742',
   });
 
   const { mutate: addMatch } = useAddMatchMutation();
@@ -34,7 +37,7 @@ const CreateMatch = () => {
   const router = useRouter();
   const openAlert = useAlertStore((state) => state.openAlert);
 
-  const isFormValid = Object.values(formData).every(Boolean);
+  // const isFormValid = Object.values(formData).every(Boolean);
 
   const generateTimeOptions = () => {
     const times = [];
@@ -51,23 +54,32 @@ const CreateMatch = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     openAlert(
       '매치 생성 완료!',
       `${formData.title} 매칭이 생성 되었습니다! 즐거운 운동되세요!`
     );
 
-    if (!isFormValid) {
-      openAlert('오류', '모든 필드를 채워주세요.');
-      return;
-    }
-
     const data = new FormData();
+
     Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value as string);
+      if (key === 'date' && value instanceof Date) {
+        // Date를 ISO 문자열로 변환
+        data.append(key, value.toISOString());
+      } else if (key === 'startTime') {
+        data.append(key, timeFormat(startTime));
+      } else if (key === 'endTime') {
+        data.append(key, timeFormat(endTime));
+      } else if (key === 'placeAddress') {
+        data.append(key, placeId);
+      } else {
+        data.append(key, value as string);
+      }
     });
 
-    addMatch(data);
-    // console.log('Form Data:', formData);
+    console.log(Array.from(data.entries()));
+
+    // addMatch({ formData: data, token });
     router.push('/');
   };
 
@@ -102,9 +114,9 @@ const CreateMatch = () => {
         <label className='text-lg font-bold'>날짜 선택</label>
         <DatePickerModal
           selectedDate={formData.date}
-          onChange={(date: Date | null) =>
-            setFormData((prev) => ({ ...prev, date }))
-          }
+          onChange={(date: Date | null) => {
+            setFormData((prev) => ({ ...prev, date }));
+          }}
         />
       </div>
       <div className='flex flex-col space-y-2'>
@@ -195,7 +207,7 @@ const CreateMatch = () => {
       </div>
       <button
         type='submit'
-        disabled={!isFormValid}
+        // disabled={!isFormValid}
         className='fixed bottom-0 left-0 mx-4 my-4 h-12 w-[calc(100%-2rem)] rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow-md transition-colors ease-in-out focus:bg-blue-700 disabled:bg-[#E7E9EC] disabled:text-[#BDC0C6]'
       >
         작성완료

@@ -14,3 +14,9 @@ export const handleRemoveSessionStorage = (key?: string | undefined) => {
     message: 'failed remove session storage Item',
   };
 };
+
+export const handleGetSeesionStorage = () => {
+  const value = sessionStorage.getItem(KEY);
+
+  return value;
+};
