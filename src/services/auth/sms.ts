@@ -40,10 +40,13 @@ export const fetchSmsVerify = async (sms: SmsVerifyType) => {
       body: JSON.stringify(payload),
     });
 
+    const json = await res.json();
     if (!res.ok) {
       console.error('server sms verify api error');
       throw new Error('server sms verify api error');
     }
+
+    return json; // 성공 응답 그대로 반환
   } catch (err) {
     console.error('sms verify services api fetch error', err);
   }
