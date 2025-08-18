@@ -1,3 +1,51 @@
-export const fetchSms = () => {};
+type SmsType = {
+  phoneNumber: string;
+};
 
-export const fetchSmsVerify = () => {};
+type SmsVerifyType = SmsType & {
+  code: string;
+};
+
+export const fetchSms = async (sms: SmsType) => {
+  try {
+    const payload = {
+      sms: sms.phoneNumber,
+    };
+
+    const res = await fetch('/api/auth/sms/send', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+
+    const json = await res.json();
+    console.log(json);
+
+    if (!res.ok) {
+      console.error('server sms send api error');
+      throw new Error('server sms send api error');
+    }
+  } catch (err) {
+    console.error('sms send services api fetch error', err);
+  }
+};
+
+export const fetchSmsVerify = async (sms: SmsVerifyType) => {
+  try {
+    const payload = {
+      phoneNumber: sms.phoneNumber,
+      code: sms.code,
+    };
+
+    const res = await fetch('/api/auth/sms/verify', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      console.error('server sms verify api error');
+      throw new Error('server sms verify api error');
+    }
+  } catch (err) {
+    console.error('sms verify services api fetch error', err);
+  }
+};
