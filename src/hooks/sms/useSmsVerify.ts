@@ -1,10 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
 import { fetchSmsVerify } from '@/services/auth/sms';
 
-interface authType {
-  onSuccess?: (data?: unknown) => void;
+type VerifyType = {
+  status: 'success' | 'error';
+  message?: string;
+};
+
+type authType = {
+  onSuccess?: (data?: VerifyType) => void;
   onError?: (err: Error) => void;
-}
+};
 
 export const useSmsVerify = (obj: authType) => {
   return useMutation({
