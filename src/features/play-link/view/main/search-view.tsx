@@ -2,6 +2,7 @@ import { useGetMatchesQuery } from '@/hooks/match/use-get-matches-query';
 import SportCard from '@/shares/common-components/sport-card';
 import Tag from '@/shares/common-components/tag';
 import { SPORTS } from '@/shares/dummy-data/sports-data';
+import { useSearchStore } from '@/shares/stores/search-store';
 import { ChevronLeft } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 
@@ -12,15 +13,17 @@ const SearchView = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('구기');
   const [inputValue, setInputValue] = useState('');
-  const {data} = useGetMatchesQuery();
-
-  const filteredData = data && data.data.filter(d => d.title.includes(inputValue))
-
-  console.log(filteredData)
+  const { setKeyword } = useSearchStore();
 
   const items = SPORTS[selectedCategory];
   const remainder = items.length % 5;
   const emptySlots = remainder === 0 ? 0 : 5 - remainder;
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSearchViewOpen(false);
+    setKeyword(inputValue);
+  };
 
   const categories = [
     '구기',
@@ -41,13 +44,17 @@ const SearchView = ({
         className={`fixed left-0 top-0 z-50 flex h-16 w-full max-w-[640px] items-center justify-between gap-6 bg-gray-100 px-4`}
       >
         <ChevronLeft onClick={() => setSearchViewOpen(false)} />
-        <input
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-          type='text'
-          className='h-10 flex-1 rounded-lg bg-gray-200 px-3'
-          placeholder='스포츠 종목 검색'
-        />
+        <form
+          onSubmit={handleSubmit}
+          className='flex h-10 flex-1 items-center rounded-lg bg-gray-200 px-3'
+        >
+          <input
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            type='text'
+            placeholder='스포츠 종목 검색'
+          />
+        </form>
         <div onClick={() => setSearchViewOpen(false)}>닫기</div>
       </div>
       <div className='mt-20 flex flex-col gap-4'>
