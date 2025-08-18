@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { useAlertStore } from '@/shares/stores/alert-store';
 
 interface SignupData {
   name: string;
@@ -18,6 +19,7 @@ interface SignupData {
 }
 
 const useSignup = () => {
+  const openAlert = useAlertStore((state) => state.openAlert);
   const handlePostSignupData = async (signupData: SignupData) => {
     // FormData 생성
     const formData = new FormData();
@@ -47,14 +49,17 @@ const useSignup = () => {
       });
 
       console.log('리스폰스', response);
-
+      openAlert('회원가입 완료 !', `${signupData.name}님 반갑습니다`);
       if (!response.ok) {
         const error = await response.json();
+        openAlert('회원가입 실패 !', `회원가입에 실패했습니다`);
         throw new Error(error.message || '회원가입에 실패했습니다');
       }
+
       return response.json();
     } catch (err) {
       console.log('커스텀 훅에서 호출한 사인업 api 데이터 오류', err);
+      openAlert('회원가입 실패 !', `회원가입에 실패했습니다`);
     }
   };
 
