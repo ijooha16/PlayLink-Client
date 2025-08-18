@@ -9,7 +9,7 @@ type SmsVerifyType = SmsType & {
 export const fetchSms = async (sms: SmsType) => {
   try {
     const payload = {
-      sms: sms.phoneNumber,
+      phoneNumber: sms.phoneNumber,
     };
 
     const res = await fetch('/api/auth/sms/send', {
@@ -18,7 +18,6 @@ export const fetchSms = async (sms: SmsType) => {
     });
 
     const json = await res.json();
-    console.log(json);
 
     if (!res.ok) {
       console.error('server sms send api error');
