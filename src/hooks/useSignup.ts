@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useAlertStore } from '@/shares/stores/alert-store';
-
+import { useRouter } from 'next/navigation';
 interface SignupData {
   name: string;
   nickname: string;
@@ -20,6 +20,7 @@ interface SignupData {
 
 const useSignup = () => {
   const openAlert = useAlertStore((state) => state.openAlert);
+  const router = useRouter();
   const handlePostSignupData = async (signupData: SignupData) => {
     // FormData 생성
     const formData = new FormData();
@@ -50,6 +51,7 @@ const useSignup = () => {
 
       console.log('리스폰스', response);
       openAlert('회원가입 완료 !', `${signupData.name}님 반갑습니다`);
+      router.push('/sign-in');
       if (!response.ok) {
         const error = await response.json();
         openAlert('회원가입 실패 !', `회원가입에 실패했습니다`);

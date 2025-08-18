@@ -1,11 +1,11 @@
+'use client';
+
 import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';
 import {
   SignUpStep1,
   SignUpStep2,
   SignUpStep3,
 } from '../../types/sign-up/sign-up-schema';
-import { useRouter } from 'next/router';
-import { useAlertStore } from '@/shares/stores/alert-store';
 import useSignup from '@/hooks/useSignup';
 import { useEffect } from 'react';
 
@@ -14,9 +14,8 @@ const Done = ({
 }: {
   allData: SignUpStep1 & SignUpStep2 & SignUpStep3;
 }) => {
-  const openAlert = useAlertStore((state) => state.openAlert);
   const { signup, isLoading, error, isSuccess, data } = useSignup();
-  const router = useRouter();
+
   const handleSubmitToServer = async () => {
     try {
       const infos = await getDeviceInfo();
@@ -46,13 +45,11 @@ const Done = ({
       signup(signupData);
     } catch (err) {
       console.error('회원가입 제출 오류:', err);
-      openAlert('오류 발생', '회원가입 정보 처리 중 오류가 발생했습니다.');
     }
   };
 
   useEffect(() => {
     handleSubmitToServer();
-    router.push('/sign-in');
   }, []);
 
   return null;
