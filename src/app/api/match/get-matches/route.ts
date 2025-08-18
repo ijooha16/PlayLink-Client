@@ -1,14 +1,16 @@
+
+
 import { NextResponse } from 'next/server';
 
+
 export async function GET() {
+
   try {
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
     const backendApiUrl = `${fetchURL}/playlink/match`;
 
-    const response = await fetch(backendApiUrl, {
-      method: 'GET',
-    });
+    const response = await fetch(backendApiUrl);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -20,6 +22,8 @@ export async function GET() {
     }
 
     const data = await response.json();
+    console.log('dddd', data);
+
     return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: any) {
     console.error('Get match Route Handler error:', error);

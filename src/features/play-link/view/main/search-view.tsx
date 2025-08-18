@@ -1,3 +1,4 @@
+import { useGetMatchesQuery } from '@/hooks/match/use-get-matches-query';
 import SportCard from '@/shares/common-components/sport-card';
 import Tag from '@/shares/common-components/tag';
 import { SPORTS } from '@/shares/dummy-data/sports-data';
@@ -10,6 +11,12 @@ const SearchView = ({
   setSearchViewOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('구기');
+  const [inputValue, setInputValue] = useState('');
+  const {data} = useGetMatchesQuery();
+
+  const filteredData = data && data.data.filter(d => d.title.includes(inputValue))
+
+  console.log(filteredData)
 
   const items = SPORTS[selectedCategory];
   const remainder = items.length % 5;
@@ -35,6 +42,8 @@ const SearchView = ({
       >
         <ChevronLeft onClick={() => setSearchViewOpen(false)} />
         <input
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
           type='text'
           className='h-10 flex-1 rounded-lg bg-gray-200 px-3'
           placeholder='스포츠 종목 검색'
