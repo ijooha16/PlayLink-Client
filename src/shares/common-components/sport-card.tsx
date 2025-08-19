@@ -8,7 +8,7 @@ const SportCard = ({
 }: {
   sport: number;
   sport_name: string;
-  selected: boolean;
+  selected?: boolean;
 }) => {
   return (
     <div className='flex flex-col items-center gap-1'>

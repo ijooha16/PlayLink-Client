@@ -20,7 +20,6 @@ const MatchCards = (data: { data: MatchType }) => {
     date,
   } = data.data;
 
-
   const sportsList = sports?.data?.data?.sports;
   const sportsName =
     sportsList &&
@@ -29,18 +28,15 @@ const MatchCards = (data: { data: MatchType }) => {
         sport.sports_id === sportsType
     )?.sports_name;
 
-  console.log(sportsList);
-
-
   return (
     <Link key={title + matchId} href={`/match/${matchId}`}>
       <div className='my-2 flex border'>
-        <div className='aspect-square h-[128px] min-h-[128px] w-[128px] min-w-[128px] overflow-hidden p-2'>
-          {/* <img
-              src={}
-              alt={}
-              className='h-full w-full rounded-xl object-cover'
-            /> */}
+        <div className='flex aspect-square h-[128px] min-h-[128px] w-[128px] min-w-[128px] items-center justify-center overflow-hidden p-2'>
+          <img
+            src={`/images/sport-icons/sport=${sportsType}.png`}
+            alt={`${title} 이미지`}
+            className='h-16 w-16 rounded-xl object-cover'
+          />
         </div>
         <div className='relative flex w-full flex-col justify-evenly truncate p-2'>
           <div className='flex gap-2'>
