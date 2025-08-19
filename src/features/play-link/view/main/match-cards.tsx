@@ -6,7 +6,9 @@ import React from 'react';
 import { MatchType } from '../../types/match/match';
 
 const MatchCards = (data: { data: MatchType }) => {
-  const { matchId, title, sportsType, createdAt, likeCount } = data.data;
+  const { matchId, title, sportsType, createdAt, likeCount, start_time, end_time, date } = data.data;
+
+  console.log(data)
 
   return (
     <Link key={title + matchId} href={`/match/${matchId}`}>
@@ -26,10 +28,10 @@ const MatchCards = (data: { data: MatchType }) => {
             <span className='truncate font-semibold'>{title}</span>
           </div>
           <div className='flex gap-2 text-sm text-gray-400'>
-            {/* <span>{위치}</span> | <span>{시간}</span> */}
+            <span>{date}</span> | <span>{start_time}</span>
           </div>
-          <div className='flex justify-between'>
-            {/* <span className='font-semibold'>{장소}</span> */}
+          {/* <div className='flex justify-between'>
+            <span className='font-semibold'>{장소}</span>
             <div className='flex gap-2 text-xs text-gray-400'>
               <div className='flex items-center'>
                 <HeartIcon size={12} />
@@ -37,10 +39,10 @@ const MatchCards = (data: { data: MatchType }) => {
               </div>
               <div className='flex items-center'>
                 <MessagesSquareIcon size={12} />
-                {/* {댓글수} */}
+                {댓글수}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </Link>

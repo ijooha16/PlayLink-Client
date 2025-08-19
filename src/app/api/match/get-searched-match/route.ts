@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
+   const { searchParams } = new URL(request.url);
     const keyword = searchParams.get('keyword') || '';
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: any) {
     console.error('Get searched match Route Handler error:', error);
     return NextResponse.json(

@@ -22,10 +22,12 @@ const SearchResult = () => {
 
   return (
     <>
-      <Header backbtn title={`${keyword} 검색결과`} />
-      {matches.map((match) => (
-        <MatchCards key={match.matchId} data={match} />
-      ))}
+      <Header backbtn='home' title={`${keyword} 검색결과`} />
+      {matches.length < 0 ? (
+        matches.map((match) => <MatchCards key={match.matchId} data={match} />)
+      ) : (
+        <div>검색결과가 없습니다</div>
+      )}
     </>
   );
 };
