@@ -20,6 +20,34 @@ interface SignUpType {
   img: File;
 }
 
+// export const fetchSignIn = async (req: SignInType) => {
+//   try {
+//     const payload = {
+//       email: req.email,
+//       password: req.password,
+//       device_id: req.device_id,
+//     };
+
+//     const res = await fetch('/api/auth/signin', {
+//       method: 'POST',
+//       body: JSON.stringify(payload),
+//     });
+
+//     const json = await res.json();
+//     if (json.status === 'success') {
+//       handleSetSessionStorage(json.accessToken);
+//     }
+
+//     if (!res.ok) {
+//       console.error('server signin api error');
+//       throw new Error('server signin api error');
+//     }
+//     console.log(json);
+//   } catch (err) {
+//     console.error('sigin services api fetch error', err);
+//   }
+// };
+
 export const fetchSignIn = async (req: SignInType) => {
   try {
     const payload = {
@@ -30,19 +58,24 @@ export const fetchSignIn = async (req: SignInType) => {
 
     const res = await fetch('/api/auth/signin', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(payload),
     });
 
     const json = await res.json();
-    console.log('서비스 레이어 json value', json);
-    handleSetSessionStorage(json.accessToken);
 
-    if (!res.ok) {
-      console.error('server signin api error');
-      throw new Error('server signin api error');
+    if (json.status === 'success') {
+      handleSetSessionStorage(json.accessToken);
+      return json; // 성공 데이터 반환
+    } else {
+      console.error('API 에러:', json.message);
+      throw new Error(json.message || 'signin failed');
     }
   } catch (err) {
-    console.error('sigin services api fetch error', err);
+    console.error('signin services api fetch error', err);
+    throw err;
   }
 };
 

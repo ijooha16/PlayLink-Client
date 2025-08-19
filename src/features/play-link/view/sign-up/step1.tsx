@@ -42,8 +42,6 @@ const Step1 = ({
     defaultValues,
   });
 
-  const [toggle, setToggle] = useState<boolean>(false);
-
   const watched = useWatch({ control });
 
   const { selectorValue, handleGetSelectorValueData } = useSelector();
@@ -54,47 +52,82 @@ const Step1 = ({
   const [emailCode, setEmailCode] = useState('');
   const [smsCode, setSmsCode] = useState('');
 
+  const [emailCodeError, setEmailCodeError] = useState<string | null>(null);
+  const [smsCodeError, setSmsCodeError] = useState<string | null>(null);
+
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
+
+  // 이메일 인증코드 전송
   const { mutate: emailSend, isPending: isSending } = useEmail({
     onSuccess: () => {
       setEmailAuthView(true);
+      setEmailCodeError(null); // 오류 초기화
+      alert('인증번호를 발송하였습니다.');
     },
     onError: (err) => {
+      setEmailCodeError(err.message || '인증 메일 전송에 실패했습니다.');
       console.error('이메일 인증 코드 전송 실패:', err.message);
     },
   });
 
+  // 이메일 인증코드 확인
   const { mutate: emailVerify, isPending: isVerifying } = useEmailVerify({
-    onSuccess: () => {
-      setEmailAuthView(false);
+    onSuccess: (data) => {
+      if (data?.status !== 'error') {
+        setEmailAuthView(false);
+        setEmailCodeError(null);
+        setEmailVerified(true);
+      }
+      if (data?.status === 'error') {
+        setEmailCodeError('인증번호가 올바르지 않습니다.');
+      }
     },
     onError: (err) => {
+      setEmailCodeError(err.message || '인증번호가 올바르지 않습니다.');
       console.error('이메일 인증 확인 실패:', err.message);
     },
   });
 
-  const { mutate: smsSend, isPending: isSmsSending } = useEmail({
+  // sms 인증코드 전송
+  const { mutate: smsSend, isPending: isSmsSending } = useSms({
     onSuccess: () => {
-      setEmailAuthView(true);
+      setSmsView(true);
+      setSmsCodeError(null);
+      alert('인증번호를 발송하였습니다.');
     },
     onError: (err) => {
-      console.error('로그인 실패:', err.message);
+      setSmsCodeError(err.message || '인증 문자 전송에 실패했습니다.');
+      console.error('휴대폰 인증코드 전송 실패:', err.message);
     },
   });
 
-  const { mutate: smsVerify, isPending: isSmsVerify } = useEmailVerify({
-    onSuccess: () => {
-      setEmailAuthView(false);
+  // sms 인증코드 확인
+  const { mutate: smsVerify, isPending: isSmsVerify } = useSmsVerify({
+    onSuccess: (data) => {
+      if (data?.status !== 'error') {
+        setSmsView(false);
+        setSmsCodeError(null);
+        setPhoneVerified(true);
+      }
+      if (data?.status === 'error') {
+        setSmsCodeError('인증번호가 올바르지 않습니다.');
+      }
     },
     onError: (err) => {
-      console.error('로그인 실패:', err.message);
+      console.log('에러 떳음');
+      setSmsCodeError('인증번호가 올바르지 않습니다.');
+      console.error('휴대폰 인증코드 확인 실패:', err.message);
     },
   });
 
   const isAllRequiredFilled =
     watched.email?.trim() &&
+    // watched.emailCheck &&
     watched.password?.trim() &&
     watched.confirmPassword?.trim() &&
     watched.phone?.trim() &&
+    // watched.phoneCheck &&
     watched.agreeTerms &&
     watched.agreePrivacy &&
     watched.isOver14 &&
@@ -123,23 +156,26 @@ const Step1 = ({
     }); //
   };
 
-  // 핸드폰 인증코드 전송
-  const handleSmsCodeCheck = () => {
-    if (!watched.email?.trim()) return;
-    if (isSending) return;
-    smsSend({ email: watched.email.trim() }); // <- useEmail 훅에서 기대하는 payload에 맞춰주세요
-  };
-
   // 핸드폰 인증코드 확인
-  const handleSendSmsCode = () => {
-    if (!watched.email?.trim()) return;
-    if (!emailCode.trim()) return;
-    if (isVerifying) return;
+  const handleSmsCodeCheck = () => {
+    if (!watched.phone?.trim()) return;
+    if (isSmsVerify) return;
 
     smsVerify({
-      email: watched.email.trim(),
-      code: emailCode.trim(),
+      phoneNumber: watched.phone.trim(),
+      code: smsCode.trim(),
     }); //
+  };
+
+  // 핸드폰 인증코드 전송
+  const handleSendSmsCode = () => {
+    if (!watched.phone?.trim()) return;
+    if (isSmsSending) return;
+    if (watched.phone.length < 10) {
+      setSmsCodeError('올바른 휴대폰 번호로 입력해 주세요');
+    } else {
+      smsSend({ phoneNumber: watched.phone.trim() });
+    }
   };
 
   const checkboxClass =
@@ -154,8 +190,15 @@ const Step1 = ({
   ];
 
   return (
-    // <div style={{ whiteSpace: 'pre-wrap' }}>{TERMS_OF_SERVICE}</div>
-    <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col space-y-4'>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      onKeyDown={(e) => {
+        if ((emailAuthView || smsView) && e.key === 'Enter') {
+          e.preventDefault(); // 코드 입력 단계에서 Enter 제출 방지
+        }
+      }}
+      className='flex flex-col space-y-4'
+    >
       <div className='flex flex-col space-y-2'>
         <label htmlFor='email-id' className='text-lg font-semibold'>
           아이디
@@ -189,22 +232,26 @@ const Step1 = ({
                 className='bg-transparnent text-md flex-1 rounded-lg border border-gray-300 px-4 py-2 text-inherit placeholder-gray-400 focus:outline-none focus:ring-0 disabled:bg-gray-200'
                 placeholder='이메일 인증번호'
                 onChange={(e) => setEmailCode(e.target.value)}
+                // {...register('emailCheck')}
               />
               <button
                 className='w-300 box-border cursor-pointer rounded-lg bg-[#E7E9EC] px-4 text-sm text-[#BDC0C6] transition-colors'
                 onClick={handleEmailCodeCheck}
                 disabled={isVerifying || !emailCode.trim()}
+                type='button'
               >
                 인증 확인
               </button>
             </div>
+          )}
+          {emailCodeError && (
+            <p className='text-sm text-red-500'>{emailCodeError}</p>
           )}
           <p className='h-[20px] text-sm text-red-500'>
             {errors.email && errors.email.message}
           </p>
         </div>
       </div>
-
       <fieldset className='flex flex-col space-y-2'>
         <div>
           <legend className='text-lg font-semibold'>비밀번호</legend>
@@ -269,41 +316,36 @@ const Step1 = ({
               placeholder='휴대폰 번호'
               {...register('phone')}
             />
+
             <button
               className='w-300 box-border cursor-pointer rounded-lg bg-[#E7E9EC] px-4 text-sm text-[#BDC0C6] transition-colors'
               onClick={handleSendSmsCode}
+              type='button'
             >
               인증 받기
             </button>
           </div>
           {smsView && (
             <div className='mt-4 flex justify-between gap-4'>
-              {/* <Input
-                id='tel'
-                type='tel'
-                variant={'default'}
-                sizes={'md'}
-                placeholder='인증번호'
-                {...register('phone')}
-              /> */}
               <input
                 id='tel'
                 type='tel'
                 className='bg-transparnent text-md flex-1 rounded-lg border border-gray-300 px-4 py-2 text-inherit placeholder-gray-400 focus:outline-none focus:ring-0 disabled:bg-gray-200'
                 placeholder='인증번호'
-                {...register('phone')}
+                onChange={(e) => setSmsCode(e.target.value)}
               />
               <button
                 className='w-300 box-border cursor-pointer rounded-lg bg-[#E7E9EC] px-4 text-sm text-[#BDC0C6] transition-colors'
                 onClick={handleSmsCodeCheck}
+                type='button'
               >
                 인증 확인
               </button>
             </div>
           )}
-          <p className='h-[20px] text-sm text-red-500'>
-            {errors.phone && errors.phone.message}
-          </p>
+          {smsCodeError && (
+            <p className='mt-2 text-sm text-red-500'>{smsCodeError}</p>
+          )}
         </div>
       </div>
       {/* <div className='flex flex-col space-y-2'>
@@ -379,7 +421,9 @@ const Step1 = ({
           <div className='cursor-pointer text-gray-400'>{'>'}</div>
         </div>
       </div> */}
-
+      <p className='h-[20px] text-sm text-red-500'>
+        {errors.phone && errors.phone.message}
+      </p>
       <div className='flex flex-col space-y-2'>
         {termsData.map((term: any) => (
           <div key={term.name} className='flex justify-between'>
@@ -401,7 +445,8 @@ const Step1 = ({
         <button
           type='submit'
           className='w-full rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white transition-colors ease-in-out focus:bg-blue-700 disabled:bg-[#E7E9EC] disabled:text-[#BDC0C6]'
-          disabled={!isAllRequiredFilled}
+          disabled={!isAllRequiredFilled || !emailVerified || !phoneVerified}
+          // disabled={!isAllRequiredFilled}
         >
           다음
         </button>

@@ -19,11 +19,13 @@ const SignIn = () => {
   const { mutate: signIn, isPending } = useSignin({
     onSuccess: () => {
       router.replace('/');
+      console.log('뮤테이션 로그인 성공');
       openAlert('로그인 성공!', '매너 있는 플레이링크 부탁드립니다 :D');
     },
     onError: (err) => {
       console.error('로그인 실패:', err.message);
-      openAlert('로그인 실패', '이메일 또는 비밀번호를 확인해주세요.');
+      console.log('뮤테이션 로그인 실패');
+      openAlert('로그인 실패', err.message);
     },
   });
 

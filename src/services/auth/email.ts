@@ -43,10 +43,14 @@ export const fetchEmailVeriify = async (req: EmailVerifyType) => {
       body: JSON.stringify(payload),
     });
 
+    const json = await res.json();
+
     if (!res.ok) {
       console.error('server email verify api error');
       throw new Error('server email verify api error');
     }
+
+    return json;
   } catch (err) {
     console.error('email verify services api fetch error', err);
   }
