@@ -13,7 +13,7 @@ const SearchView = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<number>(1);
   const [inputValue, setInputValue] = useState('');
-  const { setKeyword } = useSearchStore();
+  const { setKeyword, setType } = useSearchStore();
   const { data: sportsData } = useGetSportsQuery();
 
   const categories = sportsData && sportsData?.data?.data?.Categories;
@@ -28,8 +28,8 @@ const SearchView = ({
         category_id: number;
       }) => sport.category_id === selectedCategory
     );
-  const remainder = items.length % 5;
-  const emptySlots = remainder === 0 ? 0 : 5 - remainder;
+  const remainder = items && items.length % 5;
+  const emptySlots = remainder && remainder === 0 ? 0 : 5 - remainder;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,7 +38,6 @@ const SearchView = ({
   };
 
   // console.log(sportsData?.data?.data?.Categories)
-  console.log(items);
 
   return (
     <div className='fixed left-0 top-0 z-50 h-screen w-full bg-white px-4'>
@@ -61,30 +60,36 @@ const SearchView = ({
       </div>
       <div className='mt-20 flex flex-col gap-4'>
         <div className='scrollbar-hide flex gap-2 overflow-x-auto'>
-          {categories.map(
-            (category: { category_id: number; category_name: string }) => (
-              <Tag
-                key={category.category_id}
-                onClick={() => setSelectedCategory(category.category_id)}
-                selected={selectedCategory === category.category_id}
-              >
-                {category.category_name}
-              </Tag>
-            )
-          )}
+          {categories &&
+            categories.map(
+              (category: { category_id: number; category_name: string }) => (
+                <Tag
+                  key={category.category_id}
+                  onClick={() => setSelectedCategory(category.category_id)}
+                  selected={selectedCategory === category.category_id}
+                >
+                  {category.category_name}
+                </Tag>
+              )
+            )}
         </div>
         <hr className='h-[1px] bg-gray-400' />
         <div className='text-lg font-semibold'>
-          전체 스포츠 종목 ({items.length}개)
+          전체 스포츠 종목 ({items && items.length}개)
         </div>
         <div className='grid grid-cols-5 gap-3'>
-          {items.map((sport: { sports_name: string; sports_id: number }) => (
-            <SportCard
-              sport={sport.sports_id}
-              sport_name={sport.sports_name}
-              key={sport.sports_id}
-            />
-          ))}
+          {items &&
+            items.map((sport: { sports_name: string; sports_id: number }) => (
+              <SportCard
+                sport={sport.sports_id}
+                sport_name={sport.sports_name}
+                key={sport.sports_id}
+                onClick={() => {
+                  setSearchViewOpen(false);
+                  setType(sport.sports_id);
+                }}
+              />
+            ))}
           {Array.from({ length: emptySlots }).map((_, i) => (
             <div key={`empty-${i}`} className='w-12' />
           ))}

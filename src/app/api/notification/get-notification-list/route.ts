@@ -2,15 +2,19 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const keyword = searchParams.get('keyword') || '';
-    const type = searchParams.get('type') || '';
+    const body = await request.json();
+    const token = request.headers.get('Authorization');
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
-    const backendApiUrl = `${fetchURL}/playlink/match?title=${keyword}&type=${type}`;
+    const backendApiUrl = `${fetchURL}/playlink/notification/list`;
 
-    const response = await fetch(backendApiUrl);
+    const response = await fetch(backendApiUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: token!,
+      },
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -24,7 +28,7 @@ export async function GET(request: Request) {
     const data = await response.json();
     return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: any) {
-    console.error('Get searched match Route Handler error:', error);
+    console.error('Get notification Route Handler error:', error);
     return NextResponse.json(
       { status: 'error', message: error.message },
       { status: 500 }

@@ -5,14 +5,32 @@ import DynamicNaverMapForDetail from '@/shares/common-components/dynamic-naver-m
 import { Heart, MapPin, Share2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useTempStore } from '@/shares/stores/temp-store';
+import { useGetMatchesQuery } from '@/hooks/match/use-get-match-detail-query';
+import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
 
 export default function MatchDetailPage() {
   const params = useParams();
   const { id } = params;
-  const tempDate = useTempStore((state) => state.matchCards);
-  const cardData = tempDate[Number(id)];
+  const { data } = useGetMatchesQuery({ matchId: id });
+  const { data: sports } = useGetSportsQuery();
+  const {
+    title,
+    start_time,
+    sports_type,
+    user_nickname,
+    end_time,
+    date,
+    createdAt,
+    likeCount,
+    placeAddress,
+  } = data?.data?.data || {};
 
-  if (!cardData) {
+  const sportTypes = (sports && sports?.data?.data?.sports) || [];
+  const sportTypeForThisMatch = sportTypes.filter(
+    (sport: { sports_id: number }) => sport.sports_id === sports_type
+  );
+
+  if (!data) {
     return <div>매치 정보를 찾을 수 없습니다.</div>;
   }
 
@@ -20,8 +38,8 @@ export default function MatchDetailPage() {
     <div className='flex flex-col'>
       <div className='absolute left-0 top-16 z-40 h-[40dvh] w-full'>
         <img
-          src={cardData.이미지}
-          alt={cardData.제목}
+          src={`/images/sport-images/${sports_type}.png`}
+          alt={title}
           className='h-full w-full object-cover'
         />
       </div>
@@ -32,7 +50,7 @@ export default function MatchDetailPage() {
             {/* 프로필 이미지 */}
           </div>
           <div className='flex flex-col'>
-            <span className='text-lg font-bold'>주최자 이름</span>
+            <span className='text-lg font-bold'>{user_nickname}</span>
             <span className='text-sm text-gray-500'>내 동네</span>
           </div>
         </div>
@@ -40,19 +58,21 @@ export default function MatchDetailPage() {
 
       <div className='h-px border-t border-gray-300' />
 
-      <div className='flex flex-col gap-4 py-4'>
+      <div className='flex flex-col gap-4'>
         <div className='flex flex-col gap-2'>
-          <span className='font-bold text-blue-500'>{cardData.운동종류}</span>
-          <h1 className='text-2xl font-bold'>{cardData.제목}</h1>
+          <span className='font-bold text-blue-500 pt-4'>
+            {sportTypeForThisMatch[0].sports_name}
+          </span>
+          <h1 className='text-2xl font-bold'>{title}</h1>
         </div>
 
         <div className='flex items-center gap-4 text-gray-500'>
           <div className='flex items-center gap-1'>
             <MapPin size={16} />
-            <span>{cardData.위치}</span>
+            <span>{placeAddress}</span>
           </div>
           <span>|</span>
-          <span>{cardData.시간}</span>
+          <span>{start_time}</span>
         </div>
 
         <div className='mt-4'>
@@ -65,7 +85,7 @@ export default function MatchDetailPage() {
 
         <div className='mt-4'>
           <h2 className='text-xl font-bold'>장소 정보</h2>
-          <div className='text-lg font-semibold'>{cardData.장소}</div>
+          <div className='text-lg font-semibold'>{placeAddress}</div>
           <div className='mt-2'>
             <DynamicNaverMapForDetail />
           </div>

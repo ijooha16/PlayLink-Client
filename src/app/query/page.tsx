@@ -11,18 +11,17 @@ const SearchResult = () => {
   const { mutate: search, data } = useGetMatchesMutation();
   const searchParams = useSearchParams();
   const keyword = searchParams.get('keyword') || '';
+  const type = searchParams.get('type') || '';
 
   useEffect(() => {
-    if (keyword !== '') {
-      search(keyword);
-    }
-  }, [keyword, search]);
+    search({ keyword, type });
+  }, []);
 
   const matches: MatchType[] = data?.data || [];
 
   return (
     <>
-      <Header backbtn='home' title={`${keyword} 검색결과`} />
+      <Header backbtn='home' title={`${keyword || type} 검색결과`} />
       {matches.length < 0 ? (
         matches.map((match) => <MatchCards key={match.matchId} data={match} />)
       ) : (

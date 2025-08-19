@@ -5,13 +5,15 @@ const SportCard = ({
   sport,
   sport_name,
   selected,
+  onClick,
 }: {
   sport: number;
   sport_name: string;
   selected?: boolean;
+  onClick?: () => void;
 }) => {
   return (
-    <div className='flex flex-col items-center gap-1'>
+    <div className='flex flex-col items-center gap-1' onClick={onClick}>
       <div
         className={`border-2 ${selected ? 'border-primary' : 'border-gray-200'} flex h-[54px] w-[54px] flex-col items-center justify-center rounded-full`}
       >
@@ -22,7 +24,7 @@ const SportCard = ({
           alt={`sport-${sport}`}
         />
       </div>
-      <div className='text-xs text-center'>{sport_name}</div>
+      <div className='text-center text-xs'>{sport_name}</div>
     </div>
   );
 };

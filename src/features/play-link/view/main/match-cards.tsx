@@ -5,6 +5,7 @@ import Link from 'next/link';
 import React from 'react';
 import { MatchType } from '../../types/match/match';
 import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
+import Image from 'next/image';
 
 const MatchCards = (data: { data: MatchType }) => {
   const { data: sports } = useGetSportsQuery();
@@ -30,12 +31,15 @@ const MatchCards = (data: { data: MatchType }) => {
 
   return (
     <Link key={title + matchId} href={`/match/${matchId}`}>
-      <div className='my-2 flex border'>
+      <div className='my-2 flex border rounded-xl'>
         <div className='flex aspect-square h-[128px] min-h-[128px] w-[128px] min-w-[128px] items-center justify-center overflow-hidden p-2'>
-          <img
-            src={`/images/sport-icons/sport=${sportsType}.png`}
+          <Image
+            src={`/images/sport-images/${sportsType}.png`}
             alt={`${title} 이미지`}
-            className='h-16 w-16 rounded-xl object-cover'
+            objectFit='fit'
+            width={150}
+            height={150}
+            style={{borderRadius:'4px'}}
           />
         </div>
         <div className='relative flex w-full flex-col justify-evenly truncate p-2'>
