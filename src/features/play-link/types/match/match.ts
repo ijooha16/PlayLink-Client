@@ -7,4 +7,5 @@ export type MatchType = {
   date: string;
   createdAt: string;
   likeCount: number;
+  placeAddress: string;
 };

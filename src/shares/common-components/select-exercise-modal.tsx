@@ -3,6 +3,7 @@
 import { X } from 'lucide-react';
 import { MouseEvent, useState } from 'react';
 import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
+import SportCard from './sport-card';
 
 interface SelectExerciseModalProps {
   onChange: (sport: number | null) => void;
@@ -49,24 +50,28 @@ const SelectExerciseModal = ({
       {isOpen && (
         <div
           onClick={handleClose}
-          className='fixed bottom-0 left-0 right-0 top-0 z-50 flex flex-col items-center justify-center bg-black/50'
+          className='fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/50'
         >
           <div
-            className='w-4/5 select-none rounded-[10px] bg-white'
+            className='flex h-[80%] w-[90%] select-none flex-col rounded-[10px] bg-white'
             onClick={(e: MouseEvent<HTMLDivElement>) => e.stopPropagation()}
           >
-            <div className='flex h-10 w-full items-center justify-between pl-4 pr-2'>
+            <div className='flex h-10 w-full shrink-0 items-center justify-between border-b border-gray-300 pl-4 pr-2'>
               <h4>종목 선택</h4>
               <X onClick={handleClose} />
             </div>
-            <div className='mx-2 border-t border-gray-300 p-2'>
+            <div className='grid flex-1 grid-cols-4 gap-3 overflow-auto p-2'>
               {sportsList.map(
                 (sport: { sports_id: number; sports_name: string }) => (
                   <div
                     key={sport.sports_id}
                     onClick={() => handleChange(sport.sports_id)}
                   >
-                    {sport.sports_name}
+                    <SportCard
+                      sport={sport.sports_id}
+                      sport_name={sport.sports_name}
+                      selected={selectedSport === sport.sports_id}
+                    />
                   </div>
                 )
               )}

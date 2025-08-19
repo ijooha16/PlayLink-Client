@@ -15,9 +15,11 @@ const MatchCards = (data: { data: MatchType }) => {
     createdAt,
     likeCount,
     start_time,
+    placeAddress,
     end_time,
     date,
   } = data.data;
+
 
   const sportsList = sports?.data?.data?.sports;
   const sportsName =
@@ -26,6 +28,9 @@ const MatchCards = (data: { data: MatchType }) => {
       (sport: { sports_id: number; sports_name: string }) =>
         sport.sports_id === sportsType
     )?.sports_name;
+
+  console.log(sportsList);
+
 
   return (
     <Link key={title + matchId} href={`/match/${matchId}`}>
@@ -47,19 +52,19 @@ const MatchCards = (data: { data: MatchType }) => {
           <div className='flex gap-2 text-sm text-gray-400'>
             <span>{date}</span> | <span>{start_time}</span>
           </div>
-          {/* <div className='flex justify-between'>
-            <span className='font-semibold'>{장소}</span>
-            <div className='flex gap-2 text-xs text-gray-400'>
+          <div className='flex justify-between'>
+            <span className='text-sm font-semibold'>{placeAddress}</span>
+            {/* <div className='flex gap-2 text-xs text-gray-400'>
               <div className='flex items-center'>
                 <HeartIcon size={12} />
                 {likeCount}
               </div>
               <div className='flex items-center'>
                 <MessagesSquareIcon size={12} />
-                {댓글수}
+                {2}
               </div>
-            </div>
-          </div> */}
+            </div> */}
+          </div>
         </div>
       </div>
     </Link>
