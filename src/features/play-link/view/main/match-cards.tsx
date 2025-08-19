@@ -4,11 +4,28 @@ import { HeartIcon, MessagesSquareIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import { MatchType } from '../../types/match/match';
+import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
 
 const MatchCards = (data: { data: MatchType }) => {
-  const { matchId, title, sportsType, createdAt, likeCount, start_time, end_time, date } = data.data;
+  const { data: sports } = useGetSportsQuery();
+  const {
+    matchId,
+    title,
+    sportsType,
+    createdAt,
+    likeCount,
+    start_time,
+    end_time,
+    date,
+  } = data.data;
 
-  console.log(data)
+  const sportsList = sports?.data?.data?.sports;
+  const sportsName =
+    sportsList &&
+    sportsList.find(
+      (sport: { sports_id: number; sports_name: string }) =>
+        sport.sports_id === sportsType
+    )?.sports_name;
 
   return (
     <Link key={title + matchId} href={`/match/${matchId}`}>
@@ -23,7 +40,7 @@ const MatchCards = (data: { data: MatchType }) => {
         <div className='relative flex w-full flex-col justify-evenly truncate p-2'>
           <div className='flex gap-2'>
             <span className='break-keep font-bold text-blue-500'>
-              {sportsType}
+              {sportsName}
             </span>
             <span className='truncate font-semibold'>{title}</span>
           </div>
