@@ -19,7 +19,7 @@ const Header = ({
 
   return (
     <div
-      className={`fixed left-0 top-0 z-50 flex h-16 w-full max-w-[640px] items-center justify-between bg-white px-4 ${transparent ? 'bg-transparent text-white' : 'shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.2)]'}`}
+      className={`fixed left-1/2 top-0 z-50 flex h-16 w-full max-w-[640px] -translate-x-1/2 items-center justify-between bg-white px-4 ${transparent ? 'bg-transparent text-white' : 'shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.2)]'}`}
     >
       <div className='flex items-center gap-3'>
         {backbtn && (
