@@ -1,16 +1,15 @@
 import { NextResponse } from 'next/server';
 
-export async function GET({ params }: { params: { matchId: string } }) {
+export async function GET(request: Request) {
   try {
-    const { matchId } = params;
+   const { searchParams } = new URL(request.url);
+    const keyword = searchParams.get('keyword') || '';
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
-    const backendApiUrl = `${fetchURL}/playlink/match/${matchId}/modify`;
+    const backendApiUrl = `${fetchURL}/playlink/match?title=${keyword}`;
 
-    const response = await fetch(backendApiUrl, {
-      method: 'GET',
-    });
+    const response = await fetch(backendApiUrl);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -31,5 +30,3 @@ export async function GET({ params }: { params: { matchId: string } }) {
     );
   }
 }
-
-//body에 matchId 포함되어 있음

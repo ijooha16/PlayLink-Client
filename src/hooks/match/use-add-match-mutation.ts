@@ -7,8 +7,7 @@ export const useAddMatchMutation = () => {
 
   return useMutation({
     mutationFn: addMatch,
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.MATCH] });
     },
     onError: (error) => {

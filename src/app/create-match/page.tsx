@@ -77,9 +77,7 @@ const CreateMatch = () => {
       }
     });
 
-    console.log(Array.from(data.entries()));
-
-    // addMatch({ formData: data, token });
+    addMatch({ formData: data, token });
     router.push('/');
   };
 

@@ -12,7 +12,7 @@ const Header = ({
 }: {
   children?: ReactNode;
   title?: string;
-  backbtn?: boolean;
+  backbtn?: boolean | 'home';
   transparent?: boolean;
 }) => {
   const router = useRouter();
@@ -25,7 +25,7 @@ const Header = ({
         {backbtn && (
           <button
             onClick={() => {
-              router.back();
+              backbtn === 'home' ? router.push('/') : router.back();
             }}
           >
             <ChevronLeft />

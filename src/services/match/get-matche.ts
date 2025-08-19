@@ -1,5 +1,12 @@
-export const getMatches = async () => {
-  const response = await fetch(`/api/match/get-matches`);
+import { MatchType } from '@/features/play-link/types/match/match';
+
+export const getMatches = async (): Promise<{
+  errCode: number;
+  data: MatchType[];
+}> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_DB_URL}/playlink/match`
+  );
   if (!response.ok) {
     throw new Error('Failed to fetch matchs');
   }
@@ -16,11 +23,11 @@ export const getMatchDetail = async (matchId: string) => {
 };
 
 export const searchMatch = async (query: string) => {
-  const response = await fetch(`/api/match/search-match/${query}`);
+  const response = await fetch(
+    `/api/match/get-searched-match?keyword=${encodeURIComponent(query)}`
+  );
   if (!response.ok) {
     throw new Error('Failed to fetch matchs');
   }
   return response.json();
 };
-
-//tanstack 없이 바로 사용
