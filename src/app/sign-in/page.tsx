@@ -23,7 +23,7 @@ const SignIn = () => {
     },
     onError: (err) => {
       console.error('로그인 실패:', err.message);
-      openAlert('로그인 실패', '이메일 또는 비밀번호를 확인해주세요.');
+      openAlert('로그인 실패', err.message);
     },
   });
 

@@ -7,6 +7,10 @@ export const handleSetSessionStorage = (value: string) => {
 export const handleRemoveSessionStorage = (key?: string | undefined) => {
   if (key) {
     sessionStorage.removeItem(key);
+    return {
+      status: 'success',
+      message: 'remove session storage item',
+    };
   }
 
   return {
