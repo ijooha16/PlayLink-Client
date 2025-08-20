@@ -14,7 +14,9 @@ export const getMatches = async (): Promise<{
 };
 
 export const getMatchDetail = async (matchId: string | string[]) => {
-  const response = await fetch(`/api/match/get-match-detail?matchId=${matchId}`);
+  const response = await fetch(
+    `/api/match/get-match-detail?matchId=${matchId}`
+  );
 
   if (!response.ok) {
     throw new Error('Failed to fetch matchs');
@@ -30,7 +32,7 @@ export const searchMatch = async ({
   type: string;
 }) => {
   const response = await fetch(
-    `/api/match/get-searched-match?keyword=${encodeURIComponent(keyword)}&type=${type}`
+    `/api/match/get-searched-match?keyword=${keyword}&type=${type}`
   );
   if (!response.ok) {
     throw new Error('Failed to fetch matchs');

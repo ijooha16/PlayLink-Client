@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   try {
-    const body = await request.json();
     const token = request.headers.get('Authorization');
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
