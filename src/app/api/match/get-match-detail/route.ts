@@ -1,16 +1,15 @@
 import { NextResponse } from 'next/server';
 
-export async function GET({ params }: { params: { matchId: string } }) {
+export async function GET(request: Request) {
   try {
-    const { matchId } = params;
+    const { searchParams } = new URL(request.url);
+    const matchId = searchParams.get('matchId');
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
     const backendApiUrl = `${fetchURL}/playlink/match/${matchId}/detail`;
 
-    const response = await fetch(backendApiUrl, {
-      method: 'GET',
-    });
+    const response = await fetch(backendApiUrl);
 
     if (!response.ok) {
       const errorData = await response.json();

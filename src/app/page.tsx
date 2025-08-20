@@ -10,14 +10,12 @@ import { useEffect } from 'react';
 
 export default function Home() {
   const { data } = useGetMatchesQuery();
-  const { keyword } = useSearchStore();
+  const { keyword, type } = useSearchStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (keyword !== '') {
-      router.push(`/query?keyword=${keyword}`);
-    }
-  }, [keyword]);
+    if (keyword || type) router.push(`/query?keyword=${keyword}&type=${type}`);
+  }, [keyword, type, router]);
 
   return (
     <div>

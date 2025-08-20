@@ -1,14 +1,10 @@
 import { NextResponse } from 'next/server';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const keyword = searchParams.get('keyword') || '';
-    const type = searchParams.get('type') || '';
-
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
-    const backendApiUrl = `${fetchURL}/playlink/match?title=${keyword}&type=${type}`;
+    const backendApiUrl = `${fetchURL}/playlink/sports/data`;
 
     const response = await fetch(backendApiUrl);
 
@@ -24,7 +20,7 @@ export async function GET(request: Request) {
     const data = await response.json();
     return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: any) {
-    console.error('Get searched match Route Handler error:', error);
+    console.error('Get profile Route Handler error:', error);
     return NextResponse.json(
       { status: 'error', message: error.message },
       { status: 500 }

@@ -4,6 +4,12 @@ import { tempCard } from '@/shares/dummy-data/dummy-data';
 import { useParams, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useAlertStore } from '@/shares/stores/alert-store';
+import { handleGetSeesionStorage } from '@/shares/libs/utills/web-api';
+import { useApplyMatchMutation } from '@/hooks/match/use-apply-match-mutation';
+import Header from '@/shares/common-components/header';
+
+import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
+import { useGetMatchesQuery } from '@/hooks/match/use-get-match-detail-query';
 
 export default function ApplyPage() {
   const params = useParams();
@@ -11,6 +17,27 @@ export default function ApplyPage() {
   const { id } = params;
   const matchData = tempCard[Number(id)];
   const alertOpen = useAlertStore((state) => state.openAlert);
+  const token = handleGetSeesionStorage();
+  const { mutate: applyMatch } = useApplyMatchMutation();
+  const { data } = useGetMatchesQuery({ matchId: id });
+  const { data: sports } = useGetSportsQuery();
+  const {
+    title,
+    start_time,
+    sports_type,
+    user_nickname,
+    end_time,
+    date,
+    createdAt,
+    likeCount,
+    placeAddress,
+    match_id,
+  } = data?.data?.data || {};
+
+  const sportTypes = (sports && sports?.data?.data?.sports) || [];
+  const sportTypeForThisMatch = sportTypes.filter(
+    (sport: { sports_id: number }) => sport.sports_id === sports_type
+  );
 
   if (!matchData) {
     return <div>매치 정보를 찾을 수 없습니다.</div>;
@@ -21,18 +48,13 @@ export default function ApplyPage() {
       '매칭 신청이 완료되었어요!',
       '매치장이 승인하면 매칭 알람으로 알려드릴게요'
     );
-    router.replace(`/match/${id}`); // 신청 후 상세 페이지로 돌아가기
+    applyMatch({ token, join_message: '신청해요~', matchId: match_id });
+    router.replace(`/`); // 신청 후 상세 페이지로 돌아가기
   };
 
   return (
     <div className='flex min-h-screen flex-col bg-gray-50'>
-      {/* Header */}
-      <div className='relative flex items-center justify-center bg-white p-4 shadow-sm'>
-        <button onClick={() => router.back()} className='absolute left-4'>
-          <ChevronLeft size={24} />
-        </button>
-        <h1 className='text-xl font-bold'>매치 참가 신청</h1>
-      </div>
+      <Header backbtn title='매치 참가 신청' />
 
       {/* Match Info Section */}
       <div className='mb-4 rounded-b-lg bg-white p-6 shadow-md'>
@@ -40,26 +62,26 @@ export default function ApplyPage() {
         <div className='mb-4 flex items-center gap-4'>
           <div className='relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg'>
             <img
-              src={matchData.이미지}
-              alt={matchData.제목}
+              src={`/images/sport-images/${sports_type}.png`}
+              alt={title}
               className='h-full w-full object-cover'
             />
           </div>
           <div className='flex flex-col'>
             <span className='text-sm font-semibold text-blue-600'>
-              {matchData.운동종류}
+              {sportTypeForThisMatch[0]?.sports_name}
             </span>
-            <h3 className='text-xl font-bold'>{matchData.제목}</h3>
+            <h3 className='text-xl font-bold'>{title}</h3>
             <p className='text-sm text-gray-600'>
-              {matchData.위치} | {matchData.시간}
+              {placeAddress} | {start_time}
             </p>
-            <p className='font-medium text-gray-700'>{matchData.장소}</p>
+            <p className='font-medium text-gray-700'>{placeAddress}</p>
           </div>
         </div>
       </div>
 
       {/* Application Form Section */}
-      <div className='mx-4 mb-4 flex-grow space-y-6 rounded-lg bg-white p-6 shadow-md'>
+      <div className='mb-4 flex-grow space-y-6 rounded-lg bg-white p-6 shadow-md'>
         <h2 className='mb-4 text-2xl font-bold'>신청 상세 정보</h2>
         <div>
           <p className='font-bold'>신청자</p>
@@ -68,19 +90,17 @@ export default function ApplyPage() {
         <div>
           <p className='font-bold'>종목</p>
           <span className='mt-6 font-semibold text-blue-500'>
-            {matchData.운동종류}
+            {sportTypeForThisMatch[0]?.sports_name}
           </span>
         </div>
         <div>
           <p className='font-bold'>날짜</p>
-          <span className='mt-6 font-semibold text-blue-500'>
-            {matchData.시간}
-          </span>
+          <span className='mt-6 font-semibold text-blue-500'>{start_time}</span>
         </div>
         <div>
           <p className='font-bold'>장소</p>
           <span className='mt-6 font-semibold text-blue-500'>
-            {matchData.장소}
+            {placeAddress}
           </span>
         </div>
       </div>
@@ -89,7 +109,7 @@ export default function ApplyPage() {
       <div className='border-t border-gray-200 bg-white p-4'>
         <button
           onClick={handleApply}
-          className='w-full rounded-lg bg-blue-500 py-3 text-lg font-bold text-white'
+          className='fixed bottom-0 left-0 mx-4 my-4 h-12 w-[calc(100%-2rem)] rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow-md transition-colors ease-in-out focus:bg-blue-700 disabled:bg-[#E7E9EC] disabled:text-[#BDC0C6]'
         >
           참가 신청하기
         </button>
