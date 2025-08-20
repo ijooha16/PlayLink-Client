@@ -6,7 +6,7 @@ export const getNotification = async ({
   const response = await fetch(`/api/notification/get-notification-list`, {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: token!,
     },
   });
 
