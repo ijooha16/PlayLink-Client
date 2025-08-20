@@ -38,10 +38,7 @@ const NotificationView = ({
           ))}
         </div>
         <div className='px-4'>
-          <NotificationCard />
-          <NotificationCard />
-          <NotificationCard />
-          <NotificationCard />
+          <NotificationCard setNotificationViewOpen={setNotificationViewOpen} />
         </div>
       </div>
     </div>
