@@ -1,8 +1,12 @@
+import type { StaticImageData } from 'next/image';
+
 import profileImage1 from '../../../../public/images/profileImages/profile-image1.png';
 import profileImage2 from '../../../../public/images/profileImages/profile-image2.png';
 import profileImage3 from '../../../../public/images/profileImages/profile-image3.png';
 
-export default function randomProfileImage() {
+export type ProfileImg = string | StaticImageData;
+
+export default function randomProfileImage(): ProfileImg {
   const randomImages = [
     {
       path: profileImage1,
