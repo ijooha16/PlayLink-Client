@@ -1,8 +1,12 @@
 import { ChevronLeft } from 'lucide-react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import NotificationCard from './notification-card';
 import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
 import { handleGetSeesionStorage } from '@/shares/libs/utills/web-api';
+import {
+  requestPermissionAndGetToken,
+  onForegroundMessage,
+} from '@/shares/libs/firebase/firebase-messaging';
 
 const NotificationView = ({
   setNotificationViewOpen,
@@ -11,10 +15,23 @@ const NotificationView = ({
 }) => {
   const [tab, setTab] = useState<'activity' | 'matching'>('activity');
   const tabs = ['activity', 'matching'] as const;
-  const token = handleGetSeesionStorage();
-  const { data } = useGetNotificationQuery(token);
+  // const token = handleGetSeesionStorage();
+  // const { data } = useGetNotificationQuery(token);
 
-  console.log(data);
+  useEffect(() => {
+    // 포그라운드 알림 수신
+    onForegroundMessage((payload) => {
+      alert(`새 알림: ${payload.notification?.title}`);
+    });
+    const handleRequestToken = async () => {
+      const token = await requestPermissionAndGetToken();
+      if (token) {
+        console.log('사용자 토큰:', token);
+      }
+    };
+
+    handleRequestToken();
+  }, []);
 
   return (
     <div className='fixed left-0 top-0 z-50 h-screen w-full bg-white'>
