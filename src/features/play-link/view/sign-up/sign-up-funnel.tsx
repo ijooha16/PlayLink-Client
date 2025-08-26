@@ -31,8 +31,8 @@ const SignUpFunnel = () => {
   const [step3Data, setStep3Data] = useState<SignUpStep3>();
 
   useLayoutEffect(() => {
-    setStep('step3');
-    router.replace('?step=step3');
+    setStep('step1');
+    router.replace('?step=step1');
   }, []);
 
   useEffect(() => {
