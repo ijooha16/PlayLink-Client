@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useAlertStore } from '@/shares/stores/alert-store';
 import { useRouter } from 'next/navigation';
@@ -21,6 +20,7 @@ interface SignupData {
 const useSignup = () => {
   const openAlert = useAlertStore((state) => state.openAlert);
   const router = useRouter();
+
   const handlePostSignupData = async (signupData: SignupData) => {
     // FormData 생성
     const formData = new FormData();

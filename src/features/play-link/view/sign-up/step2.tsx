@@ -8,6 +8,8 @@ import {
   SignUpStep2,
   signUpStep2Schema,
 } from '../../types/sign-up/sign-up-schema';
+
+import { ProfileImg } from '@/shares/libs/utills/random-profile-image';
 import Input from '@/shares/common-components/input';
 
 // util
@@ -30,6 +32,7 @@ const Step2 = ({
     defaultValues,
   });
 
+  const randomImgRef = useRef<ProfileImg>(randomProfileImage());
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const imageFile = watch('profileImage');
@@ -74,7 +77,14 @@ const Step2 = ({
             className='flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-gray-200'
             onClick={() => fileInputRef.current?.click()}
           >
-            {preview ? (
+            <Image
+              src={preview ?? randomImgRef.current} // ✅ 고정된 랜덤 이미지 사용
+              alt='profile_img'
+              width={100}
+              height={100}
+              className='object-cover'
+            />
+            {/* {preview ? (
               <Image
                 src={preview}
                 alt='user_profile_img'
@@ -90,7 +100,7 @@ const Step2 = ({
                 height={100}
                 className='object-cover'
               />
-            )}
+            )} */}
           </div>
 
           <button
