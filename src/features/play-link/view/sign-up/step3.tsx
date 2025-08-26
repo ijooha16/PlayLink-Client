@@ -4,7 +4,8 @@ import {
   SignUpStep3,
   signUpStep3Schema,
 } from '../../types/sign-up/sign-up-schema';
-import { SPORTS_LIST } from '@/shares/dummy-data/dummy-data';
+import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
+import SportCard from '@/shares/common-components/sport-card';
 
 export default function Step3({
   onNext,
@@ -18,6 +19,9 @@ export default function Step3({
       resolver: zodResolver(signUpStep3Schema),
       defaultValues,
     });
+
+  const { data: sports } = useGetSportsQuery();
+  const sportsList:{sports_name:string;sports_id:number;}[] = sports?.data?.data?.sports;
 
   const selected = watch('favoriteSports') || [];
 
@@ -47,24 +51,25 @@ export default function Step3({
           스포츠 종목
         </h3>
         <div className='box-border grid h-auto grid-cols-5 gap-2 overflow-y-scroll p-2'>
-          {SPORTS_LIST.map((sport, idx) => (
-            <div key={sport} className='relative'>
-              <input
-                type='checkbox'
-                value={sport}
-                id={`sport-${idx}`}
-                {...register('favoriteSports')}
-                onChange={() => toggle(sport)}
-                checked={selected.includes(sport)}
-                className='peer hidden'
-              />
+          {sportsList && sportsList.map((sport, idx) => (
+            <div key={sport.sports_id} className='relative'>
+              <SportCard sport={sport.sports_id} sport_name={sport.sports_name} selected={selected.includes(sport.sports_name)} onClick={() => toggle(sport.sports_name)}/>
+                {/* <input
+                  type='checkbox'
+                  value={sport.sports_name}
+                  id={`sport-${idx}`}
+                  {...register('favoriteSports')}
+                  onChange={() => toggle(sport.sports_name)}
+                  checked={selected.includes(sport.sports_name)}
+                  className='peer hidden'
+                />
               <label
                 htmlFor={`sport-${idx}`}
                 className={`flex aspect-square h-full w-full flex-col items-center justify-center truncate rounded-full bg-gray-100 p-3 text-sm text-gray-600 transition-colors peer-checked:bg-blue-500 peer-checked:text-white`}
               >
                 <span className='text-xl'>🎯</span>
-                {sport}
-              </label>
+                {sport.sports_name}
+              </label> */}
             </div>
           ))}
         </div>
