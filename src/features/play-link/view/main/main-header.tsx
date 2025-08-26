@@ -18,7 +18,7 @@ const MainHeader = () => {
 
   return (
     <>
-      <div className='fixed top-0 left-0 z-50 flex w-full max-w-[640px] justify-between bg-white px-4 pt-4 shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.2)]'>
+      <div className='fixed left-1/2 top-0 z-50 flex w-full max-w-[640px] -translate-x-1/2 justify-between bg-white px-4 pt-4 shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.2)]'>
         <DropDown options={options} onSelect={click} />
         <div className='flex place-items-center gap-4'>
           <button onClick={() => setSearchViewOpen(true)}>
