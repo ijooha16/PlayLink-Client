@@ -22,11 +22,22 @@ export async function requestPermissionAndGetToken(): Promise<string | null> {
       return null;
     }
 
+    const registration = await navigator.serviceWorker.register(
+      '/firebase-messaging-sw.js',
+      {
+        scope: '/', // ← 현재 사이트 전체를 커버
+      }
+    );
+
+    const readyReg = registration.active
+      ? registration
+      : await navigator.serviceWorker.ready; // 서비스 워커 구동 기다리기
+
     const token = await getToken(messaging, {
-      vapidKey: process.env.NEXT_PUBLIC_FB_VAPID_KEY, // FCM 콘솔에서 발급
+      vapidKey: process.env.NEXT_PUBLIC_FB_VAPID_KEY,
+      serviceWorkerRegistration: readyReg,
     });
 
-    console.log('FCM Token:', token);
     return token;
   } catch (err) {
     console.error('토큰 요청 실패:', err);
