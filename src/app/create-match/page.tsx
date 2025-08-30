@@ -2,8 +2,8 @@
 
 import DropdownInput from '@/features/play-link/view/create-match/dropdown-input';
 import Input from '@/shares/common-components/input';
-import { DUMMY_PLACE, SPORTS_LIST } from '@/shares/dummy-data/dummy-data';
-import { FormEvent, useEffect, useState } from 'react';
+import { DUMMY_PLACE } from '@/shares/dummy-data/dummy-data';
+import { FormEvent, useState } from 'react';
 import { useAlertStore } from '@/shares/stores/alert-store';
 import { useRouter } from 'next/navigation';
 import DatePickerModal from '@/shares/common-components/date-picker-modal';
@@ -157,7 +157,10 @@ const CreateMatch = () => {
               placeholder='최소인원'
               value={formData.leastSize}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, leastSize: parseInt(e.target.value) }))
+                setFormData((prev) => ({
+                  ...prev,
+                  leastSize: parseInt(e.target.value),
+                }))
               }
             />
           </div>
@@ -186,7 +189,10 @@ const CreateMatch = () => {
               disabled={formData.maxSize === 0}
               value={formData.maxSize === 0 ? '' : formData.maxSize}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, maxSize: parseInt(e.target.value) }))
+                setFormData((prev) => ({
+                  ...prev,
+                  maxSize: parseInt(e.target.value),
+                }))
               }
             />
           </div>

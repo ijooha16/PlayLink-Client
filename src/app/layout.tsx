@@ -4,7 +4,6 @@ import '../styles/globals.css';
 import LayoutClientSide from '@/features/play-link/view/main/layout-client-side';
 import Providers from './provider';
 import MainBottomNavigation from '@/features/play-link/view/main/main-bottom-navigation';
-import MainHeader from '@/features/play-link/view/main/main-header';
 
 const pretendard = localFont({
   src: '../../public/fonts/pretendard-variable.woff2',

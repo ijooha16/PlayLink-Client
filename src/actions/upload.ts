@@ -1,7 +1,7 @@
 
 'use server';
 
-import { NextResponse } from 'next/server';
+// import { NextResponse } from 'next/server';
 
 export async function uploadImage(formData: FormData) {
   const file = formData.get('imageFile') as File | null;

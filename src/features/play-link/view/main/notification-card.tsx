@@ -4,7 +4,12 @@ import {
 } from '@/hooks/match/use-approve-match-mutation';
 import MatchButton from '@/shares/common-components/match-button';
 import { useAlertStore } from '@/shares/stores/alert-store';
-import { Check, LucideEllipsisVertical, MinusCircle, UserPlus2Icon } from 'lucide-react';
+import {
+  Check,
+  LucideEllipsisVertical,
+  MinusCircle,
+  UserPlus2Icon,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { NotificationDataType } from '../../types/notification/notification';
@@ -23,14 +28,10 @@ const NotificationCard = ({
   const { mutate: approveMatch } = useApproveMatchMutation();
   const { mutate: rejectMatch } = useRejectMatchMutation();
   const router = useRouter();
-  const matchId = 123; // Example matchId
 
-  
   return (
     <div className='flex gap-4 py-4'>
-      <div className='text-primary'>
-        {cardIcon[data.type]}
-      </div>
+      <div className='text-primary'>{cardIcon[data.type]}</div>
       <div className='flex flex-1 flex-col gap-1'>
         <div>
           <div className='flex items-center justify-between'>
@@ -49,13 +50,15 @@ const NotificationCard = ({
             </div>
           </div>
         </div>
-        <div className='pb-4 pt-2 text-sm'>
-          {data.title}
-        </div>
+        <div className='pb-4 pt-2 text-sm'>{data.title}</div>
         <div className='flex gap-3'>
           <MatchButton
             onClick={() => {
-              approveMatch({ token, matchId: data.match_id, applicantId: data.target_id });
+              approveMatch({
+                token,
+                matchId: data.match_id,
+                applicantId: data.target_id,
+              });
               openAlert(
                 '매칭 수락이 완료되었어요!',
                 '돌멩이님이 "조깅하실분" 채팅방에 초대되었어요.'
@@ -67,7 +70,11 @@ const NotificationCard = ({
           <MatchButton
             type='거절'
             onClick={() =>
-              rejectMatch({ token, matchId: data.match_id, applicantId: data.target_id })
+              rejectMatch({
+                token,
+                matchId: data.match_id,
+                applicantId: data.target_id,
+              })
             }
           />
           <MatchButton
@@ -82,17 +89,17 @@ const NotificationCard = ({
 
 export default NotificationCard;
 
-  const cardTitle = {
-    received: '매칭요청',
-    approved: '매칭수락',
-    rejected: '매칭거절',
-    cancel: '매칭취소',
-  }
+const cardTitle = {
+  received: '매칭요청',
+  approved: '매칭수락',
+  rejected: '매칭거절',
+  cancel: '매칭취소',
+};
 
-  const cardIcon = {
-    sent: <UserPlus2Icon className='text-primary' />,
-    received: <UserPlus2Icon className='text-primary' />,
-    approved:<Check className='text-primary' />,
-    rejected: <MinusCircle className='text-primary' />,
-    cancel: <UserPlus2Icon className='text-primary' />,
-  }
+const cardIcon = {
+  sent: <UserPlus2Icon className='text-primary' />,
+  received: <UserPlus2Icon className='text-primary' />,
+  approved: <Check className='text-primary' />,
+  rejected: <MinusCircle className='text-primary' />,
+  cancel: <UserPlus2Icon className='text-primary' />,
+};

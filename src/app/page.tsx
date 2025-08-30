@@ -4,7 +4,7 @@ import MainHeader from '@/features/play-link/view/main/main-header';
 import MainNewButton from '@/features/play-link/view/main/main-new-button';
 import MatchCards from '@/features/play-link/view/main/match-cards';
 import { useGetMatchesQuery } from '@/hooks/match/use-get-matches-query';
-import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
+// import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
 import { sendNotificationToken } from '@/services/notification/send-notification-token';
 import {
   onForegroundMessage,
@@ -20,7 +20,7 @@ export default function Home() {
   const { keyword, type } = useSearchStore();
   const router = useRouter();
   const token = handleGetSessionStorage();
-  const {data: notificationData} = useGetNotificationQuery(token);
+  // const {data: notificationData} = useGetNotificationQuery(token);
 
   //검색 페이지 이동
   useEffect(() => {

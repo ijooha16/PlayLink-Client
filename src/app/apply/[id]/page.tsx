@@ -1,8 +1,6 @@
 'use client';
 
-import { tempCard } from '@/shares/dummy-data/dummy-data';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronLeft } from 'lucide-react';
 import { useAlertStore } from '@/shares/stores/alert-store';
 import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
 import { useApplyMatchMutation } from '@/hooks/match/use-apply-match-mutation';
@@ -24,11 +22,11 @@ export default function ApplyPage() {
     title,
     start_time,
     sports_type,
-    user_nickname,
-    end_time,
-    date,
-    createdAt,
-    likeCount,
+    // user_nickname,
+    // end_time,
+    // date,
+    // createdAt,
+    // likeCount,
     placeAddress,
     match_id,
   } = data?.data?.data || {};

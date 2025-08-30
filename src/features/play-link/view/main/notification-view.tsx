@@ -5,11 +5,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import NotificationCard from './notification-card';
 import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
 import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
-import {
-  requestPermissionAndGetToken,
-  onForegroundMessage,
-} from '@/shares/libs/firebase/firebase-messaging';
-import { sendNotificationToken } from '@/services/notification/send-notification-token';
 import { NotificationDataType } from '../../types/notification/notification';
 
 const NotificationView = ({
@@ -22,9 +17,8 @@ const NotificationView = ({
   const [tab, setTab] = useState<'activity' | 'matching'>('activity');
   const tabs = ['activity', 'matching'] as const;
 
-  const notificationList:NotificationDataType[] = notificationData?.data.data.notificationList || [];
-  
-  console.log('notificationData:', notificationData.data.data.notificationList);
+  const notificationList: NotificationDataType[] =
+    notificationData?.data.data.notificationList || [];
 
   return (
     <div className='fixed left-0 top-0 z-50 h-screen w-full bg-white'>
@@ -48,7 +42,14 @@ const NotificationView = ({
           ))}
         </div>
         <div className='px-4'>
-          {notificationList.map(notification => <NotificationCard key={notification.user_notifications_id} token={token} data={notification} setNotificationViewOpen={setNotificationViewOpen} />)}
+          {notificationList.map((notification) => (
+            <NotificationCard
+              key={notification.user_notifications_id}
+              token={token}
+              data={notification}
+              setNotificationViewOpen={setNotificationViewOpen}
+            />
+          ))}
         </div>
       </div>
     </div>

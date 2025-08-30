@@ -1,6 +1,6 @@
 'use client';
 
-import { HeartIcon, MessagesSquareIcon } from 'lucide-react';
+// import { HeartIcon, MessagesSquareIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import { MatchType } from '../../types/match/match';
@@ -13,11 +13,11 @@ const MatchCards = (data: { data: MatchType }) => {
     matchId,
     title,
     sportsType,
-    createdAt,
-    likeCount,
+    // createdAt,
+    // likeCount,
+    // end_time,
     start_time,
     placeAddress,
-    end_time,
     date,
   } = data.data;
 
