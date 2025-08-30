@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import {
   handleRemoveSessionStorage,
-  handleGetSeesionStorage,
+  handleGetSessionStorage,
 } from '@/shares/libs/utills/web-api';
 
 export default function MyPage() {
@@ -20,7 +20,7 @@ export default function MyPage() {
   };
 
   useEffect(() => {
-    const token = handleGetSeesionStorage();
+    const token = handleGetSessionStorage();
     if (!token) {
       router.push('/sign-in');
     }

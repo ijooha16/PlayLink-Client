@@ -7,7 +7,7 @@ import { Plus, Send } from 'lucide-react';
 
 import ChatBox from '@/features/play-link/view/chat/chat-box';
 import { useChatRoom } from '@/hooks/chat/use-get-chat-room';
-import { handleGetSeesionStorage } from '@/shares/libs/utills/web-api';
+import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
 
 type ChatMessage = {
   id: string;
@@ -30,7 +30,7 @@ export default function ChatRoom() {
 
   const env_api = process.env.NEXT_PUBLIC_SOCKET_URL!;
 
-  const token = handleGetSeesionStorage();
+  const token = handleGetSessionStorage();
 
   useEffect(() => {
     if (!data) return;

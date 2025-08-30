@@ -9,11 +9,11 @@ import { useRouter } from 'next/navigation';
 import DatePickerModal from '@/shares/common-components/date-picker-modal';
 import SelectExerciseModal from '@/shares/common-components/select-exercise-modal';
 import { useAddMatchMutation } from '@/hooks/match/use-add-match-mutation';
-import { handleGetSeesionStorage } from '@/shares/libs/utills/web-api';
+import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
 import { timeFormat } from '@/shares/libs/utills/create-match-formats';
 
 const CreateMatch = () => {
-  const token = handleGetSeesionStorage();
+  const token = handleGetSessionStorage();
 
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');

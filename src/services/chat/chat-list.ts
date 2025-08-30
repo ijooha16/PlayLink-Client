@@ -1,7 +1,7 @@
-import { handleGetSeesionStorage } from '@/shares/libs/utills/web-api';
+import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
 
 export const fetchChatList = async () => {
-  const token = handleGetSeesionStorage();
+  const token = handleGetSessionStorage();
   try {
     const res = await fetch('/api/chatlist', {
       headers: { Authorization: `Bearer ${token}` },
@@ -23,7 +23,7 @@ export const fetchChatList = async () => {
 };
 
 export const fetchChatRoom = async (id: number) => {
-  const token = handleGetSeesionStorage();
+  const token = handleGetSessionStorage();
 
   try {
     const res = await fetch(`/api/chatlist/${id}`, {

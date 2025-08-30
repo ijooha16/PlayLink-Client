@@ -4,7 +4,7 @@ import { tempCard } from '@/shares/dummy-data/dummy-data';
 import { useParams, useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useAlertStore } from '@/shares/stores/alert-store';
-import { handleGetSeesionStorage } from '@/shares/libs/utills/web-api';
+import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
 import { useApplyMatchMutation } from '@/hooks/match/use-apply-match-mutation';
 import Header from '@/shares/common-components/header';
 
@@ -16,7 +16,7 @@ export default function ApplyPage() {
   const router = useRouter();
   const { id } = params;
   const alertOpen = useAlertStore((state) => state.openAlert);
-  const token = handleGetSeesionStorage();
+  const token = handleGetSessionStorage();
   const { mutate: applyMatch } = useApplyMatchMutation();
   const { data } = useGetMatchesQuery({ matchId: id });
   const { data: sports } = useGetSportsQuery();
