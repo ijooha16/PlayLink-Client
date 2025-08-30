@@ -3,7 +3,7 @@
 import DropdownInput from '@/features/play-link/view/create-match/dropdown-input';
 import Input from '@/shares/common-components/input';
 import { DUMMY_PLACE, SPORTS_LIST } from '@/shares/dummy-data/dummy-data';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useAlertStore } from '@/shares/stores/alert-store';
 import { useRouter } from 'next/navigation';
 import DatePickerModal from '@/shares/common-components/date-picker-modal';
@@ -25,8 +25,8 @@ const CreateMatch = () => {
     date: null as Date | null,
     startTime,
     endTime,
-    leastSize: '',
-    maxSize: '',
+    leastSize: 0,
+    maxSize: 0,
     place_id: '',
     placeAddress: '',
     placeLocation: '35.15001, 126.8742',
@@ -157,7 +157,7 @@ const CreateMatch = () => {
               placeholder='최소인원'
               value={formData.leastSize}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, leastSize: e.target.value }))
+                setFormData((prev) => ({ ...prev, leastSize: parseInt(e.target.value) }))
               }
             />
           </div>
@@ -169,7 +169,7 @@ const CreateMatch = () => {
                   id='maxSize'
                   type='checkbox'
                   onChange={() =>
-                    setFormData((prev) => ({ ...prev, maxSize: '0' }))
+                    setFormData((prev) => ({ ...prev, maxSize: 0 }))
                   }
                   className='h-4 w-4 appearance-none rounded-full border-2 border-gray-300 checked:border-transparent checked:bg-blue-500'
                 />
@@ -183,10 +183,10 @@ const CreateMatch = () => {
               variant={'default'}
               sizes={'md'}
               placeholder='최대인원'
-              disabled={formData.maxSize === '0'}
-              value={formData.maxSize === '0' ? '' : formData.maxSize}
+              disabled={formData.maxSize === 0}
+              value={formData.maxSize === 0 ? '' : formData.maxSize}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, maxSize: e.target.value }))
+                setFormData((prev) => ({ ...prev, maxSize: parseInt(e.target.value) }))
               }
             />
           </div>

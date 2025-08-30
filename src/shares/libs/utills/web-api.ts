@@ -20,7 +20,7 @@ export const handleRemoveSessionStorage = (key?: string | undefined) => {
 };
 
 export const handleGetSeesionStorage = () => {
+  if (typeof window === 'undefined') return null;
   const value = sessionStorage.getItem(KEY);
-
   return value;
 };

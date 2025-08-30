@@ -4,10 +4,12 @@ export async function PUT(request: Request) {
   try {
     const token = request.headers.get('Authorization');
     const body = await request.text();
+    const { searchParams } = new URL(request.url);
+    const matchId = searchParams.get('matchId');
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
-    const backendApiUrl = `${fetchURL}/playlink/fcm`;
+    const backendApiUrl = `${fetchURL}/playlink/match/participants/${matchId}`;
 
     const response = await fetch(backendApiUrl, {
       method: 'PUT',

@@ -15,7 +15,6 @@ export default function ApplyPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
-  const matchData = tempCard[Number(id)];
   const alertOpen = useAlertStore((state) => state.openAlert);
   const token = handleGetSeesionStorage();
   const { mutate: applyMatch } = useApplyMatchMutation();
@@ -39,7 +38,7 @@ export default function ApplyPage() {
     (sport: { sports_id: number }) => sport.sports_id === sports_type
   );
 
-  if (!matchData) {
+  if (!data) {
     return <div>매치 정보를 찾을 수 없습니다.</div>;
   }
 

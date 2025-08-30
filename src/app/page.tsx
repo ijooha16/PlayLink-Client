@@ -22,8 +22,6 @@ export default function Home() {
   const token = handleGetSeesionStorage();
   const {data: notificationData} = useGetNotificationQuery(token);
 
-  console.log('notificationData', notificationData);
-
   //검색 페이지 이동
   useEffect(() => {
     if (keyword || type) router.push(`/query?keyword=${keyword}&type=${type}`);

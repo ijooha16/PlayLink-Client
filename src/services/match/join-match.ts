@@ -21,3 +21,51 @@ export const applyMatch = async ({
   }
   return response.json();
 };
+
+export const approveMatch = async ({
+  token,
+  matchId,
+  applicantId,
+}: {
+  token: string | null;
+  matchId: number;
+  applicantId: number;
+}) => {
+  const response = await fetch(`/api/match/match-join?matchId=${matchId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token!,
+    },
+    body: JSON.stringify({ targetId: applicantId, action: 1 }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to join match');
+  }
+  return response.json();
+};
+
+export const rejectMatch = async ({
+  token,
+  matchId,
+  applicantId,
+}: {
+  token: string | null;
+  matchId: number;
+  applicantId: number;
+}) => {
+  const response = await fetch(`/api/match/match-join?matchId=${matchId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: token!,
+    },
+    body: JSON.stringify({ targetId: applicantId, action: -1 }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to reject match');
+  }
+  return response.json();
+};

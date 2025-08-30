@@ -1,3 +1,5 @@
+'use client';
+
 import { ChevronLeft } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import NotificationCard from './notification-card';
@@ -8,16 +10,21 @@ import {
   onForegroundMessage,
 } from '@/shares/libs/firebase/firebase-messaging';
 import { sendNotificationToken } from '@/services/notification/send-notification-token';
+import { NotificationDataType } from '../../types/notification/notification';
 
 const NotificationView = ({
   setNotificationViewOpen,
 }: {
   setNotificationViewOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const token = handleGetSeesionStorage();
+  const { data: notificationData } = useGetNotificationQuery(token);
   const [tab, setTab] = useState<'activity' | 'matching'>('activity');
   const tabs = ['activity', 'matching'] as const;
-  const token = handleGetSeesionStorage();
-  // const { data } = useGetNotificationQuery(token);
+
+  const notificationList:NotificationDataType[] = notificationData?.data.data.notificationList || [];
+  
+  console.log('notificationData:', notificationData.data.data.notificationList);
 
   return (
     <div className='fixed left-0 top-0 z-50 h-screen w-full bg-white'>
@@ -41,7 +48,7 @@ const NotificationView = ({
           ))}
         </div>
         <div className='px-4'>
-          <NotificationCard setNotificationViewOpen={setNotificationViewOpen} />
+          {notificationList.map(notification => <NotificationCard key={notification.user_notifications_id} token={token} data={notification} setNotificationViewOpen={setNotificationViewOpen} />)}
         </div>
       </div>
     </div>
