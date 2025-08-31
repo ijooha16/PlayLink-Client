@@ -18,15 +18,14 @@ export default function MatchDetailPage() {
     start_time,
     sports_type,
     user_nickname,
-    end_time,
-    date,
-    room_id,
-    createdAt,
-    likeCount,
+    // end_time,
+    // date,
+    // createdAt,
+    // likeCount,
     placeAddress,
   } = data?.data?.data || {};
 
-  console.log(room_id, end_time, date, createdAt, likeCount);
+  // console.log(room_id, end_time, date, createdAt, likeCount);
 
   const sportTypes = (sports && sports?.data?.data?.sports) || [];
   const sportTypeForThisMatch = sportTypes.filter(
