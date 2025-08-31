@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     if (error instanceof Error) {
       console.error('Signup Route Handler error:', error);
       return NextResponse.json(
-        { status: 'error', message: error.message },
+        { status: 'error', message: error instanceof Error ? error.message : "Unknown error" },
         { status: 500 }
       );
     }

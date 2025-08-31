@@ -25,7 +25,11 @@ const Header = ({
         {backbtn && (
           <button
             onClick={() => {
-              backbtn === 'home' ? router.push('/') : router.back();
+              if (backbtn === 'home') {
+                router.push('/');
+              } else {
+                router.back();
+              }
             }}
           >
             <ChevronLeft />

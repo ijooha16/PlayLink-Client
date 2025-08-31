@@ -64,7 +64,7 @@ const DropdownInput = ({
                   e.stopPropagation();
                   e.preventDefault();
                   handleSelect(result);
-                }} // onClick으로 변경
+                }}
               >
                 {result}
               </li>

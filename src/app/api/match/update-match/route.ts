@@ -32,10 +32,10 @@ export async function PUT(
 
     const data = await response.json();
     return NextResponse.json({ status: 'success', data }, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Update match Route Handler error:', error);
     return NextResponse.json(
-      { status: 'error', message: error.message },
+      { status: 'error', message: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }
     );
   }

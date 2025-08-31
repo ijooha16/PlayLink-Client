@@ -4,6 +4,10 @@ const nextConfig = {
     styledComponents: true,
   },
   // reactStrictMode: false,
+  experimental: {
+    serverComponentsExternalPackages: [],
+  },
+  output: 'standalone',
 };
 
 export default nextConfig;

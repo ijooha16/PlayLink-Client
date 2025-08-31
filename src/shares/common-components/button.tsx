@@ -1,13 +1,13 @@
-import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
-import { twMerge } from "tailwind-merge";
+import { cva, type VariantProps } from 'class-variance-authority';
+import * as React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 const buttonVariants = cva(
-  "inline-flex items-center text-main w-fit transition-colors ease-in-out justify-center rounded-lg outline-none disabled:pointer-events-none disabled:bg-[#E6E6E6] disabled:text-gray disabled:border-none",
+  'inline-flex items-center text-main w-fit transition-colors ease-in-out justify-center rounded-lg outline-none disabled:pointer-events-none disabled:bg-[#E6E6E6] disabled:text-gray disabled:border-none',
   {
     variants: {
       variant: {
-        default: "border bg-color-blue",
+        default: 'border bg-color-blue',
       },
       size: {},
     },

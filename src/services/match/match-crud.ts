@@ -5,7 +5,7 @@ export const addMatch = async ({
   formData: FormData;
   token: string | null;
 }) => {
-  const response = await fetch(`/api/match/add-match`, {
+  const response = await fetch('/api/match/add-match', {
     method: 'POST',
     headers: {
       Authorization: token!,

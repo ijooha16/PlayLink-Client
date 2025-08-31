@@ -6,9 +6,9 @@ import { useGetMatchesMutation } from '@/hooks/match/use-get-searced-matches-mut
 import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
 import Header from '@/shares/common-components/header';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 
-const SearchResult = () => {
+const SearchResultContent = () => {
   const { mutate: search, data } = useGetMatchesMutation();
   const searchParams = useSearchParams();
   const keyword = searchParams.get('keyword') || '';
@@ -40,6 +40,14 @@ const SearchResult = () => {
         <div>검색결과가 없습니다</div>
       )}
     </>
+  );
+};
+
+const SearchResult = () => {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <SearchResultContent />
+    </Suspense>
   );
 };
 

@@ -5,7 +5,7 @@ export const sendNotificationToken = async ({
   token: string | null;
   fcmToken: string | null;
 }) => {
-  const response = await fetch(`/api/notification/send-notification-token`, {
+  const response = await fetch('/api/notification/send-notification-token', {
     method: 'PUT',
     headers: {
       Authorization: token!,

@@ -39,13 +39,13 @@ export const getDeviceInfo = async (): Promise<DeviceInfoResults> => {
   const osName = result.os.name || 'Unknown OS';
   const platform = `${browserName} on ${osName}`;
 
-  let ip: string | null = null;
+  const ip: string | null = null;
   try {
     const response = await fetch('https://api.ipify.org?format=json');
     if (!response.ok) {
       throw new Error('IP 주소를 가져오는 데 실패했습니다.');
     }
-    const data = await response.json();
+    // const data = await response.json();
     // ip = data.ip;
   } catch (error) {
     console.error('IP 주소 조회 오류 발생:', error);

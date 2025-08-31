@@ -28,14 +28,14 @@ const Chat = () => {
     <>
       <Header title='채팅' />
       <div>
-        {data.data.data.lastChatList.map((item: any) => (
-          <Link key={item.room_id} href={`/chat/${item.room_id}`}>
+        {data.data.data.lastChatList.map((item: Record<string, unknown>) => (
+          <Link key={item.room_id as string} href={`/chat/${item.room_id}`}>
             <ChatCard
-              roomId={item.room_id}
-              nickname={item.nickname}
-              message={item.message}
-              sendAt={item.send_at}
-              avatarUrl={item.image_url}
+              roomId={item.room_id as string}
+              nickname={item.nickname as string}
+              message={item.message as string}
+              sendAt={item.send_at as string}
+              avatarUrl={item.image_url as string}
             />
           </Link>
         ))}

@@ -9,6 +9,7 @@ type MyTownProps = { myList: string[] };
 const MyTown = ({ myList }: MyTownProps) => {
   const openAlert = useAlertStore((state) => state.openAlert);
   const router = useRouter();
+  
   switch (myList?.length) {
     case 0:
       return (

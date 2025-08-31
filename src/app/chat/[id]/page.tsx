@@ -37,12 +37,12 @@ export default function ChatRoom() {
     // console.log(data.data.data.chattingData);
 
     const mapped: ChatMessage[] = data.data.data.chattingData.map(
-      (row: any, i: number) => ({
+      (row: Record<string, unknown>, i: number) => ({
         id: `${roomId}-${row.send_at}-${i}`,
         text: row.message ?? '',
         isMyChat: !!row.itsme,
         nickname: row.itsme ? undefined : (row.nickname ?? '상대'),
-        createdAt: new Date(row.send_at ?? Date.now()).toLocaleTimeString(
+        createdAt: new Date((row.send_at as string) ?? Date.now()).toLocaleTimeString(
           'ko-KR',
           {
             hour: '2-digit',
@@ -67,18 +67,18 @@ export default function ChatRoom() {
       socket.emit('joinRoom', { roomId });
     });
 
-    const onReceive = (payload: any) => {
+    const onReceive = (payload: Record<string, unknown>) => {
       const createdAt = new Date(
-        payload?.send_at ?? payload?.createdAt ?? Date.now()
+        (payload?.send_at as string) ?? (payload?.createdAt as string) ?? Date.now()
       ).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
 
       setMessages((prev) => [
         ...prev,
         {
           id: crypto.randomUUID?.() ?? String(Date.now()),
-          text: payload?.message ?? '',
+          text: (payload?.message as string) ?? '',
           isMyChat: !!payload?.itsme, // ✅ itsme 반영
-          nickname: payload?.itsme ? undefined : (payload?.nickname ?? '상대'),
+          nickname: payload?.itsme ? undefined : ((payload?.nickname as string) ?? '상대'),
           createdAt,
         },
       ]);

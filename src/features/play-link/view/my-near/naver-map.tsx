@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 declare global {
   interface Window {
-    naver: any;
+    naver: Record<string, unknown>;
   }
 }
 
@@ -22,12 +22,13 @@ const NaverMap = ({ lat = 37.4979, lng = 127.0276 }: NaverMapProps) => {
     script.async = true;
     script.onload = () => {
       if (mapRef.current && window.naver) {
-        const map = new window.naver.maps.Map(mapRef.current, {
-          center: new window.naver.maps.LatLng(lat, lng),
+        const naverMaps = window.naver.maps as any;
+        const map = new naverMaps.Map(mapRef.current, {
+          center: new naverMaps.LatLng(lat, lng),
           zoom: 15,
         });
-        new window.naver.maps.Marker({
-          position: new window.naver.maps.LatLng(lat, lng),
+        new naverMaps.Marker({
+          position: new naverMaps.LatLng(lat, lng),
           map: map,
         });
       }

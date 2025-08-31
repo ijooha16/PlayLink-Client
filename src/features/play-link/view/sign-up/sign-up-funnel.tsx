@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import {
   SignUpStep1,
   SignUpStep2,
@@ -14,7 +14,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 const steps = ['step1', 'step2', 'step3'] as const;
 type Step = (typeof steps)[number];
 
-const SignUpFunnel = () => {
+const SignUpFunnelContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -83,6 +83,14 @@ const SignUpFunnel = () => {
 
       {/* {step === 'done' && <Done allData={mergedData} />} */}
     </div>
+  );
+};
+
+const SignUpFunnel = () => {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <SignUpFunnelContent />
+    </Suspense>
   );
 };
 

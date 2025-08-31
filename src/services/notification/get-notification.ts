@@ -3,7 +3,7 @@ export const getNotification = async ({
 }: {
   token: string | null;
 }) => {
-  const response = await fetch(`/api/notification/get-notification-list`, {
+  const response = await fetch('/api/notification/get-notification-list', {
     method: 'GET',
     headers: {
       Authorization: token!,
