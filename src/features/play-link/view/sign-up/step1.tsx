@@ -8,8 +8,6 @@ import {
 } from '../../types/sign-up/sign-up-schema';
 import { useState } from 'react';
 import Input from '@/shares/common-components/input';
-// import EmailOption from '@/features/play-link/view/sign-up/email-option';
-// import useSelector from '@/hooks/useSelector';
 
 import { useEmail } from '@/hooks/email/useEmail';
 import { useEmailVerify } from '@/hooks/email/useEmailVerify';
@@ -17,13 +15,19 @@ import { useEmailVerify } from '@/hooks/email/useEmailVerify';
 import { useSms } from '@/hooks/sms/useSms';
 import { useSmsVerify } from '@/hooks/sms/useSmsVerify';
 
-// import {
-//   TERMS_OF_SERVICE,
-//   PRIVACY_POLICY,
-//   LOCATION_POLICY,
-//   THIRD_PARTY_POLICY,
-//   MARKETING_POLICY,
-// } from '@/shares/constant/sigin-up-privacy';
+type TermsKey =
+  | 'agreeTerms'
+  | 'agreePrivacy'
+  | 'isOver14'
+  | 'agreeLocation'
+  | 'agreeThirdParty'
+  | 'agreeMarketing';
+
+type TEMRSTYPE = {
+  name: TermsKey; // ← boolean이 아니라 폼 키
+  label: string;
+  required: boolean;
+};
 
 const Step1 = ({
   onNext,
@@ -44,7 +48,6 @@ const Step1 = ({
 
   const watched = useWatch({ control });
 
-  // const { selectorValue, handleGetSelectorValueData } = useSelector();
   const [emailAuthView, setEmailAuthView] = useState(false);
   const [smsView, setSmsView] = useState(false);
 
@@ -123,11 +126,9 @@ const Step1 = ({
 
   const isAllRequiredFilled =
     watched.email?.trim() &&
-    // watched.emailCheck &&
     watched.password?.trim() &&
     watched.confirmPassword?.trim() &&
     watched.phone?.trim() &&
-    // watched.phoneCheck &&
     watched.agreeTerms &&
     watched.agreePrivacy &&
     watched.isOver14 &&
@@ -180,7 +181,7 @@ const Step1 = ({
 
   const checkboxClass =
     'relative h-4 w-4 cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-blue-500 checked:bg-blue-500 checked:after:absolute checked:after:inset-0 checked:after:flex checked:after:items-center checked:after:justify-center checked:after:text-xs checked:after:font-bold checked:after:text-white checked:after:content-["✓"]';
-  const termsData: any = [
+  const termsData: TEMRSTYPE[] = [
     { name: 'agreeTerms', label: '이용약관 동의', required: true },
     { name: 'agreePrivacy', label: '개인정보 처리방침 동의', required: true },
     { name: 'isOver14', label: '만 14세 이상입니다', required: true },
@@ -232,7 +233,6 @@ const Step1 = ({
                 className='bg-transparnent text-md flex-1 rounded-lg border border-gray-300 px-4 py-2 text-inherit placeholder-gray-400 focus:outline-none focus:ring-0 disabled:bg-gray-200'
                 placeholder='이메일 인증번호'
                 onChange={(e) => setEmailCode(e.target.value)}
-                // {...register('emailCheck')}
               />
               <button
                 className='w-300 box-border cursor-pointer rounded-lg bg-[#E7E9EC] px-4 text-sm text-[#BDC0C6] transition-colors'
@@ -301,14 +301,6 @@ const Step1 = ({
         </label>
         <div>
           <div className='flex justify-between gap-4'>
-            {/* <Input
-              id='tel'
-              type='tel'
-              variant={'default'}
-              sizes={'lg'}
-              placeholder='휴대폰 번호'
-              {...register('phone')}
-            /> */}
             <input
               id='tel'
               type='tel'
@@ -348,84 +340,12 @@ const Step1 = ({
           )}
         </div>
       </div>
-      {/* <div className='flex flex-col space-y-2'>
-        <div className='flex justify-between'>
-          <label className='flex cursor-pointer items-center gap-2'>
-            <input
-              type='checkbox'
-              {...register('agreeTerms')}
-              className='relative h-4 w-4 cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-blue-500 checked:bg-blue-500 checked:after:absolute checked:after:inset-0 checked:after:flex checked:after:items-center checked:after:justify-center checked:after:text-xs checked:after:font-bold checked:after:text-white checked:after:content-["✓"]'
-            />
-            <span>이용약관 동의 (필수)</span>
-          </label>
-          <div className='cursor-pointer text-gray-400'>{'>'}</div>
-        </div>
 
-        <div className='flex justify-between'>
-          <label className='flex cursor-pointer items-center gap-2'>
-            <input
-              type='checkbox'
-              {...register('agreePrivacy')}
-              className='relative h-4 w-4 cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-blue-500 checked:bg-blue-500 checked:after:absolute checked:after:inset-0 checked:after:flex checked:after:items-center checked:after:justify-center checked:after:text-xs checked:after:font-bold checked:after:text-white checked:after:content-["✓"]'
-            />
-            <span>개인정보 처리방침 동의 (필수)</span>
-          </label>
-          <div className='cursor-pointer text-gray-400'>{'>'}</div>
-        </div>
-
-        <div className='flex justify-between'>
-          <label className='flex cursor-pointer items-center gap-2'>
-            <input
-              type='checkbox'
-              className='relative h-4 w-4 cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-blue-500 checked:bg-blue-500 checked:after:absolute checked:after:inset-0 checked:after:flex checked:after:items-center checked:after:justify-center checked:after:text-xs checked:after:font-bold checked:after:text-white checked:after:content-["✓"]'
-              {...register('isOver14')}
-            />
-            <span>만 14세 이상입니다 (필수)</span>
-          </label>
-          <div className='cursor-pointer text-gray-400'>{'>'}</div>
-        </div>
-
-        <div className='flex justify-between'>
-          <label className='flex cursor-pointer items-center gap-2'>
-            <input
-              type='checkbox'
-              className='relative h-4 w-4 cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-blue-500 checked:bg-blue-500 checked:after:absolute checked:after:inset-0 checked:after:flex checked:after:items-center checked:after:justify-center checked:after:text-xs checked:after:font-bold checked:after:text-white checked:after:content-["✓"]'
-              {...register('agreeLocation')}
-            />
-            <span>위치 정보 이용 동의 (필수)</span>
-          </label>
-          <div className='cursor-pointer text-gray-400'>{'>'}</div>
-        </div>
-
-        <div className='flex justify-between'>
-          <label className='flex cursor-pointer items-center gap-2'>
-            <input
-              type='checkbox'
-              className='relative h-4 w-4 cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-blue-500 checked:bg-blue-500 checked:after:absolute checked:after:inset-0 checked:after:flex checked:after:items-center checked:after:justify-center checked:after:text-xs checked:after:font-bold checked:after:text-white checked:after:content-["✓"]'
-              {...register('agreeThirdParty')}
-            />
-            <span>제 3자 정보 제공 동의 (필수)</span>
-          </label>
-          <div className='cursor-pointer text-gray-400'>{'>'}</div>
-        </div>
-
-        <div className='flex justify-between'>
-          <label className='flex cursor-pointer items-center gap-2'>
-            <input
-              type='checkbox'
-              className='relative h-4 w-4 cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-blue-500 checked:bg-blue-500 checked:after:absolute checked:after:inset-0 checked:after:flex checked:after:items-center checked:after:justify-center checked:after:text-xs checked:after:font-bold checked:after:text-white checked:after:content-["✓"]'
-              {...register('agreeMarketing')}
-            />
-            <span>마케팅 수신 동의 (선택)</span>
-          </label>
-          <div className='cursor-pointer text-gray-400'>{'>'}</div>
-        </div>
-      </div> */}
       <p className='h-[20px] text-sm text-red-500'>
         {errors.phone && errors.phone.message}
       </p>
       <div className='flex flex-col space-y-2'>
-        {termsData.map((term: any) => (
+        {termsData.map((term: TEMRSTYPE) => (
           <div key={term.name} className='flex justify-between'>
             <label className='flex cursor-pointer items-center gap-2'>
               <input
