@@ -163,14 +163,16 @@ export async function POST(request: Request) {
     }
 
     return finalResponse;
-  } catch (error: any) {
-    console.error('Signin Route Handler error:', error);
-    return NextResponse.json(
-      {
-        status: 'error',
-        message: error.message,
-      },
-      { status: 500 }
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Signin Route Handler error:', error);
+      return NextResponse.json(
+        {
+          status: 'error',
+          message: error.message,
+        },
+        { status: 500 }
+      );
+    }
   }
 }
