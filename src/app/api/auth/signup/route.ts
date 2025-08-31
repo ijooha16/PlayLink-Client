@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
     const data = await response.json();
     return NextResponse.json({ status: 'success', data }, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof Error) {
       console.error('Signup Route Handler error:', error);
       return NextResponse.json(
