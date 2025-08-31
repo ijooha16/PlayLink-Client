@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useGetNotificationQuery = (token: string | null) => {
   return useQuery({
-    queryKey: ['notification'],
+    queryKey: [QUERY_KEYS.NOTIFICATION],
     queryFn: () => getNotification({token}),
     enabled: !!token
   });

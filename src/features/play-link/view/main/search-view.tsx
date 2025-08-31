@@ -1,4 +1,3 @@
-import { useGetMatchesQuery } from '@/hooks/match/use-get-matches-query';
 import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
 import SportCard from '@/shares/common-components/sport-card';
 import Tag from '@/shares/common-components/tag';
@@ -36,8 +35,6 @@ const SearchView = ({
     setSearchViewOpen(false);
     setKeyword(inputValue);
   };
-
-  // console.log(sportsData?.data?.data?.Categories)
 
   return (
     <div className='fixed left-0 top-0 z-50 h-screen w-full bg-white px-4'>

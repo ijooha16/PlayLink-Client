@@ -4,7 +4,6 @@ import Link from 'next/link';
 import DynamicNaverMapForDetail from '@/shares/common-components/dynamic-naver-map-for-detail';
 import { Heart, MapPin, Share2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import { useTempStore } from '@/shares/stores/temp-store';
 import { useGetMatchesQuery } from '@/hooks/match/use-get-match-detail-query';
 import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
 
@@ -18,10 +17,10 @@ export default function MatchDetailPage() {
     start_time,
     sports_type,
     user_nickname,
-    end_time,
-    date,
-    createdAt,
-    likeCount,
+    // end_time,
+    // date,
+    // createdAt,
+    // likeCount,
     placeAddress,
   } = data?.data?.data || {};
 

@@ -51,7 +51,7 @@ export default function Step3({
           스포츠 종목
         </h3>
         <div className='box-border grid h-auto grid-cols-5 gap-2 overflow-y-scroll p-2'>
-          {sportsList && sportsList.map((sport, idx) => (
+          {sportsList && sportsList.map((sport) => (
             <div key={sport.sports_id} className='relative'>
               <SportCard sport={sport.sports_id} sport_name={sport.sports_name} selected={selected.includes(sport.sports_name)} onClick={() => toggle(sport.sports_name)}/>
                 {/* <input

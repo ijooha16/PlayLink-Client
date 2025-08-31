@@ -1,10 +1,8 @@
 'use client';
 
-import { tempCard } from '@/shares/dummy-data/dummy-data';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronLeft } from 'lucide-react';
 import { useAlertStore } from '@/shares/stores/alert-store';
-import { handleGetSeesionStorage } from '@/shares/libs/utills/web-api';
+import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
 import { useApplyMatchMutation } from '@/hooks/match/use-apply-match-mutation';
 import Header from '@/shares/common-components/header';
 
@@ -15,9 +13,8 @@ export default function ApplyPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
-  const matchData = tempCard[Number(id)];
   const alertOpen = useAlertStore((state) => state.openAlert);
-  const token = handleGetSeesionStorage();
+  const token = handleGetSessionStorage();
   const { mutate: applyMatch } = useApplyMatchMutation();
   const { data } = useGetMatchesQuery({ matchId: id });
   const { data: sports } = useGetSportsQuery();
@@ -25,11 +22,11 @@ export default function ApplyPage() {
     title,
     start_time,
     sports_type,
-    user_nickname,
-    end_time,
-    date,
-    createdAt,
-    likeCount,
+    // user_nickname,
+    // end_time,
+    // date,
+    // createdAt,
+    // likeCount,
     placeAddress,
     match_id,
   } = data?.data?.data || {};
@@ -39,7 +36,7 @@ export default function ApplyPage() {
     (sport: { sports_id: number }) => sport.sports_id === sports_type
   );
 
-  if (!matchData) {
+  if (!data) {
     return <div>매치 정보를 찾을 수 없습니다.</div>;
   }
 

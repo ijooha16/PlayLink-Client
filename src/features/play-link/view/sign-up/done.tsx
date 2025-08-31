@@ -14,7 +14,7 @@ const Done = ({
 }: {
   allData: SignUpStep1 & SignUpStep2 & SignUpStep3;
 }) => {
-  const { signup, isLoading, error, isSuccess, data } = useSignup();
+  const { signup } = useSignup();
 
   const handleSubmitToServer = async () => {
     try {

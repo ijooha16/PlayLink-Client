@@ -1,37 +1,24 @@
+'use client';
+
 import { ChevronLeft } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import NotificationCard from './notification-card';
 import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
-import { handleGetSeesionStorage } from '@/shares/libs/utills/web-api';
-import {
-  requestPermissionAndGetToken,
-  onForegroundMessage,
-} from '@/shares/libs/firebase/firebase-messaging';
+import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
+import { NotificationDataType } from '../../types/notification/notification';
 
 const NotificationView = ({
   setNotificationViewOpen,
 }: {
   setNotificationViewOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const token = handleGetSessionStorage();
+  const { data: notificationData } = useGetNotificationQuery(token);
   const [tab, setTab] = useState<'activity' | 'matching'>('activity');
   const tabs = ['activity', 'matching'] as const;
-  // const token = handleGetSeesionStorage();
-  // const { data } = useGetNotificationQuery(token);
 
-  useEffect(() => {
-    // 포그라운드 알림 수신
-    onForegroundMessage((payload) => {
-      alert(`새 알림: ${payload.notification?.title}`);
-    });
-    const handleRequestToken = async () => {
-      const token = await requestPermissionAndGetToken();
-      if (token) {
-        console.log('사용자 토큰:', token);
-      }
-    };
-
-    handleRequestToken();
-  }, []);
+  const notificationList: NotificationDataType[] =
+    notificationData?.data.data.notificationList || [];
 
   return (
     <div className='fixed left-0 top-0 z-50 h-screen w-full bg-white'>
@@ -55,7 +42,14 @@ const NotificationView = ({
           ))}
         </div>
         <div className='px-4'>
-          <NotificationCard setNotificationViewOpen={setNotificationViewOpen} />
+          {notificationList.map((notification) => (
+            <NotificationCard
+              key={notification.user_notifications_id}
+              token={token}
+              data={notification}
+              setNotificationViewOpen={setNotificationViewOpen}
+            />
+          ))}
         </div>
       </div>
     </div>

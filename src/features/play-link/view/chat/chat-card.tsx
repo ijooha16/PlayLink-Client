@@ -10,7 +10,7 @@ type ChatCardProps = {
 };
 
 const ChatCard = ({
-  roomId,
+  // roomId,
   nickname,
   message,
   sendAt,

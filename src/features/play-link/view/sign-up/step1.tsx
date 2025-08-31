@@ -6,10 +6,10 @@ import {
   SignUpStep1,
   signUpStep1Schema,
 } from '../../types/sign-up/sign-up-schema';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Input from '@/shares/common-components/input';
-import EmailOption from '@/features/play-link/view/sign-up/email-option';
-import useSelector from '@/hooks/useSelector';
+// import EmailOption from '@/features/play-link/view/sign-up/email-option';
+// import useSelector from '@/hooks/useSelector';
 
 import { useEmail } from '@/hooks/email/useEmail';
 import { useEmailVerify } from '@/hooks/email/useEmailVerify';
@@ -17,13 +17,13 @@ import { useEmailVerify } from '@/hooks/email/useEmailVerify';
 import { useSms } from '@/hooks/sms/useSms';
 import { useSmsVerify } from '@/hooks/sms/useSmsVerify';
 
-import {
-  TERMS_OF_SERVICE,
-  PRIVACY_POLICY,
-  LOCATION_POLICY,
-  THIRD_PARTY_POLICY,
-  MARKETING_POLICY,
-} from '@/shares/constant/sigin-up-privacy';
+// import {
+//   TERMS_OF_SERVICE,
+//   PRIVACY_POLICY,
+//   LOCATION_POLICY,
+//   THIRD_PARTY_POLICY,
+//   MARKETING_POLICY,
+// } from '@/shares/constant/sigin-up-privacy';
 
 const Step1 = ({
   onNext,
@@ -44,7 +44,7 @@ const Step1 = ({
 
   const watched = useWatch({ control });
 
-  const { selectorValue, handleGetSelectorValueData } = useSelector();
+  // const { selectorValue, handleGetSelectorValueData } = useSelector();
   const [emailAuthView, setEmailAuthView] = useState(false);
   const [smsView, setSmsView] = useState(false);
 
