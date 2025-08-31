@@ -54,14 +54,14 @@ const useSignup = () => {
       router.push('/sign-in');
       if (!response.ok) {
         const error = await response.json();
-        openAlert('회원가입 실패 !', `회원가입에 실패했습니다`);
+        openAlert('회원가입 실패 !', '회원가입에 실패했습니다');
         throw new Error(error.message || '회원가입에 실패했습니다');
       }
 
       return response.json();
     } catch (err) {
       console.log('커스텀 훅에서 호출한 사인업 api 데이터 오류', err);
-      openAlert('회원가입 실패 !', `회원가입에 실패했습니다`);
+      openAlert('회원가입 실패 !', '회원가입에 실패했습니다');
     }
   };
 

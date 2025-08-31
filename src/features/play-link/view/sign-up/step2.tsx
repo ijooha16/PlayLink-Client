@@ -49,10 +49,10 @@ const Step2 = ({
     }
 
     if (errors.profileImage) {
-      {
-        typeof errors.profileImage.message === 'string'
-          ? alert(errors.profileImage.message)
-          : '이미지 파일 오류가 있습니다.';
+      if (typeof errors.profileImage.message === 'string') {
+        alert(errors.profileImage.message);
+      } else {
+        alert('이미지 파일 오류가 있습니다.');
       }
     }
   }, [imageFile]);

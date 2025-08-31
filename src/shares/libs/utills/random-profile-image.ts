@@ -35,5 +35,5 @@ export default function randomProfileImage(): ProfileImg {
       return image.path;
     }
   }
-  return "<span className='text-4xl text-gray-500'>🙂</span>";
+  return '<span className=\'text-4xl text-gray-500\'>🙂</span>';
 }

@@ -28,11 +28,11 @@ export async function POST(request: Request) {
 
     const data = await response.json();
     return NextResponse.json({ status: 'success', data }, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Add match Route Handler error:', error);
-    return NextResponse.json(
-      { status: 'error', message: error.message },
-      { status: 500 }
-    );
+          return NextResponse.json(
+        { status: 'error', message: error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : 'Unknown error' },
+        { status: 500 }
+      );
   }
 }

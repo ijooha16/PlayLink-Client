@@ -48,11 +48,11 @@ export async function requestPermissionAndGetToken(): Promise<string | null> {
 /**
  * 포그라운드 메시지 수신 리스너
  */
-export function onForegroundMessage(callback: (payload: any) => void) {
+export function onForegroundMessage(callback: (payload: Record<string, unknown>) => void) {
   if (!messaging) return;
 
   onMessage(messaging, (payload) => {
     console.log('📩 Foreground message received:', payload);
-    callback(payload);
+    callback(payload as unknown as Record<string, unknown>);
   });
 }

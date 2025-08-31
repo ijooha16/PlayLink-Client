@@ -46,7 +46,7 @@ export default function ApplyPage() {
       '매치장이 승인하면 매칭 알람으로 알려드릴게요'
     );
     applyMatch({ token, join_message: '신청해요~', matchId: match_id });
-    router.replace(`/`); // 신청 후 상세 페이지로 돌아가기
+    router.replace('/'); // 신청 후 상세 페이지로 돌아가기
   };
 
   return (

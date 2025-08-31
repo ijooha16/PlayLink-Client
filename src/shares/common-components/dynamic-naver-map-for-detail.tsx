@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 declare global {
   interface Window {
-    naver: any;
+    naver: Record<string, unknown>;
   }
 }
 
@@ -18,8 +18,8 @@ const DynamicNaverMapForDetail = ({
   lng = 127.0276, // 강남역 기본 경도
 }: DynamicNaverMapForDetailProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const naverMapInstance = useRef<any>(null);
-  const naverMarkerInstance = useRef<any>(null);
+  const naverMapInstance = useRef<Record<string, unknown> | null>(null);
+  const naverMarkerInstance = useRef<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     // 네이버 지도 스크립트가 이미 로드되었는지 확인
@@ -38,11 +38,11 @@ const DynamicNaverMapForDetail = ({
     return () => {
       // 컴포넌트 언마운트 시 지도 인스턴스 및 마커 정리
       if (naverMapInstance.current) {
-        naverMapInstance.current.destroy();
+        (naverMapInstance.current as any).destroy();
         naverMapInstance.current = null;
       }
       if (naverMarkerInstance.current) {
-        naverMarkerInstance.current.setMap(null);
+        (naverMarkerInstance.current as any).setMap(null);
         naverMarkerInstance.current = null;
       }
       // 스크립트 제거 (선택 사항, 메모리 누수 방지)
@@ -60,20 +60,21 @@ const DynamicNaverMapForDetail = ({
     if (mapRef.current && window.naver) {
       // 기존 지도 인스턴스 정리 (의존성 변경 시)
       if (naverMapInstance.current) {
-        naverMapInstance.current.destroy();
+        (naverMapInstance.current as any).destroy();
         naverMapInstance.current = null;
       }
       if (naverMarkerInstance.current) {
-        naverMarkerInstance.current.setMap(null);
+        (naverMarkerInstance.current as any).setMap(null);
         naverMarkerInstance.current = null;
       }
 
-      const map = new window.naver.maps.Map(mapRef.current, {
-        center: new window.naver.maps.LatLng(lat, lng),
+      const naverMaps = window.naver.maps as any;
+      const map = new naverMaps.Map(mapRef.current, {
+        center: new naverMaps.LatLng(lat, lng),
         zoom: 15,
       });
-      const marker = new window.naver.maps.Marker({
-        position: new window.naver.maps.LatLng(lat, lng),
+      const marker = new naverMaps.Marker({
+        position: new naverMaps.LatLng(lat, lng),
         map: map,
       });
 
