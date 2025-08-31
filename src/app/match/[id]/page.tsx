@@ -24,6 +24,8 @@ export default function MatchDetailPage() {
     placeAddress,
   } = data?.data?.data || {};
 
+  // console.log(room_id, end_time, date, createdAt, likeCount);
+
   const sportTypes = (sports && sports?.data?.data?.sports) || [];
   const sportTypeForThisMatch = sportTypes.filter(
     (sport: { sports_id: number }) => sport.sports_id === sports_type
@@ -59,7 +61,7 @@ export default function MatchDetailPage() {
 
       <div className='flex flex-col gap-4'>
         <div className='flex flex-col gap-2'>
-          <span className='font-bold text-blue-500 pt-4'>
+          <span className='pt-4 font-bold text-blue-500'>
             {sportTypeForThisMatch[0].sports_name}
           </span>
           <h1 className='text-2xl font-bold'>{title}</h1>
@@ -108,6 +110,7 @@ export default function MatchDetailPage() {
           <Heart />
           <Share2 />
         </div>
+
         {id !== '5' ? (
           <Link href={`/apply/${id}`}>
             <button className='rounded-lg bg-blue-500 px-6 py-3 font-bold text-white'>

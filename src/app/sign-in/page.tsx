@@ -40,6 +40,26 @@ const SignIn = () => {
     });
   };
 
+  const handleKakaoLogin = () => {
+    const CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_OAUTH_REST_API_KEY!;
+    const REDIRECT_URI =
+      process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ??
+      'http://localhost:3000/oauth/kakaoCallback';
+
+    // (선택) CSRF 방지용 state 생성/저장
+    const state = Math.random().toString(36).slice(2);
+    sessionStorage.setItem('kakao_oauth_state', state);
+
+    const params = new URLSearchParams({
+      response_type: 'code',
+      client_id: CLIENT_ID,
+      redirect_uri: REDIRECT_URI,
+    });
+
+    // ✅ 외부(Kakao)로 리다이렉트
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
+  };
+
   return (
     <div className='mx-auto flex h-full w-full max-w-screen-sm flex-col'>
       {isPending && <Loading variant='white' />}
@@ -108,11 +128,14 @@ const SignIn = () => {
             <SocialIconButton
               src='/images/social/kakao-talk.png'
               alt='카카오 로그인'
+              type='button'
+              onClick={handleKakaoLogin}
             />
-            <SocialIconButton
+
+            {/* <SocialIconButton
               src='/images/social/google.svg'
               alt='구글 로그인'
-            />
+            /> */}
           </div>
         </div>
       </div>

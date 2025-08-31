@@ -11,7 +11,7 @@ import Step2 from './step2';
 import Step3 from './step3';
 import Done from './done';
 import { useRouter, useSearchParams } from 'next/navigation';
-const steps = ['step1', 'step2', 'step3', 'done'] as const;
+const steps = ['step1', 'step2', 'step3'] as const;
 type Step = (typeof steps)[number];
 
 const SignUpFunnel = () => {
@@ -41,13 +41,12 @@ const SignUpFunnel = () => {
     }
   }, [currentQueryStep]);
 
-  const mergedData = useMemo(
+  const mergedData: Partial<SignUpStep1 & SignUpStep2> = useMemo(
     () => ({
       ...step1Data,
       ...step2Data,
-      ...step3Data,
     }),
-    [step1Data, step2Data, step3Data]
+    [step1Data, step2Data]
   );
 
   return (
@@ -74,15 +73,15 @@ const SignUpFunnel = () => {
 
       {step === 'step3' && (
         <Step3
+          baseData={mergedData}
           onNext={(data) => {
             setStep3Data(data);
-            moveToStep('done');
           }}
-          defaultValues={step3Data}
+          // defaultValues={step3Data}
         />
       )}
 
-      {step === 'done' && <Done allData={mergedData} />}
+      {/* {step === 'done' && <Done allData={mergedData} />} */}
     </div>
   );
 };

@@ -72,7 +72,7 @@ export const signUpStep2Schema = z.object({
  */
 export const signUpStep3Schema = z.object({
   favoriteSports: z
-    .array(z.string())
+    .array(z.number())
     .min(1, '최소 하나의 운동은 선택해주세요.')
     .max(3),
 });
