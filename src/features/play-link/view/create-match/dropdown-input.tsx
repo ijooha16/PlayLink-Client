@@ -1,15 +1,14 @@
 'use client';
 
-import Input from '@/shares/common-components/input';
 import { SearchIcon } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 type DropdownInputProps = {
   dummyData: string[];
   keyword: string;
-  setKeyword: Dispatch<SetStateAction<string>>;
+  setKeyword: (e:string) => void;
   placeholderText: string;
-  isSearchable?: boolean; // 검색 가능 여부 추가
+  isSearchable?: boolean;
 };
 
 const DropdownInput = ({
@@ -17,7 +16,7 @@ const DropdownInput = ({
   keyword,
   setKeyword,
   placeholderText,
-  isSearchable = true, // 기본값은 검색 가능
+  isSearchable = true,
 }: DropdownInputProps) => {
   const [focused, setFocused] = useState(false);
 
@@ -29,21 +28,36 @@ const DropdownInput = ({
 
   const handleSelect = (value: string) => {
     setKeyword(value);
-    setFocused(false); // 선택 후 드롭다운 닫기
+    setFocused(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+  };
+
+  const handleInputFocus = () => {
+    setFocused(true);
+  };
+
+  const handleInputBlur = () => {
+    setTimeout(() => setFocused(false), 100);
+  };
+
+  const handleItemClick = (value: string) => {
+    handleSelect(value);
   };
 
   return (
     <div className='relative w-full'>
-      <Input
+      <input
         type='text'
         placeholder={placeholderText}
-        variant={'default'}
-        sizes={'md'}
         value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setTimeout(() => setFocused(false), 0)}
-        readOnly={!isSearchable} // 검색 불가능하면 읽기 전용
+        onChange={handleInputChange}
+        onFocus={handleInputFocus}
+        onBlur={handleInputBlur}
+        readOnly={!isSearchable}
+        className='w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
       />
 
       {isSearchable && (
@@ -54,23 +68,21 @@ const DropdownInput = ({
       )}
 
       {focused && (
-        <ul className='absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border bg-white shadow-md'>
+        <ul className='absolute z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border bg-white shadow-md'>
           {filteredResults.length > 0 ? (
-            filteredResults.map((result, idx) => (
+            dummyData.map((result, idx) => (
               <li
-                key={idx}
+                key={`${result}-${idx}`}
                 className='cursor-pointer px-4 py-2 hover:bg-blue-100'
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  handleSelect(result);
-                }}
+                onClick={() => handleItemClick(result)}
               >
                 {result}
               </li>
             ))
           ) : (
-            <li className='px-4 py-2 text-gray-500'>검색 결과가 없습니다</li>
+            <li className='cursor-pointer px-4 py-2 hover:bg-blue-100'>
+              검색 결과가 없습니다.
+            </li>
           )}
         </ul>
       )}

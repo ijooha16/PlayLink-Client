@@ -24,8 +24,6 @@ export default function MatchDetailPage() {
     placeAddress,
   } = data?.data?.data || {};
 
-  // console.log(room_id, end_time, date, createdAt, likeCount);
-
   const sportTypes = (sports && sports?.data?.data?.sports) || [];
   const sportTypeForThisMatch = sportTypes.filter(
     (sport: { sports_id: number }) => sport.sports_id === sports_type

@@ -4,9 +4,12 @@ export const getMatches = async (): Promise<{
   errCode: number;
   data: MatchType[];
 }> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_DB_URL}/playlink/match`
-  );
+  // const response = await fetch(`/api/match/get-matches`);
+
+  const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
+  const backendApiUrl = `${fetchURL}/playlink/match`;
+  const response = await fetch(backendApiUrl);
+
   if (!response.ok) {
     throw new Error('Failed to fetch matchs');
   }

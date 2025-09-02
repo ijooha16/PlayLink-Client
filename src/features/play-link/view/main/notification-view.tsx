@@ -21,7 +21,7 @@ const NotificationView = ({
     notificationData?.data.data.notificationList || [];
 
   return (
-    <div className='fixed left-0 top-0 z-50 h-screen w-full bg-white'>
+    <div className='fixed left-1/2 top-0 z-50 h-screen w-full max-w-[640px] -translate-x-1/2 bg-white'>
       <div
         className={`fixed left-0 top-0 z-50 flex h-16 w-full max-w-[640px] items-center gap-6 border-b border-gray-200 bg-white px-4`}
       >

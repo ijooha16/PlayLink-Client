@@ -37,7 +37,7 @@ const SearchView = ({
   };
 
   return (
-    <div className='fixed left-0 top-0 z-50 h-screen w-full bg-white px-4'>
+    <div className='fixed left-1/2 top-0 z-50 h-screen w-full max-w-[640px] -translate-x-1/2 bg-white px-4'>
       <div
         className={`fixed left-0 top-0 z-50 flex h-16 w-full max-w-[640px] items-center justify-between gap-6 bg-gray-100 px-4`}
       >

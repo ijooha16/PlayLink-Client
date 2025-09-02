@@ -26,13 +26,15 @@ const CreateMatch = () => {
     startTime,
     endTime,
     leastSize: 0,
-    maxSize: 0,
+    maxSize: '' as number | '',
     place_id: '',
-    placeAddress: '',
+    placeAddress: placeId,
     placeLocation: '35.15001, 126.8742',
   });
 
   const { mutate: addMatch } = useAddMatchMutation();
+
+  console.log(formData);
 
   const router = useRouter();
   const openAlert = useAlertStore((state) => state.openAlert);
@@ -83,7 +85,7 @@ const CreateMatch = () => {
 
   return (
     <form
-      className='mb-4 flex max-w-md flex-col gap-y-4'
+      className='mb-4 flex w-full flex-col gap-y-4'
       onSubmit={(e) => handleSubmit(e)}
     >
       <div className='flex flex-col space-y-2'>
@@ -123,14 +125,20 @@ const CreateMatch = () => {
           <DropdownInput
             dummyData={generateTimeOptions()}
             keyword={startTime}
-            setKeyword={setStartTime}
+            setKeyword={(e: string) => {
+              setFormData((prev) => ({ ...prev, startTime: e }));
+              setStartTime(e);
+            }}
             placeholderText='시작 시간'
             isSearchable={false}
           />
           <DropdownInput
             dummyData={generateTimeOptions()}
             keyword={endTime}
-            setKeyword={setEndTime}
+            setKeyword={(e: string) => {
+              setFormData((prev) => ({ ...prev, endTime: e }));
+              setEndTime(e);
+            }}
             placeholderText='종료 시간'
             isSearchable={false}
           />
@@ -141,7 +149,10 @@ const CreateMatch = () => {
         <DropdownInput
           dummyData={DUMMY_PLACE}
           keyword={placeId}
-          setKeyword={setPlaceId}
+          setKeyword={(e: string) => {
+            setFormData((prev) => ({ ...prev, place_id: e }));
+            setPlaceId(e);
+          }}
           placeholderText='장소를 검색해보세요.'
         />
       </div>
@@ -172,7 +183,10 @@ const CreateMatch = () => {
                   id='maxSize'
                   type='checkbox'
                   onChange={() =>
-                    setFormData((prev) => ({ ...prev, maxSize: 0 }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      maxSize: prev.maxSize === 0 ? '' : 0,
+                    }))
                   }
                   className='h-4 w-4 appearance-none rounded-full border-2 border-gray-300 checked:border-transparent checked:bg-blue-500'
                 />
@@ -206,7 +220,7 @@ const CreateMatch = () => {
             setFormData((prev) => ({ ...prev, contents: e.target.value }))
           }
           className='bg-transparnent h-32 w-full resize-none overflow-auto rounded-lg border border-gray-300 px-4 py-2 text-inherit placeholder-gray-400 focus:outline-none focus:ring-0'
-          placeholder='이 운동을 어떻게 즐기고자 하는지 설명해주세요. 이 매치에 대해 궁금해하는 사람들을 위해 자세히 소개해주세요.'
+          placeholder={`이 운동을 어떻게 즐기고자 하는지 설명해주세요. \n 이 매치에 대해 궁금해하는 사람들을 위해 자세히 소개해주세요.`}
         />
       </div>
       <button
