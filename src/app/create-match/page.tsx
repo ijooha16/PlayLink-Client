@@ -34,8 +34,6 @@ const CreateMatch = () => {
 
   const { mutate: addMatch } = useAddMatchMutation();
 
-  console.log(formData);
-
   const router = useRouter();
   const openAlert = useAlertStore((state) => state.openAlert);
 

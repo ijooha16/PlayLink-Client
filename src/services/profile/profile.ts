@@ -1,4 +1,4 @@
-export const getProfile = async ({ token }: { token: string | null }) => {
+export const getProfile = async (token: string | null) => {
   const response = await fetch('/api/profile/get-profile', {
     method: 'GET',
     headers: {
@@ -17,15 +17,14 @@ export const updateProfile = async ({
   profileData,
 }: {
   token: string | null;
-  profileData: Record<string, unknown>;
+  profileData: FormData;
 }) => {
   const response = await fetch('/api/profile/update-profile', {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json',
       Authorization: token!,
     },
-    body: JSON.stringify(profileData),
+    body: profileData,
   });
 
   if (!response.ok) {

@@ -6,6 +6,7 @@ import { Heart, MapPin, Share2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useGetMatchesQuery } from '@/hooks/match/use-get-match-detail-query';
 import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
+import Image from 'next/image';
 
 export default function MatchDetailPage() {
   const params = useParams();
@@ -17,12 +18,18 @@ export default function MatchDetailPage() {
     start_time,
     sports_type,
     user_nickname,
-    // end_time,
-    // date,
+    end_time,
+    date,
+    image_url,
     // createdAt,
     // likeCount,
+    max_size,
+    member_count,
     placeAddress,
+    comment,
   } = data?.data?.data || {};
+
+  console.log(data?.data?.data);
 
   const sportTypes = (sports && sports?.data?.data?.sports) || [];
   const sportTypeForThisMatch = sportTypes.filter(
@@ -35,7 +42,7 @@ export default function MatchDetailPage() {
 
   return (
     <div className='flex flex-col'>
-      <div className='absolute left-0 top-16 z-40 h-[40dvh] w-full'>
+      <div className='absolute left-1/2 top-16 z-40 mx-auto h-[40dvh] w-full max-w-[640px] -translate-x-1/2'>
         <img
           src={`/images/sport-images/${sports_type}.png`}
           alt={title}
@@ -45,8 +52,12 @@ export default function MatchDetailPage() {
 
       <div className='mt-[40dvh] flex h-24 items-center justify-between rounded-lg'>
         <div className='flex items-center gap-4'>
-          <div className='h-14 w-14 rounded-full bg-gray-300'>
-            {/* 프로필 이미지 */}
+          <div className='h-14 w-14 overflow-hidden rounded-full border border-gray-200 bg-gray-300'>
+            <img
+              src={image_url}
+              alt='profile'
+              className='h-full w-full object-cover object-center'
+            />
           </div>
           <div className='flex flex-col'>
             <span className='text-lg font-bold'>{user_nickname}</span>
@@ -71,14 +82,17 @@ export default function MatchDetailPage() {
             <span>{placeAddress}</span>
           </div>
           <span>|</span>
-          <span>{start_time}</span>
+          <span>{date}</span>
+          <span>|</span>
+          <span>
+            {start_time} ~ {end_time}
+          </span>
         </div>
 
         <div className='mt-4'>
           <h2 className='text-xl font-bold'>소개</h2>
           <p className='mt-2 text-gray-700'>
-            여기에 매치에 대한 상세 설명이 들어갑니다. 함께 즐겁게 운동할 분들을
-            모집합니다!
+            {comment || '소개글이 없습니다.'}
           </p>
         </div>
 
@@ -91,7 +105,9 @@ export default function MatchDetailPage() {
         </div>
 
         <div className='mt-4'>
-          <h2 className='text-xl font-bold'>참가자 (1/5)</h2>
+          <h2 className='text-xl font-bold'>
+            참가자 ({member_count}/{max_size})
+          </h2>
           <div className='mt-2 flex gap-2'>
             <div className='flex items-center gap-2'>
               <div className='h-8 w-8 rounded-full bg-gray-300' />
@@ -103,7 +119,7 @@ export default function MatchDetailPage() {
 
       {/* Bottom CTA */}
       <div className='h-20' />
-      <div className='fixed bottom-0 left-0 flex h-20 w-full items-center justify-between border-t bg-white p-4'>
+      <div className='fixed bottom-0 left-1/2 flex h-20 w-full max-w-[640px] -translate-x-1/2 items-center justify-between border-t bg-white p-4'>
         <div className='flex items-center gap-4'>
           <Heart />
           <Share2 />

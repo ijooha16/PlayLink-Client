@@ -27,12 +27,12 @@ export default function Home() {
     if (keyword || type) router.push(`/query?keyword=${keyword}&type=${type}`);
   }, [keyword, type, router]);
 
-  console.log(data)
-
   //알림 수신
   useEffect(() => {
     onForegroundMessage((payload) => {
-      alert(`새 알림: ${(payload.notification as Record<string, unknown>)?.title}`);
+      alert(
+        `새 알림: ${(payload.notification as Record<string, unknown>)?.title}`
+      );
     });
     const handleRequestToken = async () => {
       const fcmToken = await requestPermissionAndGetToken();
