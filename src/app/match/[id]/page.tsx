@@ -29,8 +29,6 @@ export default function MatchDetailPage() {
     comment,
   } = data?.data?.data || {};
 
-  console.log(data?.data?.data);
-
   const sportTypes = (sports && sports?.data?.data?.sports) || [];
   const sportTypeForThisMatch = sportTypes.filter(
     (sport: { sports_id: number }) => sport.sports_id === sports_type

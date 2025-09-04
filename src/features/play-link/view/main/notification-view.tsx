@@ -20,6 +20,8 @@ const NotificationView = ({
   const notificationList: NotificationDataType[] =
     notificationData?.data.data.notificationList || [];
 
+    console.log(notificationList)
+
   return (
     <div className='fixed left-1/2 top-0 z-50 h-screen w-full max-w-[640px] -translate-x-1/2 bg-white'>
       <div
