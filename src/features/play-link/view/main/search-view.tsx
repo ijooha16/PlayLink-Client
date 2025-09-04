@@ -34,6 +34,7 @@ const SearchView = ({
     e.preventDefault();
     setSearchViewOpen(false);
     setKeyword(inputValue);
+    setInputValue('');
   };
 
   return (
@@ -51,6 +52,7 @@ const SearchView = ({
             onChange={(e) => setInputValue(e.target.value)}
             type='text'
             placeholder='스포츠 종목 검색'
+            className='w-full'
           />
         </form>
         <div onClick={() => setSearchViewOpen(false)}>닫기</div>

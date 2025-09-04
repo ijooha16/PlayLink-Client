@@ -26,8 +26,6 @@ const SearchResultContent = () => {
     (sport: { sports_id: number }) => sport.sports_id === parseInt(type)
   );
 
-  console.log(searchSport);
-
   return (
     <>
       <Header
