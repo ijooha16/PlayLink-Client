@@ -83,6 +83,7 @@ const Step2 = ({
               width={100}
               height={100}
               className='object-cover'
+              priority={true}
             />
             {/* {preview ? (
               <Image
