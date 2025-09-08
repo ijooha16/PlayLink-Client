@@ -4,6 +4,7 @@ import '../styles/globals.css';
 import LayoutClientSide from '@/features/play-link/view/main/layout-client-side';
 import Providers from './provider';
 import MainBottomNavigation from '@/features/play-link/view/main/main-bottom-navigation';
+import ProtectedRoute from '@/shares/common-components/protected-route';
 
 const pretendard = localFont({
   src: '../../public/fonts/pretendard-variable.woff2',
@@ -47,7 +48,9 @@ const RootLayout = ({
         <LayoutClientSide />
         <div className='flex h-full flex-col'>
           <div className='flex-1 px-4 pb-16 pt-20'>
-            <Providers>{children}</Providers>
+            <Providers>
+              <ProtectedRoute>{children}</ProtectedRoute>
+            </Providers>
           </div>
           <MainBottomNavigation />
         </div>

@@ -7,9 +7,9 @@ const MatchButton = ({
 }) => {
   const buttonStyle = {
     수락: 'bg-primary text-white border-primary',
-    거절: 'bg-gray-50 border-gray-500',
-    취소: 'bg-white border-gray-400',
-    상세: 'bg-white border-gray-400',
+    거절: 'bg-gray-50 text-gray-400 border-gray-300',
+    취소: 'bg-white text-gray-400 border-gray-300',
+    상세: 'bg-white border-gray-300',
   };
 
   const buttonText = {
@@ -22,7 +22,7 @@ const MatchButton = ({
   return (
     <button
       onClick={onClick}
-      className={`${buttonStyle[type]} rounded-lg px-3 py-2 text-sm font-semibold`}
+      className={`${buttonStyle[type]} rounded-lg !border px-3 py-2 text-sm font-semibold [border-style:solid]`}
     >
       {buttonText[type]}
     </button>

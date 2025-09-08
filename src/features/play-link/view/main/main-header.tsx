@@ -5,6 +5,8 @@ import { BellIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import SearchView from './search-view';
 import NotificationView from './notification-view';
+import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
+import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
 
 const options = ['강남구', '추가 설정'];
 
@@ -15,6 +17,12 @@ const click = (option: string) => {
 const MainHeader = () => {
   const [searchViewOpen, setSearchViewOpen] = useState(false);
   const [notificationViewOpen, setNotificationViewOpen] = useState(false);
+  // const token = handleGetSessionStorage();
+  // const { data: notificationData } = useGetNotificationQuery(token);
+  // const unread = notificationData?.data.data.notificationList.some(
+  //   (message: MessageType) => !message.is_read
+  // );
+  //읽지 않은 메시지 확인용
 
   return (
     <>
@@ -24,8 +32,15 @@ const MainHeader = () => {
           <button onClick={() => setSearchViewOpen(true)}>
             <SearchIcon size={24} />
           </button>
-          <button onClick={() => setNotificationViewOpen(true)}>
+          <button
+            onClick={() => setNotificationViewOpen(true)}
+            className='relative'
+          >
             <BellIcon size={24} />
+            {/* {unread && (
+              <div className='absolute right-0.5 top-0.5 h-2 w-2 rounded-full bg-red-500' />
+            )} */}
+            {/* 읽지 않은 메시지 있을 경우 */}
           </button>
         </div>
       </div>
@@ -38,3 +53,15 @@ const MainHeader = () => {
 };
 
 export default MainHeader;
+
+type MessageType = {
+  is_read: boolean;
+  body: string;
+  created_at: string;
+  match_id: number;
+  target_id: number;
+  title: string;
+  type: string;
+  user_id: number;
+  user_notifications_id: number;
+};

@@ -29,6 +29,16 @@ const NotificationCard = ({
   const { mutate: rejectMatch } = useRejectMatchMutation();
   const router = useRouter();
 
+  function daysAgo(isoString: string): number {
+    const target = new Date(isoString); // 주어진 날짜
+    const now = new Date(); // 현재 시간
+
+    const diffMs = now.getTime() - target.getTime();
+
+    // 일 단위로 변환
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  }
+
   return (
     <div className='flex gap-4 py-4'>
       <div className='text-primary'>{cardIcon[data.type]}</div>
@@ -37,7 +47,7 @@ const NotificationCard = ({
           <div className='flex items-center justify-between'>
             <strong>{cardTitle[data.type]}</strong>
             <div className='flex items-center gap-3 text-xs text-gray-400'>
-              <div>2일 전</div>
+              <div>{daysAgo(data.created_at)}일 전</div>
               <LucideEllipsisVertical
                 size={14}
                 onClick={() => setOpenOptions(!openOptions)}
@@ -52,35 +62,40 @@ const NotificationCard = ({
         </div>
         <div className='pb-4 pt-2 text-sm'>{data.title}</div>
         <div className='flex gap-3'>
-          <MatchButton
-            onClick={() => {
-              approveMatch({
-                token,
-                matchId: data.match_id,
-                applicantId: data.target_id,
-              });
-              openAlert(
-                '매칭 수락이 완료되었어요!',
-                '돌멩이님이 "조깅하실분" 채팅방에 초대되었어요.'
-              );
-              setNotificationViewOpen(false);
-            }}
-            type='수락'
-          />
-          <MatchButton
-            type='거절'
-            onClick={() =>
-              rejectMatch({
-                token,
-                matchId: data.match_id,
-                applicantId: data.target_id,
-              })
-            }
-          />
+          {data.type === 'received' && (
+            <>
+              <MatchButton
+                type='수락'
+                onClick={() => {
+                  approveMatch({
+                    token,
+                    matchId: data.match_id,
+                    applicantId: data.target_id,
+                  });
+                  openAlert(
+                    '매칭 수락이 완료되었어요!',
+                    '돌멩이님이 "조깅하실분" 채팅방에 초대되었어요.'
+                  );
+                  setNotificationViewOpen(false);
+                }}
+              />
+              <MatchButton
+                type='거절'
+                onClick={() =>
+                  rejectMatch({
+                    token,
+                    matchId: data.match_id,
+                    applicantId: data.target_id,
+                  })
+                }
+              />
+            </>
+          )}
           <MatchButton
             type='상세'
             onClick={() => router.push(`/match/${data.match_id}`)}
           />
+          {data.type === 'approved' && <MatchButton type='취소' />}
         </div>
       </div>
     </div>
@@ -94,12 +109,13 @@ const cardTitle = {
   approved: '매칭수락',
   rejected: '매칭거절',
   cancel: '매칭취소',
+  sent: '매칭요청',
 };
 
 const cardIcon = {
-  sent: <UserPlus2Icon className='text-primary' />,
-  received: <UserPlus2Icon className='text-primary' />,
-  approved: <Check className='text-primary' />,
-  rejected: <MinusCircle className='text-primary' />,
-  cancel: <UserPlus2Icon className='text-primary' />,
+  sent: <UserPlus2Icon />,
+  received: <UserPlus2Icon />,
+  approved: <Check />,
+  rejected: <MinusCircle />,
+  cancel: <UserPlus2Icon />,
 };

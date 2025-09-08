@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const token = request.headers.get('Authorization');
+
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
 
-    const backendApiUrl = `${fetchURL}/playlink/match`;
+    const backendApiUrl = `${fetchURL}/playlink/profile`;
 
-    const response = await fetch(backendApiUrl);
+    const response = await fetch(backendApiUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: token!,
+      },
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -18,20 +25,11 @@ export async function GET() {
     }
 
     const data = await response.json();
-
-    return NextResponse.json(data, { status: 200 });
+    return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: unknown) {
-    console.error('Get match Route Handler error:', error);
+    console.error('Get profile Route Handler error:', error);
     return NextResponse.json(
-      {
-        status: 'error',
-        message:
-          error instanceof Error
-            ? error instanceof Error
-              ? error.message
-              : 'Unknown error'
-            : 'Unknown error',
-      },
+      { status: 'error', message: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }
     );
   }

@@ -26,7 +26,7 @@ const Header = ({
           <button
             onClick={() => {
               if (backbtn === 'home') {
-                router.push('/');
+                router.replace('/');
               } else {
                 router.back();
               }

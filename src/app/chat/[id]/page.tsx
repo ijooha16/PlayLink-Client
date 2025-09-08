@@ -42,13 +42,12 @@ export default function ChatRoom() {
         text: row.message ?? '',
         isMyChat: !!row.itsme,
         nickname: row.itsme ? undefined : (row.nickname ?? '상대'),
-        createdAt: new Date((row.send_at as string) ?? Date.now()).toLocaleTimeString(
-          'ko-KR',
-          {
-            hour: '2-digit',
-            minute: '2-digit',
-          }
-        ),
+        createdAt: new Date(
+          (row.send_at as string) ?? Date.now()
+        ).toLocaleTimeString('ko-KR', {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
       })
     );
     setMessages(mapped);
@@ -69,7 +68,9 @@ export default function ChatRoom() {
 
     const onReceive = (payload: Record<string, unknown>) => {
       const createdAt = new Date(
-        (payload?.send_at as string) ?? (payload?.createdAt as string) ?? Date.now()
+        (payload?.send_at as string) ??
+          (payload?.createdAt as string) ??
+          Date.now()
       ).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
 
       setMessages((prev) => [
@@ -78,7 +79,9 @@ export default function ChatRoom() {
           id: crypto.randomUUID?.() ?? String(Date.now()),
           text: (payload?.message as string) ?? '',
           isMyChat: !!payload?.itsme, // ✅ itsme 반영
-          nickname: payload?.itsme ? undefined : ((payload?.nickname as string) ?? '상대'),
+          nickname: payload?.itsme
+            ? undefined
+            : ((payload?.nickname as string) ?? '상대'),
           createdAt,
         },
       ]);
@@ -135,7 +138,7 @@ export default function ChatRoom() {
 
   return (
     <div>
-      <div className='flex flex-col gap-4 p-4 pb-24'>
+      <div className='flex flex-col gap-4 pb-4'>
         {messages.map((m) => (
           <ChatBox
             key={m.id}
@@ -148,25 +151,33 @@ export default function ChatRoom() {
         <div ref={bottomRef} />
       </div>
 
-      <div className='fixed bottom-0 left-0 flex h-20 w-full items-center justify-between gap-4 border-t bg-white p-4'>
+      <div className='fixed bottom-0 left-1/2 flex h-20 w-full max-w-[640px] -translate-x-1/2 items-center justify-between gap-4 border-t bg-white p-4'>
         <Plus />
-        <input
-          type='text'
-          placeholder='메시지를 입력하세요...'
-          className='flex-1 rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={onKeyDown}
-          onCompositionStart={() => setIsComposing(true)}
-          onCompositionEnd={() => setIsComposing(false)}
-        />
-        <button
-          aria-label='send'
-          className='rounded-full p-2 hover:bg-gray-100 active:scale-95'
-          onClick={handleSend}
+        <form
+          className='flex w-full items-center gap-2'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
         >
-          <Send />
-        </button>
+          <input
+            type='text'
+            placeholder='메시지를 입력하세요...'
+            className='flex-1 rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={onKeyDown}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
+          />
+          <button
+            aria-label='send'
+            className='rounded-full p-2 hover:bg-gray-100 active:scale-95'
+            type='submit'
+          >
+            <Send />
+          </button>
+        </form>
       </div>
     </div>
   );
