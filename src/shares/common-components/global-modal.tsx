@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useModalStore } from '@/shares/stores/modal-store';
 import { X } from 'lucide-react';
 import MarkdownRenderer from '@/shares/common-components/markdown-renderer';
+import Button from '@/shares/common-components/button';
 
 export default function GlobalModal() {
   const {
@@ -84,20 +85,22 @@ export default function GlobalModal() {
         {(showCancelButton || showConfirmButton) && (
           <div className="flex gap-3">
             {showCancelButton && (
-              <button
+              <Button
                 onClick={handleCancel}
-                className="flex-1 rounded-xl border border-gray-300 px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                variant="default"
+                className="flex-1 bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-50"
               >
                 {cancelText}
-              </button>
+              </Button>
             )}
             {showConfirmButton && (
-              <button
+              <Button
                 onClick={handleConfirm}
-                className="flex-1 rounded-xl bg-primary px-4 py-3 font-medium text-white transition-colors hover:bg-blue-600"
+                variant="default"
+                className="flex-1"
               >
                 {confirmText}
-              </button>
+              </Button>
             )}
           </div>
         )}

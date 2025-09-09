@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   useEffect(() => {
     const checkAuth = () => {
       // 공개 페이지는 인증 체크하지 않음
-      if (publicPaths.includes(pathname)) {
+      if (publicPaths.includes(pathname) || pathname.startsWith('/sign-up')) {
         setIsLoading(false);
         return;
       }

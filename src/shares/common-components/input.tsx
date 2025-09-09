@@ -8,10 +8,17 @@ const inputVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-transparent rounded-lg border border-gray-300 placeholder-gray-400 disabled:bg-gray-200 h-14',
+          'bg-transparent rounded-lg border border-gray-300 placeholder-grey03 disabled:bg-gray-200 h-14',
+        error:
+          'bg-transparent rounded-lg border border-red placeholder-grey03 disabled:bg-gray-200 h-14',
+      },
+      align: {
+        left: 'text-left',
+        center: 'text-center',
+        right: 'text-right',
       },
       sizes: {
-        lg: 'text-lg',
+        lg: 'text-body-2',
         md: 'text-md',
         sm: 'text-sm',
         xs: 'text-xs',
@@ -28,6 +35,8 @@ const inputVariants = cva(
 type InputProps = VariantProps<typeof inputVariants> &
   React.InputHTMLAttributes<HTMLInputElement> & {
     className?: never;
+    errorMessage?: string;
+    hasError?: boolean;
   };
 
 /**
@@ -38,13 +47,20 @@ type InputProps = VariantProps<typeof inputVariants> &
  */
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ variant, sizes, line, ...props }, ref) => {
+  ({ variant, sizes, line, align, errorMessage, hasError, ...props }, ref) => {
+    const finalVariant = hasError ? 'error' : variant;
+    
     return (
-      <input
-        ref={ref}
-        className={twMerge(inputVariants({ variant, sizes, line }))}
-        {...props}
-      />
+      <div className="w-full">
+        <input
+          ref={ref}
+          className={twMerge(inputVariants({ variant: finalVariant, sizes, line, align }))}
+          {...props}
+        />
+        {hasError && errorMessage && (
+          <p className="text-caption text-red pt-[8px]">{errorMessage}</p>
+        )}
+      </div>
     );
   }
 );

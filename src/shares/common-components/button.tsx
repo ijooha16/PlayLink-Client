@@ -3,13 +3,16 @@ import * as React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 const buttonVariants = cva(
-  'w-50 box-border cursor-pointer rounded-lg bg-primary text-white font-semibold disabled:bg-[#E7E9EC] px-4 text-sm disabled:text-[#BDC0C6] transition-colors',
+  'w-full h-[56px] box-border cursor-pointer rounded-lg bg-primary text-white font-semibold disabled:bg-grey04 px-4 text-sm disabled:text-grey02 transition-colors',
   {
     variants: {
       variant: {
-        default: 'border bg-color-blue',
+        default: 'bg-primary',
+        transparent: 'bg-transparent',
       },
-      size: {},
+      size: {
+        base: 'h-[56px]',
+      },
     },
     defaultVariants: {},
   }
@@ -18,7 +21,7 @@ const buttonVariants = cva(
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants> & {
     children: React.ReactNode;
-    className?: never;
+    className?: string;
   };
 
 /**
@@ -29,9 +32,9 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
  * @param props - 버튼의 기본 속성
  * @returns - 버튼 컴포넌트
  */
-const Button = ({ variant, size, children, ...props }: ButtonProps) => {
+const Button = ({ variant, size, className, children, ...props }: ButtonProps) => {
   return (
-    <button className={twMerge(buttonVariants({ variant, size }))} {...props}>
+    <button className={twMerge(buttonVariants({ variant, size }), className)} {...props}>
       {children}
     </button>
   );
