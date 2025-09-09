@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm, useWatch } from 'react-hook-form';
@@ -15,6 +16,11 @@ import { useEmailVerify } from '@/hooks/email/useEmailVerify';
 import { useSms } from '@/hooks/sms/useSms';
 import { useSmsVerify } from '@/hooks/sms/useSmsVerify';
 import Button from '@/shares/common-components/button';
+import { useModalStore } from '@/shares/stores/modal-store';
+
+import { ChevronDown } from 'lucide-react';
+
+import { POLICY } from '@/shares/constant/sigin-up-privacy';
 
 type TermsKey =
   | 'agreeTerms'
@@ -23,12 +29,6 @@ type TermsKey =
   | 'agreeLocation'
   | 'agreeThirdParty'
   | 'agreeMarketing';
-
-type TEMRSTYPE = {
-  name: TermsKey; // ← boolean이 아니라 폼 키
-  label: string;
-  required: boolean;
-};
 
 const Step1 = ({
   onNext,
@@ -48,6 +48,7 @@ const Step1 = ({
   });
 
   const watched = useWatch({ control });
+  const { openModal } = useModalStore();
 
   const [emailAuthView, setEmailAuthView] = useState(false);
   const [smsView, setSmsView] = useState(false);
@@ -65,6 +66,20 @@ const Step1 = ({
   // 버튼 활성화
   const [emailButtonEnabled, setEmailButtonEnabled] = useState(true);
   const [smsButtonEnabled, setSmsButtonEnabled] = useState(true);
+
+  // 약관 모달 열기
+  const showTermsModal = (termName: string) => {
+    const policyItem = POLICY.find(p => p.id === termName);
+    if (policyItem) {
+      openModal({
+        title: policyItem.title,
+        content: policyItem.content,
+        isMarkdown: true,
+        showCancelButton: false,
+        confirmText: '확인',
+      });
+    }
+  };
 
   // 이메일 인증코드 전송
   const { mutate: emailSend, isPending: isSending } = useEmail({
@@ -186,14 +201,6 @@ const Step1 = ({
 
   const checkboxClass =
     'relative h-4 w-4 cursor-pointer appearance-none rounded-full border border-gray-400 checked:border-blue-500 checked:bg-blue-500 checked:after:absolute checked:after:inset-0 checked:after:flex checked:after:items-center checked:after:justify-center checked:after:text-xs checked:after:font-bold checked:after:text-white checked:after:content-["✓"]';
-  const termsData: TEMRSTYPE[] = [
-    { name: 'agreeTerms', label: '이용약관 동의', required: true },
-    { name: 'agreePrivacy', label: '개인정보 처리방침 동의', required: true },
-    { name: 'isOver14', label: '만 14세 이상입니다', required: true },
-    { name: 'agreeLocation', label: '위치 정보 이용 동의', required: true },
-    { name: 'agreeThirdParty', label: '제 3자 정보 제공 동의', required: true },
-    { name: 'agreeMarketing', label: '마케팅 수신 동의', required: false },
-  ];
 
   return (
     <form
@@ -369,20 +376,27 @@ const Step1 = ({
       <p className='h-[20px] text-sm text-red-500'>
         {errors.phone && errors.phone.message}
       </p>
-      <div className='flex flex-col space-y-2'>
-        {termsData.map((term: TEMRSTYPE) => (
-          <div key={term.name} className='flex justify-between'>
+      <div className='flex flex-col space-y-4'>
+        {POLICY.map((policy) => (
+          <div key={policy.id} className='flex justify-between'>
             <label className='flex cursor-pointer items-center gap-2'>
               <input
                 type='checkbox'
-                {...register(term.name)}
+                {...register(policy.id as TermsKey)}
                 className={checkboxClass}
               />
               <span>
-                {term.label} ({term.required ? '필수' : '선택'})
+                {policy.title} 동의 ({policy.required ? '필수' : '선택'})
               </span>
             </label>
-            <div className='cursor-pointer text-gray-400'>{'>'}</div>
+            <button
+              type='button'
+              onClick={() => showTermsModal(policy.id)}
+              className='cursor-pointer p-1'
+            >
+
+              <ChevronDown color='var(--color-grey-02)' className='' size={16} />
+            </button>
           </div>
         ))}
       </div>
