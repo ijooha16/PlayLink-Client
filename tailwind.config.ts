@@ -1,3 +1,4 @@
+import { bg } from 'date-fns/locale';
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
@@ -47,9 +48,21 @@ const config: Config = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+
+        black: 'var(--color-black)',
+        white: 'var(--color-white)',
+
         primary: 'var(--color-primary)',
         sub01: 'var(--color-sub-01)',
         sub02: 'var(--color-sub-02)',
+
+        bg01: 'var(--color-bg-sel)',
+
+        grey01: 'var(--color-grey-01)',
+        grey02: 'var(--color-grey-02)',
+        grey03: 'var(--color-grey-03)',
+        grey04: 'var(--color-grey-04)',
+        grey05: 'var(--color-grey-05)',
       },
     },
   },

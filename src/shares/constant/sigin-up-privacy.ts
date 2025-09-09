@@ -1,4 +1,6 @@
-export const TERMS_OF_SERVICE = `
+
+// 이용약관
+const TERMS_OF_SERVICE = `
 ## 플레이링크 서비스 이용약관
 
 ### 제1조 목적
@@ -29,7 +31,8 @@ export const TERMS_OF_SERVICE = `
 - 회원 게시물의 정확성·신뢰성에 대한 책임 없음
 `;
 
-export const PRIVACY_POLICY = `
+// 개인정보 처리방침
+const PRIVACY_POLICY = `
 ## 개인정보 처리방침 동의
 
 ### 수집 항목
@@ -47,7 +50,8 @@ export const PRIVACY_POLICY = `
 - 법령에 따라 보관 의무가 있는 경우 해당 기간까지 보관
 `;
 
-export const LOCATION_POLICY = `
+// 위치정보 이용 동의
+const LOCATION_POLICY = `
 ## 위치정보 이용 동의
 
 ### 수집하는 위치 정보
@@ -63,7 +67,8 @@ export const LOCATION_POLICY = `
 - 분쟁 해결·법적 요청 시 일정 기간 보관 가능
 `;
 
-export const THIRD_PARTY_POLICY = `
+// 제3자 정보 제공 동의
+const THIRD_PARTY_POLICY = `
 ## 개인정보 제3자 제공 동의
 
 ### 1. 제공받는 자
@@ -81,7 +86,8 @@ export const THIRD_PARTY_POLICY = `
 - 이벤트·프로모션 참여 안내(마케팅 동의 시)
 `;
 
-export const MARKETING_POLICY = `
+// 마케팅 정보 수신 동의
+const MARKETING_POLICY = `
 ## 마케팅 정보 수신 동의
 
 ### 수집·이용 항목
@@ -95,3 +101,20 @@ export const MARKETING_POLICY = `
 ### 보유 및 이용 기간
 - 회원 탈퇴 또는 마케팅 동의 철회 시까지
 `;
+
+
+/**
+ * 약관
+ * @id 약관 id
+ * @title 약관 제목
+ * @content 약관 내용
+ * @required 필수 여부
+ */
+export const POLICY = [
+    { id: "agreeTerms", title: "이용약관", content: TERMS_OF_SERVICE, required: true },
+    { id: "agreePrivacy", title: "개인정보 처리방침", content: PRIVACY_POLICY, required: true },
+    { id: "agreeLocation", title: "위치정보 이용 동의", content: LOCATION_POLICY, required: true },
+    { id: "isOver14", title: "만 14세 이상 확인", content: "만 14세 이상만 서비스를 이용할 수 있습니다.", required: true },
+    { id: "agreeThirdParty", title: "제3자 정보 제공 동의", content: THIRD_PARTY_POLICY, required: true },
+    { id: "agreeMarketing", title: "마케팅 정보 수신 동의", content: MARKETING_POLICY, required: false },
+]

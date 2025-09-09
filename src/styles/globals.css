@@ -9,9 +9,20 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  --color-primary: #0C54DA;
-  --color-sub-01: #E0ECFF;
-  --color-sub-02: #FFD359;
+  --color-black: #121212;
+  --color-white: #ffffff;
+
+  --color-primary: #0c54da;
+  --color-sub-01: #e0ecff;
+  --color-sub-02: #ffd359;
+
+  --color-bg-sel: #f8fafd;
+
+  --color-grey-01: #4d4d4d;
+  --color-grey-02: #9c9c9c;
+  --color-grey-03: #c5c5c5;
+  --color-grey-04: #e2e2e2;
+  --color-grey-05: #f3f3f3;
 }
 
 * {

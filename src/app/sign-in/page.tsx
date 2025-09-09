@@ -61,21 +61,15 @@ const SignIn = () => {
   };
 
   return (
-    <div className='mx-auto flex h-full w-full max-w-screen-sm flex-col'>
+    <div className='mx-auto flex h-full w-full max-w-screen-sm flex-col justify-between'>
       {isPending && <Loading variant='white' />}
       <div className='mx-auto w-2/3 break-keep text-center'>
         <div className='animate-fadeInOnce py-6 text-center font-bold'>
-          <h1 className='text-3xl'>안녕하세요 :)</h1>
-          <h2 className='text-2xl'>플레이링크 입니다.</h2>
-        </div>
-        <div className='mb-8 text-center'>
-          <p className='text-base text-gray-400'>
-            브랜드, 하이버, 마미의 통합회원으로 로그인이 가능합니다.
-          </p>
+          <div className='text-xl'>우리 동네 운동메이트 찾기</div>
         </div>
       </div>
-      <div>
-        <div className=''>
+
+      {/* <div className=''>
           <form
             onSubmit={(e) => handleLoginSubmit(e)}
             className='flex flex-col gap-y-1'
@@ -115,30 +109,25 @@ const SignIn = () => {
               <p>회원가입</p>
             </Link>
           </div>
-        </div>
-        <div>
-          <div className='mx-4 my-6 flex items-center justify-center gap-2 text-sm text-gray-500'>
-            <div className='h-px flex-1 bg-gray-200' />
-            <span className='whitespace-nowrap text-sm'>
-              SNS 계정으로 로그인
-            </span>
-            <div className='h-px flex-1 bg-gray-200' />
-          </div>
-          <div className='flex justify-center gap-8'>
-            <SocialIconButton
-              src='/images/social/kakao-talk.png'
-              alt='카카오 로그인'
-              type='button'
-              onClick={handleKakaoLogin}
-            />
-
-            {/* <SocialIconButton
+        </div> */}
+      <div className='w-full'>
+        <SocialIconButton
+          src='/images/social/kakao-talk.png'
+          alt='카카오 로그인'
+          type='kakao'
+          onClick={handleKakaoLogin}
+        />
+        <SocialIconButton
+          src='/images/social/kakao-talk.png'
+          alt='카카오 로그인'
+          type='email'
+          onClick={handleKakaoLogin}
+        />
+      </div>
+      {/* <SocialIconButton
               src='/images/social/google.svg'
               alt='구글 로그인'
             /> */}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
