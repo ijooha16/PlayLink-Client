@@ -49,6 +49,7 @@ const config: Config = {
         foreground: 'var(--foreground)',
         primary: 'var(--color-primary)',
         sub01: 'var(--color-sub-01)',
+        sub02: 'var(--color-sub-02)',
       },
     },
   },

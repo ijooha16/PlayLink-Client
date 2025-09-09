@@ -14,6 +14,7 @@ import { useEmailVerify } from '@/hooks/email/useEmailVerify';
 
 import { useSms } from '@/hooks/sms/useSms';
 import { useSmsVerify } from '@/hooks/sms/useSmsVerify';
+import Button from '@/shares/common-components/button';
 
 type TermsKey =
   | 'agreeTerms'
@@ -60,6 +61,10 @@ const Step1 = ({
 
   const [emailVerified, setEmailVerified] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
+
+  // 버튼 활성화
+  const [emailButtonEnabled, setEmailButtonEnabled] = useState(true);
+  const [smsButtonEnabled, setSmsButtonEnabled] = useState(true);
 
   // 이메일 인증코드 전송
   const { mutate: emailSend, isPending: isSending } = useEmail({
@@ -213,16 +218,26 @@ const Step1 = ({
                 className='bg-transparnent text-md w-full rounded-lg border border-gray-300 px-4 py-2 text-inherit placeholder-gray-400 focus:outline-none focus:ring-0 disabled:bg-gray-200'
                 placeholder='이메일'
                 {...register('email')}
+                onChange={(e) => {
+                  if (
+                    e.target.value.includes('@') &&
+                    e.target.value.includes('.')
+                  ) {
+                    setEmailButtonEnabled(false);
+                  } else {
+                    setEmailButtonEnabled(true);
+                  }
+                }}
               />
             </div>
 
-            <button
+            <Button
               onClick={handleSendEmailCode}
               type='button'
-              className='w-50 box-border cursor-pointer rounded-lg bg-[#E7E9EC] px-4 text-sm text-[#BDC0C6] transition-colors'
+              disabled={emailButtonEnabled}
             >
               인증 받기
-            </button>
+            </Button>
           </div>
 
           {emailAuthView && (
@@ -307,15 +322,25 @@ const Step1 = ({
               className='bg-transparnent text-md flex-1 rounded-lg border border-gray-300 px-4 py-2 text-inherit placeholder-gray-400 focus:outline-none focus:ring-0 disabled:bg-gray-200'
               placeholder='휴대폰 번호'
               {...register('phone')}
+              onChange={(e) => {
+                const input = e.target.value;
+                const sanitizedInput = input.replace(/[^0-9]/g, ''); // 숫자 이외의 문자 제거
+                e.target.value = sanitizedInput;
+                if (sanitizedInput.length >= 10) {
+                  setSmsButtonEnabled(false);
+                } else {
+                  setSmsButtonEnabled(true);
+                }
+              }}
             />
 
-            <button
-              className='w-300 box-border cursor-pointer rounded-lg bg-[#E7E9EC] px-4 text-sm text-[#BDC0C6] transition-colors'
+            <Button
               onClick={handleSendSmsCode}
               type='button'
+              disabled={smsButtonEnabled}
             >
               인증 받기
-            </button>
+            </Button>
           </div>
           {smsView && (
             <div className='mt-4 flex justify-between gap-4'>
