@@ -238,13 +238,13 @@ const Step1 = ({
               />
             </div>
 
-            <Button
+            <button
               onClick={handleSendEmailCode}
               type='button'
               disabled={emailButtonEnabled}
             >
               인증 받기
-            </Button>
+            </button>
           </div>
 
           {emailAuthView && (
@@ -341,13 +341,12 @@ const Step1 = ({
               }}
             />
 
-            <Button
+            <button
               onClick={handleSendSmsCode}
               type='button'
-              disabled={smsButtonEnabled}
             >
               인증 받기
-            </Button>
+            </button>
           </div>
           {smsView && (
             <div className='mt-4 flex justify-between gap-4'>
