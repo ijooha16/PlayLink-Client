@@ -1,11 +1,12 @@
 'use client';
 
+import { MailIcon } from 'lucide-react';
 import Image from 'next/image';
 
 type SocialIconButtonProps = {
   src: string;
   alt: string;
-  type?: 'button' | 'submit';
+  type?: 'kakao' | 'email';
   onClick?: () => void;
   size?: number;
 };
@@ -17,15 +18,34 @@ const SocialIconButton = ({
   onClick,
   size = 48,
 }: SocialIconButtonProps) => {
+  const style: Record<'kakao' | 'email', string> = {
+    kakao: 'bg-yellow-300 text-yellow-950',
+    email: 'bg-transparent text-black !border-black',
+  };
+
   return (
     <button
       // onClick={소셜로그인 넣기}
-      className='flex items-center justify-center rounded-full border border-gray-200 shadow-md transition-shadow focus:shadow-lg'
-      style={{ width: size, height: size }}
+      className={`flex h-14 w-full items-center justify-center gap-2 rounded-lg !border [border-style:solid] ${type ? style[type] : ''} font-semibold`}
       onClick={onClick}
-      type={type}
     >
-      <Image src={src} alt={alt} width={size * 0.6} height={size * 0.6} />
+      {type === 'kakao' && (
+        <>
+          <Image
+            src='/images/social/kakao-talk.png'
+            alt={alt}
+            width={24}
+            height={24}
+          />
+          카카오로 시작하기
+        </>
+      )}
+      {type === 'email' && (
+        <>
+          <MailIcon size={24} />
+          이메일로 시작하기
+        </>
+      )}
     </button>
   );
 };
