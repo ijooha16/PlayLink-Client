@@ -191,7 +191,7 @@ export default function Step3({
       platform: infos.platform,
       device_id: infos.deviceId,
       device_type: infos.deviceType,
-      prefer_sports: data.favoriteSports,
+      // prefer_sports: data.favoriteSports,
       img: imgFile,
     };
 
