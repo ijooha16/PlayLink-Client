@@ -8,7 +8,7 @@ import { useAlertStore } from '@/shares/stores/alert-store';
 import { useRouter } from 'next/navigation';
 import DatePickerModal from '@/shares/common-components/date-picker-modal';
 import SelectExerciseModal from '@/shares/common-components/select-exercise-modal';
-import { useAddMatchMutation } from '@/hooks/match/use-add-match-mutation';
+import { useAddMatchMutation } from '@/hooks/query/match/use-add-match-mutation';
 import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
 import { timeFormat } from '@/shares/libs/utills/create-match-formats';
 

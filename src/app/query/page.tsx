@@ -2,8 +2,8 @@
 
 import { MatchType } from '@/features/play-link/types/match/match';
 import MatchCards from '@/features/play-link/view/main/match-cards';
-import { useGetMatchesMutation } from '@/hooks/match/use-get-searced-matches-mutation';
-import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
+import { useGetMatchesMutation } from '@/hooks/query/match/use-get-searced-matches-mutation';
+import { useGetSportsQuery } from '@/hooks/query/sport/get-sport-query';
 import Header from '@/shares/common-components/header';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';

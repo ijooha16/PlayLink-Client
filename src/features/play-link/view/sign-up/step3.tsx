@@ -100,7 +100,7 @@ import {
   SignUpStep3,
   signUpStep3Schema,
 } from '../../types/sign-up/sign-up-schema';
-import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
+import { useGetSportsQuery } from '@/hooks/query/sport/get-sport-query';
 import SportCard from '@/shares/common-components/sport-card';
 import useSignup from '@/hooks/useSignup';
 import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';

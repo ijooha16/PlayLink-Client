@@ -4,7 +4,7 @@ import ChatCard from '@/features/play-link/view/chat/chat-card';
 import Header from '@/shares/common-components/header';
 import Link from 'next/link';
 import React from 'react';
-import { useChatList } from '@/hooks/chat/use-get-chat-list';
+import { useChatList } from '@/hooks/query/chat/use-get-chat-list';
 
 const Chat = () => {
   const { data, isLoading, error } = useChatList();

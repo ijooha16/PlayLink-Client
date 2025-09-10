@@ -7,7 +7,7 @@ import { useAlertStore } from '@/shares/stores/alert-store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
-import { useSignin } from '@/hooks/auth/useSignin';
+import { useSignin } from '@/hooks/query/auth/useSignin';
 import Loading from '@/shares/common-components/loading';
 import Image from 'next/image';
 import { motion } from 'framer-motion';

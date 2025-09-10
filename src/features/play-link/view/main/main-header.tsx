@@ -6,7 +6,7 @@ import { useState } from 'react';
 import SearchView from './search-view';
 import NotificationView from './notification-view';
 import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
-import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
+import { useGetNotificationQuery } from '@/hooks/query/notification/use-get-notification-query';
 
 const options = ['강남구', '추가 설정'];
 

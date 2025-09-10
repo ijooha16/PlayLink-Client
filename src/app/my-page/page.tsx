@@ -8,8 +8,8 @@ import {
   handleRemoveSessionStorage,
   handleGetSessionStorage,
 } from '@/shares/libs/utills/web-api';
-import { useGetProfileQuery } from '@/hooks/profile/use-get-profile-query';
-import { useUpdateProfileMutation } from '@/hooks/profile/use-update-profile-mutation';
+import { useGetProfileQuery } from '@/hooks/query/profile/use-get-profile-query';
+import { useUpdateProfileMutation } from '@/hooks/query/profile/use-update-profile-mutation';
 import { set } from 'date-fns';
 
 export default function MyPage() {

@@ -10,11 +10,11 @@ import {
 import { useState } from 'react';
 import Input from '@/shares/common-components/input';
 
-import { useEmail } from '@/hooks/email/useEmail';
-import { useEmailVerify } from '@/hooks/email/useEmailVerify';
+import { useEmail } from '@/hooks/query/email/useEmail';
+import { useEmailVerify } from '@/hooks/query/email/useEmailVerify';
 
-import { useSms } from '@/hooks/sms/useSms';
-import { useSmsVerify } from '@/hooks/sms/useSmsVerify';
+import { useSms } from '@/hooks/query/sms/useSms';
+import { useSmsVerify } from '@/hooks/query/sms/useSmsVerify';
 import Button from '@/shares/common-components/button';
 import { useModalStore } from '@/shares/stores/modal-store';
 
