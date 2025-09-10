@@ -1,20 +1,16 @@
 'use client';
 
-import Input from '@/shares/common-components/input';
 import SocialIconButton from '@/shares/common-components/social-icon-button';
-import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';
 import { useAlertStore } from '@/shares/stores/alert-store';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
-import { useSignin } from '@/hooks/query/auth/useSignin';
-import Loading from '@/shares/common-components/loading';
+import { useState } from 'react';
+import { useSignin } from '@/hooks/react-query/auth/useSignin';
+import { useLogin } from '@/hooks/common/auth/useLogin';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const SignIn = () => {
-  const [emailID, setEmailID] = useState<string>();
-  const [password, setPassword] = useState<string>();
+
   const openAlert = useAlertStore((state) => state.openAlert);
   const router = useRouter();
 
@@ -41,43 +37,13 @@ const SignIn = () => {
     },
   });
 
-  // Login Submit 기능 자체가 있었으나, email-login 페이지로 따로 옮겨질 예정
-  const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!emailID || !password) return;
+  // 로그인 훅 사용
+  const handleKakaoLogin = useLogin('kakao');
+  const handleEmailLogin = useLogin('email');
 
-    const infos = await getDeviceInfo();
-
-    signIn({
-      email: emailID,
-      password: password,
-      device_id: infos.deviceId,
-    });
-  };
-
-  const handleKakaoLogin = () => {
-    const CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_OAUTH_REST_API_KEY!;
-    const REDIRECT_URI =
-      process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ??
-      'http://localhost:3000/oauth/kakaoCallback';
-
-    // (선택) CSRF 방지용 state 생성/저장
-    const state = Math.random().toString(36).slice(2);
-    sessionStorage.setItem('kakao_oauth_state', state);
-
-    const params = new URLSearchParams({
-      response_type: 'code',
-      client_id: CLIENT_ID,
-      redirect_uri: REDIRECT_URI,
-    });
-
-    // ✅ 외부(Kakao)로 리다이렉트
-    window.location.href = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
-  };
 
   return ( 
     <div className='mx-auto flex h-[calc(100vh-144px)] w-full max-w-screen-sm flex-col'>
-      {isPending && <Loading variant='white' />}
       
       
       {/* 중앙 콘텐츠 */}
@@ -110,9 +76,9 @@ const SignIn = () => {
               }}
             >
               {/* 첫 번째 세트 */}
-              {sportIcons.map((icon, index) => (
+              {sportIcons.map((icon) => (
                 <div 
-                  key={`first-${index}`}
+                  key={`first-${icon.alt}`}
                   className="bg-grey04 rounded-2xl w-[144px] h-[144px] flex items-center justify-center mr-3 flex-shrink-0" 
                 >
                   <Image
@@ -124,9 +90,9 @@ const SignIn = () => {
                 </div>
               ))}
               {/* 두 번째 세트 (무한 루프를 위해) */}
-              {sportIcons.map((icon, index) => (
+              {sportIcons.map((icon) => (
                 <div 
-                  key={`second-${index}`}
+                  key={`second-${icon.alt}`}
                   className="bg-grey04 rounded-2xl w-[144px] h-[144px] flex items-center justify-center mr-3 flex-shrink-0" 
                 >
                   <Image
@@ -145,47 +111,7 @@ const SignIn = () => {
       {/* 하단 여백 */}
       <div className='flex-1'></div>
 
-      {/* <div className=''>
-          <form
-            onSubmit={(e) => handleLoginSubmit(e)}
-            className='flex flex-col gap-y-1'
-          >
-            <Input
-              type='email'
-              variant={'default'}
-              sizes={'md'}
-              onChange={(e) => setEmailID(e.target.value)}
-              placeholder='이메일 입력'
-            />
-            <Input
-              type='password'
-              variant={'default'}
-              sizes={'md'}
-              autoComplete='current-password'
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder='비밀번호 입력'
-            />
-            <button
-              type='submit'
-              className='my-2 h-12 w-full rounded-lg bg-blue-500 font-semibold text-white transition-colors ease-in-out'
-            >
-              로그인
-            </button>
-          </form>
-          <div className='mx-auto flex w-3/4 justify-around text-gray-500'>
-            <Link href={'/find-account'}>
-              <p>아이디 찾기</p>
-            </Link>
-            |
-            <Link href={'/change-password'}>
-              <p>비밀번호 찾기</p>
-            </Link>
-            |
-            <Link href={'/sign-up'}>
-              <p>회원가입</p>
-            </Link>
-          </div>
-        </div> */}
+
       
       {/* 하단 로그인 버튼들 */}
       <div className='w-full flex flex-col gap-3 mb-5'>
@@ -197,9 +123,9 @@ const SignIn = () => {
         />
         <SocialIconButton
           src='/images/social/kakao-talk.png'
-          alt='카카오 로그인'
+          alt='이메일 로그인'
           type='email'
-          onClick={handleKakaoLogin}
+          onClick={handleEmailLogin}
         />
       </div>
       {/* <SocialIconButton

@@ -3,12 +3,12 @@ import { cva, VariantProps } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
 
 const inputVariants = cva(
-  'w-full px-4 py-2 focus:ring-0 focus:outline-none text-inherit',
+  'w-full px-4 py-2 focus:ring-0 focus:outline-none text-inherit transition-colors',
   {
     variants: {
       variant: {
         default:
-          'bg-transparent rounded-lg border border-gray-300 placeholder-grey03 disabled:bg-gray-200 h-14',
+          'bg-transparent rounded-lg border border-gray-300 placeholder-grey03 disabled:bg-gray-200 h-14 focus:border-grey02',
         error:
           'bg-transparent rounded-lg border border-red placeholder-grey03 disabled:bg-gray-200 h-14',
       },
