@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import React from 'react';
 import { MatchType } from '../../types/match/match';
-import { useGetSportsQuery } from '@/hooks/query/sport/get-sport-query';
+import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import Image from 'next/image';
 
 const MatchCards = (data: { data: MatchType }) => {

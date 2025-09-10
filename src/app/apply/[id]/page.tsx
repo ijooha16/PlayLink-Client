@@ -3,11 +3,11 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useAlertStore } from '@/shares/stores/alert-store';
 import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
-import { useApplyMatchMutation } from '@/hooks/query/match/use-apply-match-mutation';
+import { useApplyMatchMutation } from '@/hooks/react-query/match/use-apply-match-mutation';
 import Header from '@/shares/common-components/header';
 
-import { useGetSportsQuery } from '@/hooks/query/sport/get-sport-query';
-import { useGetMatchesQuery } from '@/hooks/query/match/use-get-match-detail-query';
+import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
 
 export default function ApplyPage() {
   const params = useParams();

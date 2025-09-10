@@ -3,7 +3,7 @@
 import MainHeader from '@/features/play-link/view/main/main-header';
 import MainNewButton from '@/features/play-link/view/main/main-new-button';
 import MatchCards from '@/features/play-link/view/main/match-cards';
-import { useGetMatchesQuery } from '@/hooks/query/match/use-get-matches-query';
+import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-matches-query';
 // import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
 import { sendNotificationToken } from '@/services/notification/send-notification-token';
 import {
