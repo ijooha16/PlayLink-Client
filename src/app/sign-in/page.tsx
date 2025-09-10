@@ -9,12 +9,26 @@ import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import { useSignin } from '@/hooks/auth/useSignin';
 import Loading from '@/shares/common-components/loading';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 const SignIn = () => {
   const [emailID, setEmailID] = useState<string>();
   const [password, setPassword] = useState<string>();
   const openAlert = useAlertStore((state) => state.openAlert);
   const router = useRouter();
+
+  // 아이콘 리스트들 추가
+  // svg 사용 한다고 말씀드린 후 constants 폴더로 옮길 예정
+  const sportIcons = [
+    { src: "/images/sport-svg-icons/sport=1_Ic_Soccer.svg", alt: "축구" },
+    { src: "/images/sport-svg-icons/sport=Ic_Baseball.svg", alt: "야구" },
+    { src: "/images/sport-svg-icons/sport=Ic_7_Badminton.svg", alt: "배드민턴" },
+    { src: "/images/sport-svg-icons/sport=17_Ic_Crossfit.svg", alt: "크로스핏" },
+    { src: "/images/sport-svg-icons/sport=23_Ic_Roller.svg", alt: "롤러스케이트" },
+    { src: "/images/sport-svg-icons/sport=28_Ic_Climing.svg", alt: "클라이밍" },
+    { src: "/images/sport-svg-icons/sport=25_Ic_Boxing.svg", alt: "권투" },
+  ];
 
   const { mutate: signIn, isPending } = useSignin({
     onSuccess: () => {
@@ -27,6 +41,7 @@ const SignIn = () => {
     },
   });
 
+  // Login Submit 기능 자체가 있었으나, email-login 페이지로 따로 옮겨질 예정
   const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!emailID || !password) return;
@@ -60,14 +75,75 @@ const SignIn = () => {
     window.location.href = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
   };
 
-  return (
-    <div className='mx-auto flex h-full w-full max-w-screen-sm flex-col justify-between'>
+  return ( 
+    <div className='mx-auto flex h-[calc(100vh-144px)] w-full max-w-screen-sm flex-col'>
       {isPending && <Loading variant='white' />}
-      <div className='mx-auto w-2/3 break-keep text-center'>
-        <div className='animate-fadeInOnce py-6 text-center font-bold'>
-          <div className='text-xl'>우리 동네 운동메이트 찾기</div>
+      
+      
+      {/* 중앙 콘텐츠 */}
+      <div className='mx-auto w-full break-keep h-full text-center'>
+        <div className='animate-fadeInOnce py-6 text-center font-bold h-full flex flex-col justify-center'>
+          <div className='flex flex-col items-center'>
+            <span className='text-title-2 pb-3'>우리 동네 운동메이트 찾기</span>
+            {/* svg 아이콘은 찾지 못하였음 png 이미지로 대체함. */}
+            <Image
+              src="/images/hero/playlink-icon.png"
+              alt="스포츠 아이콘"
+              width={224}
+              height={75}
+            />
+          </div>
+
+          {/* 스포츠 아이콘들 */}
+          {/* framer motion으로 무한 x좌표로 이동함. */}
+          <div className='relative w-full h-full overflow-hidden flex items-center'>
+            <motion.div 
+              className="flex items-center"
+              animate={{ 
+                x: [0, -sportIcons.length * 153]
+              }}
+              transition={{
+                duration: sportIcons.length * 3,
+                ease: "linear",
+                repeat: Infinity,
+                repeatType: "loop"
+              }}
+            >
+              {/* 첫 번째 세트 */}
+              {sportIcons.map((icon, index) => (
+                <div 
+                  key={`first-${index}`}
+                  className="bg-grey04 rounded-2xl w-[144px] h-[144px] flex items-center justify-center mr-3 flex-shrink-0" 
+                >
+                  <Image
+                    src={icon.src}
+                    alt={icon.alt}
+                    width={96}
+                    height={96}
+                  />
+                </div>
+              ))}
+              {/* 두 번째 세트 (무한 루프를 위해) */}
+              {sportIcons.map((icon, index) => (
+                <div 
+                  key={`second-${index}`}
+                  className="bg-grey04 rounded-2xl w-[144px] h-[144px] flex items-center justify-center mr-3 flex-shrink-0" 
+                >
+                  <Image
+                    src={icon.src}
+                    alt={icon.alt}
+                    width={96}
+                    height={96}
+                  />
+                </div>
+              ))}
+            </motion.div>
+          </div>
         </div>
       </div>
+      
+      {/* 하단 여백 */}
+      <div className='flex-1'></div>
 
       {/* <div className=''>
           <form
@@ -110,7 +186,9 @@ const SignIn = () => {
             </Link>
           </div>
         </div> */}
-      <div className='w-full'>
+      
+      {/* 하단 로그인 버튼들 */}
+      <div className='w-full flex flex-col gap-3 mb-5'>
         <SocialIconButton
           src='/images/social/kakao-talk.png'
           alt='카카오 로그인'
