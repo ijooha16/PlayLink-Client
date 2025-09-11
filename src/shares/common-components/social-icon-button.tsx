@@ -11,13 +11,7 @@ type SocialIconButtonProps = {
   size?: number;
 };
 
-const SocialIconButton = ({
-  src,
-  alt,
-  type,
-  onClick,
-  size = 48,
-}: SocialIconButtonProps) => {
+const SocialIconButton = ({ alt, type, onClick }: SocialIconButtonProps) => {
   const style: Record<'kakao' | 'email', string> = {
     kakao: 'bg-yellow-300 text-yellow-950',
     email: 'bg-transparent text-black !border-black',
@@ -25,7 +19,6 @@ const SocialIconButton = ({
 
   return (
     <button
-      // onClick={소셜로그인 넣기}
       className={`flex h-14 w-full items-center justify-center gap-2 rounded-lg !border [border-style:solid] ${type ? style[type] : ''} font-semibold`}
       onClick={onClick}
     >

@@ -12,17 +12,50 @@ const config: Config = {
   theme: {
     extend: {
       fontSize: {
-        'title-1': ['24px', { lineHeight: '130%', letterSpacing: '-2%', fontWeight: '700' }],
-        'title-2': ['20px', { lineHeight: '140%', letterSpacing: '-2%', fontWeight: '700' }],
-        'title-3': ['18px', { lineHeight: '140%', letterSpacing: '-2%', fontWeight: '700' }],
-        'title-4': ['16px', { lineHeight: '140%', letterSpacing: '-2%', fontWeight: '600' }],
-        'body-1': ['20px', { lineHeight: '140%', letterSpacing: '-2.5%', fontWeight: '400' }],
-        'body-2': ['16px', { lineHeight: '140%', letterSpacing: '-2.5%', fontWeight: '400' }],
-        'body-3': ['16px', { lineHeight: '140%', letterSpacing: '-2.5%', fontWeight: '500' }],
-        'body-4': ['14px', { lineHeight: '150%', letterSpacing: '-3%', fontWeight: '400' }],
-        'body-5': ['14px', { lineHeight: '140%', letterSpacing: '-3%', fontWeight: '600' }],
-        'sub': ['13px', { lineHeight: '130%', letterSpacing: '-3%', fontWeight: '400' }],
-        'caption': ['12px', { lineHeight: '130%', letterSpacing: '-3%', fontWeight: '500' }],
+        'title-1': [
+          '24px',
+          { lineHeight: '130%', letterSpacing: '-2%', fontWeight: '700' },
+        ],
+        'title-2': [
+          '20px',
+          { lineHeight: '140%', letterSpacing: '-2%', fontWeight: '700' },
+        ],
+        'title-3': [
+          '18px',
+          { lineHeight: '140%', letterSpacing: '-2%', fontWeight: '700' },
+        ],
+        'title-4': [
+          '16px',
+          { lineHeight: '140%', letterSpacing: '-2%', fontWeight: '600' },
+        ],
+        'body-1': [
+          '20px',
+          { lineHeight: '140%', letterSpacing: '-2.5%', fontWeight: '400' },
+        ],
+        'body-2': [
+          '16px',
+          { lineHeight: '140%', letterSpacing: '-2.5%', fontWeight: '400' },
+        ],
+        'body-3': [
+          '16px',
+          { lineHeight: '140%', letterSpacing: '-2.5%', fontWeight: '500' },
+        ],
+        'body-4': [
+          '14px',
+          { lineHeight: '150%', letterSpacing: '-3%', fontWeight: '400' },
+        ],
+        'body-5': [
+          '14px',
+          { lineHeight: '140%', letterSpacing: '-3%', fontWeight: '600' },
+        ],
+        sub: [
+          '13px',
+          { lineHeight: '130%', letterSpacing: '-3%', fontWeight: '400' },
+        ],
+        caption: [
+          '12px',
+          { lineHeight: '130%', letterSpacing: '-3%', fontWeight: '500' },
+        ],
       },
       keyframes: {
         fadeInBottom: {
