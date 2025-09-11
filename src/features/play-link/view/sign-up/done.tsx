@@ -6,7 +6,7 @@ import {
   SignUpStep2,
   SignUpStep3,
 } from '../../types/sign-up/sign-up-schema';
-import useSignup from '@/hooks/useSignup';
+import useSignup from '@/hooks/common/useSignup';
 import { useEffect } from 'react';
 
 const Done = ({

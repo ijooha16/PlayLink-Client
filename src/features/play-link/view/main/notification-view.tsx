@@ -3,7 +3,7 @@
 import { ChevronLeft } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import NotificationCard from './notification-card';
-import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
+import { useGetNotificationQuery } from '@/hooks/react-query/notification/use-get-notification-query';
 import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
 import { NotificationDataType } from '../../types/notification/notification';
 

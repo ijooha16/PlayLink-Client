@@ -3,9 +3,13 @@
 import Button from "@/shares/common-components/button";
 import Input from "@/shares/common-components/input";
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
+import { useSignUpStepStore } from '@/shares/stores/sign-up-store';
 
 const PhoneCheck = () => {
-    const [phoneNumber, setPhoneNumber] = useState('')
+    const router = useRouter()
+    const { data, updateStep } = useSignUpStepStore()
+    const [phoneNumber, setPhoneNumber] = useState(data.phone || '')
     const [verificationCode, setVerificationCode] = useState('')
     const [isCodeSent, setIsCodeSent] = useState(false)
     const [hasError, setHasError] = useState(false)
@@ -36,7 +40,8 @@ const PhoneCheck = () => {
             setHasError(true)
         } else {
             setHasError(false)
-            // 성공 처리 로직
+            updateStep({ phone: phoneNumber, phoneVerified: true })
+            router.push('/sign-up/email-check')
         }
     }
 
@@ -49,14 +54,14 @@ const PhoneCheck = () => {
     return (
         <div className="flex flex-col min-h-[calc(100vh-144px)]">
         <div className="px-[20px] pt-[24px]">
-            <h1 className="text-title-1 pb-[24px]">휴대폰 번호 인증</h1>
+            <h1 className="text-title-1 pb-[24px]">휴대폰 번호를 입력해 주세요</h1>
             <p className="text-body-4 text-grey02 pb-[8px]">휴대폰 번호</p>
             <div className="flex flex-col gap-[16px] pb-[24px]">
 
             <Input
                 variant="default"
                 sizes="lg"
-                placeholder="010-1234-5678"
+                placeholder="010-0000-0000"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
             />

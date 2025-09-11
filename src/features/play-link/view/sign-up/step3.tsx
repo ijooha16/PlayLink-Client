@@ -100,9 +100,9 @@ import {
   SignUpStep3,
   signUpStep3Schema,
 } from '../../types/sign-up/sign-up-schema';
-import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
+import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import SportCard from '@/shares/common-components/sport-card';
-import useSignup from '@/hooks/useSignup';
+import useSignup from '@/hooks/common/useSignup';
 import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';
 
 type MaybeBaseData = Partial<SignUpStep1 & SignUpStep2>;
