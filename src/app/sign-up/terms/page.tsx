@@ -72,6 +72,7 @@ const TermsScreen = () => {
               type="checkbox"
               className="checkbox-all"
               checked={isAllChecked}
+              readOnly
             />
             <h4 className="text-title-4">전체 동의하기</h4>
           </div>
