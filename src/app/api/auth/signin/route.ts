@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log('api 페칭댐');
 
     const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
     const backendApiUrl = `${fetchURL}/playlink/login`;

@@ -8,6 +8,8 @@ interface SignUpData {
   email: string;
   password: string;
   confirmPassword: string;
+  nickname: string;
+  profileImage: File | null;
 }
 
 interface SignUpStepStore {
