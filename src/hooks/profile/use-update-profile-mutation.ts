@@ -10,5 +10,8 @@ export const useUpdateProfileMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PROFILE] });
     },
+    onError: (error) => {
+      console.error('프로필 업데이트 실패:', error);
+    },
   });
 };

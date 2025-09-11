@@ -1,9 +1,9 @@
 'use client';
 
 import Header from '@/shares/common-components/header';
-import { Check, CheckSquare, ChevronRight, Edit3 } from 'lucide-react';
+import { Check, CheckSquare, ChevronRight, Edit3, Camera, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   handleRemoveSessionStorage,
   handleGetSessionStorage,
@@ -15,7 +15,11 @@ import { set } from 'date-fns';
 export default function MyPage() {
   const [token, setToken] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const { mutate: updatProfile } = useUpdateProfileMutation();
+  const [isImageEditing, setIsImageEditing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { mutate: updatProfile, isPending: isUpdating } = useUpdateProfileMutation();
 
   const router = useRouter();
   const handleLogout = () => {
@@ -42,38 +46,191 @@ export default function MyPage() {
 
   // 3) 데이터 있을 때만 안전하게 접근
   const profile = profileData?.data?.data; // 서버 응답 래핑 구조 유지
-  const { email, name, nickname, phoneNumber } = profile ?? {};
-
+  const { email, name, nickname, phoneNumber, img_url } = profile ?? {};
+console.log('profile', profile);
   const [nicknameInput, setNicknameInput] = useState(nickname);
+
+  // 이미지 선택 핸들러
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // 파일 크기 검증 (5MB 제한)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('파일 크기는 5MB 이하여야 합니다.');
+        return;
+      }
+      
+      // 이미지 파일 타입 검증
+      if (!file.type.startsWith('image/')) {
+        alert('이미지 파일만 업로드 가능합니다.');
+        return;
+      }
+
+      setSelectedImage(file);
+      
+      // 미리보기 URL 생성
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // 이미지 업로드 핸들러
+  const handleImageUpload = () => {
+    if (!selectedImage) return;
+
+    const data = new FormData();
+    data.append('img', selectedImage);
+    if (nicknameInput) {
+      data.append('nickname', nicknameInput);
+    }
+
+    updatProfile({ 
+      token, 
+      profileData: data 
+    }, {
+      onSuccess: () => {
+        // 성공 시 상태 초기화
+        setSelectedImage(null);
+        setPreviewImage(null);
+        setIsImageEditing(false);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        alert('프로필이 성공적으로 업데이트되었습니다.');
+      },
+      onError: (error) => {
+        console.error('이미지 업로드 실패:', error);
+        alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+      }
+    });
+  };
+
+  // 이미지 편집 취소
+  const handleImageEditCancel = () => {
+    setSelectedImage(null);
+    setPreviewImage(null);
+    setIsImageEditing(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleUpdateProfile = () => {
     const data = new FormData();
     data.append('nickname', nicknameInput!);
 
-    updatProfile({ token, profileData: data });
-    setIsEditing(false);
+    updatProfile({ 
+      token, 
+      profileData: data 
+    }, {
+      onSuccess: () => {
+        setIsEditing(false);
+        alert('닉네임이 성공적으로 업데이트되었습니다.');
+      },
+      onError: (error) => {
+        console.error('닉네임 업데이트 실패:', error);
+        alert('닉네임 업데이트에 실패했습니다. 다시 시도해주세요.');
+      }
+    });
   };
 
   return (
     <>
       <Header title='마이페이지' />
       <div className='mt-10 flex flex-col items-center space-y-3'>
-        <div className='h-24 w-24 rounded-full bg-gray-200' />
+        {/* 프로필 이미지 영역 */}
+        <div className='relative'>
+          <div className='h-24 w-24 rounded-full bg-gray-200 overflow-hidden'>
+            <img 
+              src={previewImage || img_url} 
+              alt='profile' 
+              className='h-full w-full object-cover' 
+            />
+          </div>
+          
+          {/* 이미지 편집 버튼 */}
+          {!isImageEditing && (
+            <button
+              onClick={() => setIsImageEditing(true)}
+              className='absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors'
+            >
+              <Camera size={16} />
+            </button>
+          )}
+          
+          {/* 이미지 편집 모드 */}
+          {isImageEditing && (
+            <div className='absolute -bottom-1 -right-1 flex gap-1'>
+              <button
+                onClick={handleImageUpload}
+                disabled={!selectedImage || isUpdating}
+                className='h-8 w-8 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed'
+              >
+                {isUpdating ? (
+                  <div className='h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
+                ) : (
+                  <Check size={16} />
+                )}
+              </button>
+              <button
+                onClick={handleImageEditCancel}
+                className='h-8 w-8 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors'
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* 숨겨진 파일 입력 */}
+        <input
+          ref={fileInputRef}
+          type='file'
+          accept='image/*'
+          onChange={handleImageSelect}
+          className='hidden'
+        />
+
+        {/* 닉네임 편집 영역 */}
         <div className='flex items-center gap-2 text-lg font-bold'>
           {isEditing ? (
             <>
               <input
                 value={nicknameInput}
                 onChange={(e) => setNicknameInput(e.target.value)}
+                className='border border-gray-300 rounded px-2 py-1 text-center'
+                placeholder='닉네임을 입력하세요'
               />
-              <Check size={18} onClick={() => handleUpdateProfile()} />
+              <Check 
+                size={18} 
+                onClick={() => handleUpdateProfile()} 
+                className='cursor-pointer text-green-500 hover:text-green-600'
+              />
             </>
           ) : (
             <>
-              {nickname} <Edit3 size={18} onClick={() => setIsEditing(true)} />
+              {nickname} 
+              <Edit3 
+                size={18} 
+                onClick={() => setIsEditing(true)} 
+                className='cursor-pointer text-blue-500 hover:text-blue-600'
+              />
             </>
           )}
         </div>
+
+        {/* 이미지 선택 안내 */}
+        {isImageEditing && !selectedImage && (
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className='text-sm text-blue-500 hover:text-blue-600 underline'
+          >
+            이미지 선택하기
+          </button>
+        )}
       </div>
       <hr className='mb-4 mt-14' />
       <div
