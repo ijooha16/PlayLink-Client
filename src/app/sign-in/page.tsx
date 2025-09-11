@@ -6,7 +6,7 @@ import { useAlertStore } from '@/shares/stores/alert-store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
-import { useSignin } from '@/hooks/auth/useSignin';
+import { useSignin } from '@/hooks/react-query/auth/useSignin';
 import Loading from '@/shares/common-components/loading';
 import Header from '@/shares/common-components/header';
 import Button from '@/shares/common-components/button';
@@ -95,7 +95,7 @@ const SignIn = () => {
               <p>비밀번호 찾기</p>
             </Link>
             |
-            <Link href={'/sign-up'}>
+            <Link href={'/sign-up/terms'}>
               <p>회원가입</p>
             </Link>
           </div>

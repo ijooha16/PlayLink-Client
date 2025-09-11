@@ -1,4 +1,4 @@
-import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
+import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import SportCard from '@/shares/common-components/sport-card';
 import Tag from '@/shares/common-components/tag';
 import { useSearchStore } from '@/shares/stores/search-store';

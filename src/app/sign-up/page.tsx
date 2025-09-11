@@ -1,11 +1,7 @@
-import SignUpFunnel from '@/features/play-link/view/sign-up/sign-up-funnel';
+import { redirect } from 'next/navigation';
 
 const SignUp = () => {
-  return (
-    <div>
-      <SignUpFunnel />
-    </div>
-  );
+  redirect('/sign-up/terms');
 };
 
 export default SignUp;

@@ -6,7 +6,7 @@ import { io, Socket } from 'socket.io-client';
 import { Plus, Send } from 'lucide-react';
 
 import ChatBox from '@/features/play-link/view/chat/chat-box';
-import { useChatRoom } from '@/hooks/chat/use-get-chat-room';
+import { useChatRoom } from '@/hooks/react-query/chat/use-get-chat-room';
 import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
 
 type ChatMessage = {

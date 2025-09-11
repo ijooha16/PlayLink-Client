@@ -2,7 +2,7 @@
 
 import { X } from 'lucide-react';
 import { MouseEvent, useState } from 'react';
-import { useGetSportsQuery } from '@/hooks/sport/get-sport-query';
+import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import SportCard from './sport-card';
 
 interface SelectExerciseModalProps {

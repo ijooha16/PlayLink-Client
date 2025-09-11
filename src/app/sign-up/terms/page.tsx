@@ -6,11 +6,13 @@ import Button from '@/shares/common-components/button'
 import { useState } from 'react'
 import { useModalStore } from '@/shares/stores/modal-store'
 import { useRouter } from 'next/navigation'
+import { useSignUpStepStore } from '@/shares/stores/sign-up-store'
 
 const TermsScreen = () => {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
   const { openModal } = useModalStore()
   const router = useRouter()
+  const { updateStep } = useSignUpStepStore()
 
   const handleCheckboxChange = (id: string) => {
     setCheckedItems(prev => ({
@@ -50,6 +52,7 @@ const TermsScreen = () => {
 
   const handleNextClick = () => {
     if (isAllRequiredChecked) {
+      updateStep({ terms: true })
       router.push('/sign-up/phone-check')
     }
   }

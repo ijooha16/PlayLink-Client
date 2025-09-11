@@ -1,7 +1,7 @@
 import {
   useApproveMatchMutation,
   useRejectMatchMutation,
-} from '@/hooks/match/use-approve-match-mutation';
+} from '@/hooks/react-query/match/use-approve-match-mutation';
 import MatchButton from '@/shares/common-components/match-button';
 import { useAlertStore } from '@/shares/stores/alert-store';
 import {

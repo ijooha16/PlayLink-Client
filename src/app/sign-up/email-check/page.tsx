@@ -4,9 +4,13 @@ import Button from "@/shares/common-components/button";
 import Input from "@/shares/common-components/input";
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useSignUpStepStore } from '@/shares/stores/sign-up-store';
 
 const EmailCheck = () => {
-    const [email, setEmail] = useState('')
+    const router = useRouter()
+    const { data, updateStep, clearStep } = useSignUpStepStore()
+    const [email, setEmail] = useState(data.email || '')
     const [verificationCode, setVerificationCode] = useState('')
     const [isCodeSent, setIsCodeSent] = useState(false)
     const [hasError, setHasError] = useState(false)
@@ -202,6 +206,14 @@ const EmailCheck = () => {
                     <Button 
                         variant="default" 
                         disabled={!password || !confirmPassword || !!passwordError || !!confirmError}
+                        onClick={() => {
+                            updateStep({ 
+                                email, 
+                                password,
+                                confirmPassword
+                            })
+                            router.push('/sign-up/phone-check')
+                        }}
                     >
                         다음
                     </Button>
