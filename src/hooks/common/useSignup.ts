@@ -13,6 +13,8 @@ interface SignupData {
   platform: string;
   device_id: string;
   device_type: string;
+  account_type: string;
+  favor: string;
   // prefer_sports: number[];
   img: File;
 }
@@ -33,6 +35,8 @@ const useSignup = () => {
     formData.append('platform', signupData.platform);
     formData.append('device_id', signupData.device_id);
     formData.append('device_type', signupData.device_type);
+    formData.append('account_type', signupData.account_type);
+    formData.append('favor', signupData.favor);
     // formData.append('prefer_sports', JSON.stringify(signupData.prefer_sports));
 
     // 파일이 있으면 추가

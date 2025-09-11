@@ -16,6 +16,8 @@ interface SignUpType {
   platform: string;
   device_id: string;
   device_type: string;
+  account_type: string;
+  favor: string;
   // prefer_sports: number[];
   img: File;
 }
@@ -90,6 +92,8 @@ export const fetchSignUp = async (signupData: SignUpType) => {
   formData.append('platform', signupData.platform);
   formData.append('device_id', signupData.device_id);
   formData.append('device_type', signupData.device_type);
+  formData.append('account_type', '0');
+  formData.append('favor', '0');
   // formData.append('prefer_sports', JSON.stringify(signupData.prefer_sports));
 
   // 파일이 있으면 추가

@@ -32,6 +32,8 @@ const Done = ({
         platform: infos.platform,
         device_id: infos.deviceId,
         device_type: infos.deviceType,
+        account_type: '0',
+        favor: '0',
         // prefer_sports: [1], // 배열 형태로 직접 전달
         img:
           allData.profileImage instanceof File

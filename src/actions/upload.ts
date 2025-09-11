@@ -4,7 +4,7 @@
 // import { NextResponse } from 'next/server';
 
 export async function uploadImage(formData: FormData) {
-  const file = formData.get('imageFile') as File | null;
+  const file = formData.get('img') as File | null;
   const description = formData.get('description') as string | null;
 
   if (!file) {
