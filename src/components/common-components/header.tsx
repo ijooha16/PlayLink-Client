@@ -35,7 +35,7 @@ const Header = ({
         </button>
       )}
       <div className='text-title-4'>{title}</div>
-      <div className='w-6'>{children}</div>
+      <div className='w-6'>{children || ''}</div>
     </div>
   );
 };
