@@ -1,16 +1,16 @@
 'use client';
 
-import DropdownInput from '@/features/play-link/view/create-match/dropdown-input';
-import Input from '@/shares/common-components/input';
+import Input from '@/components/common-components/input';
 import { DUMMY_PLACE } from '@/shares/dummy-data/dummy-data';
 import { FormEvent, useState } from 'react';
 import { useAlertStore } from '@/shares/stores/alert-store';
 import { useRouter } from 'next/navigation';
-import DatePickerModal from '@/shares/common-components/date-picker-modal';
-import SelectExerciseModal from '@/shares/common-components/select-exercise-modal';
+  import DatePickerModal from '@/components/common-components/date-picker-modal';
+import SelectExerciseModal from '@/components/common-components/select-exercise-modal';
 import { useAddMatchMutation } from '@/hooks/react-query/match/use-add-match-mutation';
 import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
 import { timeFormat } from '@/shares/libs/utills/create-match-formats';
+import DropdownInput from '@/components/view/create-match/dropdown-input';
 
 const CreateMatch = () => {
   const token = handleGetSessionStorage();

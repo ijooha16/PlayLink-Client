@@ -1,5 +1,5 @@
-import ControlPannel from '@/features/play-link/view/my-near/control-pannel';
-import NaverMap from '@/features/play-link/view/my-near/naver-map';
+import ControlPannel from '@/components/view/my-near/control-pannel';
+import NaverMap from '@/components/view/my-near/naver-map';
 
 const MyNear = () => {
   return (

@@ -1,7 +1,7 @@
 'use client'
 
-import Button from "@/shares/common-components/button";
-import Input from "@/shares/common-components/input";
+import Button from "@/components/common-components/button";
+import Input from "@/components/common-components/input";
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { useSignUpStepStore } from '@/shares/stores/sign-up-store';

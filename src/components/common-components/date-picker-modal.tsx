@@ -1,5 +1,5 @@
 import React, { MouseEvent, useState } from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/locale';
@@ -64,7 +64,7 @@ const ModalContent = styled.div<StyledProps>`
   }
 
   .react-datepicker__day:hover {
-    background-color: '#0056b3';
+    background-color: #0056b3;
     color: white;
   }
 
@@ -82,6 +82,46 @@ const ModalContent = styled.div<StyledProps>`
   .react-datepicker__day--outside-month {
     color: white;
   }
+`;
+
+const DateInput = styled.input<{ borderColor?: string; inputBgColor?: string }>`
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid ${(props) => props.borderColor || '#d1d5db'};
+  background-color: ${(props) => props.inputBgColor || 'white'};
+  padding: 8px 16px;
+  font-size: 16px;
+  outline: none;
+  cursor: pointer;
+
+  &:focus {
+    border-color: ${(props) => props.borderColor || '#007bff'};
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+`;
+
+const CancelButton = styled.button`
+  border: none;
+  background: none;
+  color: #6b7280;
+  font-size: 14px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #374151;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  padding: 8px 16px;
 `;
 
 interface DatePickerModalProps {
@@ -105,12 +145,12 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({
   borderColor = '#d1d5db',
   headerColor = '#ffffff',
   selectedColor = '#0056b3',
+  inputBgColor = 'white',
   minDate = new Date(),
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // DatePicker 열기/닫기 핸들러
   const handleInputClick = () => {
     setIsOpen(true);
   };
@@ -126,12 +166,13 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({
 
   return (
     <div>
-      <input
-        className='w-full rounded-[10px] border border-[#d1d5db] bg-white px-4 py-2 text-base outline-none'
+      <DateInput
         value={selectedDate ? selectedDate.toLocaleDateString('ko-KR') : ''}
         onClick={handleInputClick}
         readOnly
         placeholder={placeholder}
+        borderColor={borderColor}
+        inputBgColor={inputBgColor}
       />
       {isOpen && (
         <ModalOverlay onClick={handleClose}>
@@ -150,15 +191,11 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({
               disabledKeyboardNavigation={true}
               {...props}
             />
-            <div className='flex w-full justify-end px-4 py-2'>
-              <button
-                type='button'
-                onClick={() => setIsOpen(false)}
-                className='select border-none'
-              >
+            <ButtonContainer>
+              <CancelButton type='button' onClick={() => setIsOpen(false)}>
                 취소
-              </button>
-            </div>
+              </CancelButton>
+            </ButtonContainer>
           </ModalContent>
         </ModalOverlay>
       )}

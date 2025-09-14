@@ -5,7 +5,7 @@ import {
   SignUpStep1,
   SignUpStep2,
   SignUpStep3,
-} from '../../types/sign-up/sign-up-schema';
+} from '@/features/play-link/types/sign-up/sign-up-schema';
 import Step1 from './step1';
 import Step2 from './step2';
 import Step3 from './step3';
