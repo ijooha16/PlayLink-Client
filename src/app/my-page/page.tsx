@@ -1,6 +1,5 @@
 'use client';
 
-import Header from '@/shares/common-components/header';
 import { Check, CheckSquare, ChevronRight, Edit3, Camera, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState, useRef } from 'react';
@@ -11,6 +10,7 @@ import {
 import { useGetProfileQuery } from '@/hooks/react-query/profile/use-get-profile-query';
 import { useUpdateProfileMutation } from '@/hooks/react-query/profile/use-update-profile-mutation';
 import { set } from 'date-fns';
+import Header from '@/components/common-components/header';
 
 export default function MyPage() {
   const [token, setToken] = useState<string | null>(null);

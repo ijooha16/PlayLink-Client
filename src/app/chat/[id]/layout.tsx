@@ -1,4 +1,4 @@
-import Header from '@/shares/common-components/header';
+import Header from '@/components/common-components/header';
 import { EllipsisVertical } from 'lucide-react';
 
 const CreateChatRoomLayout = ({

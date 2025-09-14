@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import '../styles/globals.css';
-import LayoutClientSide from '@/features/play-link/view/main/layout-client-side';
+import LayoutClientSide from '@/components/view/main/layout-client-side';
 import Providers from './provider';
-import MainBottomNavigation from '@/features/play-link/view/main/main-bottom-navigation';
-import ProtectedRoute from '@/shares/common-components/protected-route';
+import MainBottomNavigation from '@/components/view/main/main-bottom-navigation';
+import ProtectedRoute from '@/components/common-components/protected-route';
 
 const pretendard = localFont({
   src: '../../public/fonts/pretendard-variable.woff2',

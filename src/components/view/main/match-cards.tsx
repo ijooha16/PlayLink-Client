@@ -3,7 +3,7 @@
 // import { HeartIcon, MessagesSquareIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
-import { MatchType } from '../../types/match/match';
+import { MatchType } from '@/features/play-link/types/match/match';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import Image from 'next/image';
 

@@ -1,10 +1,10 @@
 'use client';
 
-import ChatCard from '@/features/play-link/view/chat/chat-card';
-import Header from '@/shares/common-components/header';
+import ChatCard from '@/components/view/chat/chat-card';
 import Link from 'next/link';
 import React from 'react';
 import { useChatList } from '@/hooks/react-query/chat/use-get-chat-list';
+import Header from '@/components/common-components/header';
 
 const Chat = () => {
   const { data, isLoading, error } = useChatList();

@@ -2,7 +2,7 @@
 
 import { POLICY } from '@/shares/constant/sigin-up-privacy'
 import { ChevronRight } from 'lucide-react'
-import Button from '@/shares/common-components/button'
+import Button from '@/components/common-components/button'
 import { useState } from 'react'
 import { useModalStore } from '@/shares/stores/modal-store'
 import { useRouter } from 'next/navigation'
