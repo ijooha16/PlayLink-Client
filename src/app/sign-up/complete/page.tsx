@@ -1,15 +1,15 @@
 'use client'
 
 import { useRouter } from 'next/navigation';
-import { useSignUpStepStore } from '@/shares/stores/sign-up-store';
+import { useSignUpStepStore } from '@/stores/sign-up-store';
 import { useEffect, useState } from 'react';
-import useSignup from '@/hooks/common/useSignup';
-import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';
+import useSignup from '@/hooks/common/use-signup';
+import { getDeviceInfo } from '@/utills/get-device-info';
 import Button from '@/components/common-components/button';
 
 const SignUpComplete = () => {
     const router = useRouter()
-    const { data, clearStep } = useSignUpStepStore()
+    const { data, clearStep, validateStep, isStepCompleted } = useSignUpStepStore()
     const { signup, isLoading } = useSignup()
     const [isSigningUp, setIsSigningUp] = useState(false)
 
@@ -57,11 +57,15 @@ const SignUpComplete = () => {
     }
 
     useEffect(() => {
-        // 필수 데이터가 없으면 처음으로 리다이렉트
-        if (!data.terms || !data.phoneVerified || !data.email || !data.password || !data.nickname) {
+        // 모든 단계가 완료되었는지 검증
+        if (!isStepCompleted('terms') ||
+            !isStepCompleted('phone') ||
+            !isStepCompleted('email') ||
+            !isStepCompleted('nickname') ||
+            !isStepCompleted('favoriteSports')) {
             router.push('/sign-up/terms')
         }
-    }, [data, router])
+    }, [isStepCompleted, router])
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-144px)] px-[20px]">

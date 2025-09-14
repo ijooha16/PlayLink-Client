@@ -1,34 +1,13 @@
-export const getProfile = async (token: string | null) => {
-  const response = await fetch('/api/profile/get-profile', {
-    method: 'GET',
-    headers: {
-      Authorization: token!,
-    },
-  });
+import { apiClient } from '@/services/axios';
 
-  if (!response.ok) {
-    throw new Error('Failed to get profile');
-  }
-  return response.json();
+export const getProfile = async () => {
+  const { data } = await apiClient.get('/api/profile/get-profile');
+  return data;
 };
 
-export const updateProfile = async ({
-  token,
-  profileData,
-}: {
-  token: string | null;
-  profileData: FormData;
-}) => {
-  const response = await fetch('/api/profile/update-profile', {
-    method: 'PUT',
-    headers: {
-      Authorization: token!,
-    },
-    body: profileData,
+export const updateProfile = async (profileData: FormData) => {
+  const { data } = await apiClient.put('/api/profile/update-profile', profileData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
   });
-
-  if (!response.ok) {
-    throw new Error('Failed to update profile');
-  }
-  return response.json();
+  return data;
 };

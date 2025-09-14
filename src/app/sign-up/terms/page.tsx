@@ -1,12 +1,12 @@
 'use client'
 
-import { POLICY } from '@/shares/constant/sigin-up-privacy'
+import { POLICY } from '@/constant/sigin-up-privacy'
 import { ChevronRight } from 'lucide-react'
 import Button from '@/components/common-components/button'
 import { useState } from 'react'
-import { useModalStore } from '@/shares/stores/modal-store'
+import { useModalStore } from '@/stores/modal-store'
 import { useRouter } from 'next/navigation'
-import { useSignUpStepStore } from '@/shares/stores/sign-up-store'
+import { useSignUpStepStore } from '@/stores/sign-up-store'
 
 const TermsScreen = () => {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})

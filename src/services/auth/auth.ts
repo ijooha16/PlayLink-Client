@@ -1,4 +1,5 @@
-import { handleSetSessionStorage } from '@/shares/libs/utills/web-api';
+import { apiClient } from '@/services/axios';
+import { handleSetSessionStorage } from '@/utills/web-api';
 
 interface SignInType {
   email: string;
@@ -18,107 +19,23 @@ interface SignUpType {
   device_type: string;
   account_type: string;
   favor: string;
-  // prefer_sports: number[];
   img: File;
 }
 
-// export const fetchSignIn = async (req: SignInType) => {
-//   try {
-//     const payload = {
-//       email: req.email,
-//       password: req.password,
-//       device_id: req.device_id,
-//     };
-
-//     const res = await fetch('/api/auth/signin', {
-//       method: 'POST',
-//       body: JSON.stringify(payload),
-//     });
-
-//     const json = await res.json();
-//     if (json.status === 'success') {
-//       handleSetSessionStorage(json.accessToken);
-//     }
-
-//     if (!res.ok) {
-//       console.error('server signin api error');
-//       throw new Error('server signin api error');
-//     }
-//     console.log(json);
-//   } catch (err) {
-//     console.error('sigin services api fetch error', err);
-//   }
-// };
-
 export const fetchSignIn = async (req: SignInType) => {
-  try {
-    const payload = {
-      email: req.email,
-      password: req.password,
-      device_id: req.device_id,
-    };
-
-    const res = await fetch('/api/auth/signin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const json = await res.json();
-
-    if (json.status === 'success') {
-      handleSetSessionStorage(json.accessToken);
-      return json; // 성공 데이터 반환
-    } else {
-      console.error('API 에러:', json.message);
-      throw new Error(json.message || 'signin failed');
-    }
-  } catch (err) {
-    console.error('signin services api fetch error', err);
-    throw err;
-  }
+  const { data } = await apiClient.post('/api/auth/signin', req);
+  if (data.status === 'success') handleSetSessionStorage(data.accessToken);
+  return data;
 };
 
 export const fetchSignUp = async (signupData: SignUpType) => {
   const formData = new FormData();
-  formData.append('name', signupData.name);
-  formData.append('nickname', signupData.nickname);
-  formData.append('email', signupData.email);
-  formData.append('password', signupData.password);
-  formData.append('passwordCheck', signupData.passwordCheck);
-  formData.append('phoneNumber', signupData.phoneNumber);
-  formData.append('platform', signupData.platform);
-  formData.append('device_id', signupData.device_id);
-  formData.append('device_type', signupData.device_type);
-  formData.append('account_type', '0');
-  formData.append('favor', '0');
-  // formData.append('prefer_sports', JSON.stringify(signupData.prefer_sports));
+  Object.entries(signupData).forEach(([key, value]) => {
+    if (value) formData.append(key, value);
+  });
 
-  // 파일이 있으면 추가
-  if (signupData.img) {
-    formData.append('img', signupData.img);
-  }
-
-  // const formDataEntries = Object.fromEntries(formData.entries());
-  // console.log('form data 내용:', formDataEntries);
-
-  try {
-    const response = await fetch('/api/auth/signup', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const json = await response.json();
-    console.log('리스폰스', json);
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || '회원가입에 실패했습니다');
-    }
-    return json;
-  } catch (err) {
-    console.log('siginup services api fetch error', err);
-  }
+  const { data } = await apiClient.post('/api/auth/signup', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return data;
 };

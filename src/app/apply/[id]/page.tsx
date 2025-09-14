@@ -1,8 +1,8 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useAlertStore } from '@/shares/stores/alert-store';
-import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
+import { useAlertStore } from '@/stores/alert-store';
+import { handleGetSessionStorage } from '@/utills/web-api';
 import { useApplyMatchMutation } from '@/hooks/react-query/match/use-apply-match-mutation';
 import Header from '@/components/common-components/header';
 

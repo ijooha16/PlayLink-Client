@@ -1,5 +1,6 @@
 import React from 'react';
-import { timeAgo } from '@/shares/libs/utills/time-ago';
+import { formatDistanceToNow } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 type ChatCardProps = {
   roomId: string;
@@ -40,7 +41,10 @@ const ChatCard = ({
             {region && <div className='shrink-0 text-xs'>{region}</div>} */}
           </div>
           <div className='shrink-0 text-xs text-gray-400'>
-            {timeAgo(sendAt)}
+            {formatDistanceToNow(new Date(sendAt), { 
+              addSuffix: true, 
+              locale: ko 
+            })}
           </div>
         </div>
         <div className='truncate text-sm text-gray-700'>

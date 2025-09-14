@@ -1,38 +1,15 @@
 import { NextResponse } from 'next/server';
+import { backendClient } from '@/services/axios';
 
 export async function GET() {
   try {
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-
-    const backendApiUrl = `${fetchURL}/playlink/match`;
-
-    const response = await fetch(backendApiUrl);
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Backend API error:', errorData);
-      return NextResponse.json(
-        { status: 'error', message: errorData.message || 'Backend API error' },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-
-    return NextResponse.json(data, { status: 200 });
-  } catch (error: unknown) {
-    console.error('Get match Route Handler error:', error);
-    return NextResponse.json(
-      {
-        status: 'error',
-        message:
-          error instanceof Error
-            ? error instanceof Error
-              ? error.message
-              : 'Unknown error'
-            : 'Unknown error',
-      },
-      { status: 500 }
-    );
+    const { data } = await backendClient.get('/playlink/match');
+    return NextResponse.json(data);
+  } catch (err: any) {
+    console.error('Get match Route Handler error:', err);
+    return NextResponse.json({
+      status: 'error',
+      message: err.response?.data?.message || err.message || 'Unknown error',
+    }, { status: err.response?.status || 500 });
   }
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import '@/styles/check.css';
-import { useAlertStore } from '@/shares/stores/alert-store';
+import { useAlertStore } from '@/stores/alert-store';
 
 const SuccessAlert = () => {
   const title = useAlertStore((state) => state.title);

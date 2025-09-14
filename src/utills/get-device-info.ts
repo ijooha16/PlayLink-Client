@@ -1,4 +1,5 @@
 import { UAParser } from 'ua-parser-js';
+import axios from 'axios';
 
 type DeviceInfoResults = {
   deviceId: string;
@@ -41,11 +42,8 @@ export const getDeviceInfo = async (): Promise<DeviceInfoResults> => {
 
   const ip: string | null = null;
   try {
-    const response = await fetch('https://api.ipify.org?format=json');
-    if (!response.ok) {
-      throw new Error('IP 주소를 가져오는 데 실패했습니다.');
-    }
-    // const data = await response.json();
+    const response = await axios.get('https://api.ipify.org?format=json');
+    // const data = response.data;
     // ip = data.ip;
   } catch (error) {
     console.error('IP 주소 조회 오류 발생:', error);

@@ -1,7 +1,7 @@
 'use client';
 
 import SuccessAlert from '@/components/common-components/success-alert';
-import { useAlertStore } from '@/shares/stores/alert-store';
+import { useAlertStore } from '@/stores/alert-store';
 
 const LayoutClientSide = () => {
   const isSuccessAlertOpen = useAlertStore((state) => state.isOpen);

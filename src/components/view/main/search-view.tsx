@@ -1,7 +1,7 @@
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import SportCard from '@/components/common-components/sport-card';
 import Tag from '@/components/common-components/tag';
-import { useSearchStore } from '@/shares/stores/search-store';
+import { useSearchStore } from '@/stores/search-store';
 import { ChevronLeft } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 

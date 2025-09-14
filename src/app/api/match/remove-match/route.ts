@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { backendClient } from '@/services/axios';
 
 export async function DELETE(
   request: Request,
@@ -8,27 +9,13 @@ export async function DELETE(
     const token = request.headers.get('Authorization');
     const matchId = params.matchId;
 
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-
-    const backendApiUrl = `${fetchURL}/playlink/match/${matchId}`;
-
-    const response = await fetch(backendApiUrl, {
-      method: 'DELETE',
+    const response = await backendClient.delete(`/playlink/match/${matchId}`, {
       headers: {
         Authorization: token!,
       },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Backend API error:', errorData);
-      return NextResponse.json(
-        { status: 'error', message: errorData.message || 'Backend API error' },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
+    const data = response.data;
     return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: unknown) {
     console.error('Delete match Route Handler error:', error);

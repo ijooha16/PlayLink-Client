@@ -1,12 +1,12 @@
 'use client';
 
-import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';
+import { getDeviceInfo } from '@/utills/get-device-info';
 import {
   SignUpStep1,
   SignUpStep2,
   SignUpStep3,
-} from '@/features/play-link/types/sign-up/sign-up-schema';
-import useSignup from '@/hooks/common/useSignup';
+} from '@/types/sign-up/sign-up-schema';
+import useSignup from '@/hooks/common/use-signup';
 import { useEffect } from 'react';
 
 const Done = ({

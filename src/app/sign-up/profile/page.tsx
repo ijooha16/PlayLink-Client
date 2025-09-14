@@ -4,14 +4,21 @@ import Button from "@/components/common-components/button";
 import Input from "@/components/common-components/input";
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from 'next/navigation';
-import { useSignUpStepStore } from '@/shares/stores/sign-up-store';
+import { useSignUpStepStore } from '@/stores/sign-up-store';
 import Image from 'next/image';
-import { ProfileImg } from '@/shares/libs/utills/random-profile-image';
-import randomProfileImage from '@/shares/libs/utills/random-profile-image';
+import { ProfileImg } from '@/utills/random-profile-image';
+import randomProfileImage from '@/utills/random-profile-image';
 
 const ProfileSetup = () => {
     const router = useRouter()
-    const { data, updateStep } = useSignUpStepStore()
+    const { data, updateStep, validateStep } = useSignUpStepStore()
+
+    // 페이지 진입 시 이전 단계 검증
+    useEffect(() => {
+        if (!validateStep('profile')) {
+            router.push('/sign-up/email-check')
+        }
+    }, [])
     const [nickname, setNickname] = useState(data.nickname || '')
     const [profileImage, setProfileImage] = useState<File | null>(null)
     const [preview, setPreview] = useState<string | null>(null)
@@ -73,11 +80,11 @@ const ProfileSetup = () => {
             return
         }
 
-        updateStep({ 
+        updateStep({
             nickname,
-            profileImage 
+            profileImage
         })
-        router.push('/sign-up/complete')
+        router.push('/sign-up/sports')
     }
 
     return (

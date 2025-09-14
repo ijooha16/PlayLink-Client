@@ -2,17 +2,27 @@
 
     import Button from "@/components/common-components/button";
 import Input from "@/components/common-components/input";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
-import { useSignUpStepStore } from '@/shares/stores/sign-up-store';
-import { useTimer } from '@/hooks/common/useTimer';
+import { useSignUpStepStore } from '@/stores/sign-up-store';
+import { useTimer } from '@/hooks/common/use-timer';
 import { useSms } from '@/hooks/react-query/sms/useSms';
 import { useSmsVerify } from '@/hooks/react-query/sms/useSmsVerify';
-
+import { useFindAccountByPhone } from '@/hooks/react-query/auth/use-find-account';
+import { formatPhoneNumber } from '@/utills/format/phone-formats';
+import { handleAuthError, handleAuthSuccess, handleVerificationError } from '@/services/auth/auth-error-handler';
 const PhoneCheck = () => {
     const router = useRouter()
-    const { data, updateStep } = useSignUpStepStore()
-    const [phoneNumber, setPhoneNumber] = useState(data.phone || '')
+    const { data, updateStep, validateStep } = useSignUpStepStore()
+
+    // 페이지 진입 시 이전 단계 검증
+    useEffect(() => {
+        if (!validateStep('phone')) {
+            router.push('/sign-up/terms')
+        }
+    }, [])
+    
+    const [phoneNumber, setPhoneNumber] = useState(data.phone ? formatPhoneNumber(data.phone) : '')
     const [verificationCode, setVerificationCode] = useState('')
     const [isCodeSent, setIsCodeSent] = useState(false)
     const [errors, setErrors] = useState<{
@@ -23,6 +33,46 @@ const PhoneCheck = () => {
 
     // API 응답 핸들러
     const handlers = {
+        findAccount: {
+            onSuccess: (data: any) => {
+                console.log('Find account success:', data);
+                const sanitizedPhone = phoneNumber.replace(/[^0-9]/g, '');
+
+                // errCode 0이면 기존 계정이 있음 - account-exists 페이지로 이동
+                if (data.errCode === 0 && data.data) {
+                    const params = new URLSearchParams({
+                        nickname: data.data.nickname || '',
+                        email: data.data.email || '',
+                        accountType: data.data.account_type?.toString() || '0',
+                        createdAt: data.data.created_at || ''
+                    });
+                    router.push(`/sign-up/account-exists?${params.toString()}`);
+                    return;
+                }
+
+                handleAuthSuccess(data, 'phone', {
+                    onAccountExists: (message) => setErrors({ phone: message }),
+                    onUnverifiedAccount: () => smsSend({ phoneNumber: sanitizedPhone }),
+                    onInvalidInput: (message) => setErrors({ phone: message }),
+                    onAccountNotFound: () => smsSend({ phoneNumber: sanitizedPhone }),
+                    onServerError: () => smsSend({ phoneNumber: sanitizedPhone }),
+                    onUnknownError: () => smsSend({ phoneNumber: sanitizedPhone })
+                });
+            },
+            onError: (err: any) => {
+                console.log('Find account error:', err);
+                const sanitizedPhone = phoneNumber.replace(/[^0-9]/g, '');
+
+                handleAuthError(err, 'phone', {
+                    onAccountExists: (message) => setErrors({ phone: message }),
+                    onUnverifiedAccount: () => smsSend({ phoneNumber: sanitizedPhone }),
+                    onInvalidInput: (message) => setErrors({ phone: message }),
+                    onAccountNotFound: () => smsSend({ phoneNumber: sanitizedPhone }),
+                    onServerError: () => smsSend({ phoneNumber: sanitizedPhone }),
+                    onUnknownError: (message) => setErrors({ phone: message })
+                });
+            }
+        },
         sms: {
             onSuccess: () => {
                 setIsCodeSent(true)
@@ -31,7 +81,8 @@ const PhoneCheck = () => {
                 alert('인증번호를 발송하였습니다.')
             },
             onError: (err: Error) => {
-                setErrors({ phone: err.message || '인증 문자 전송에 실패했습니다.' })
+                const errorMessage = handleVerificationError(err, 'phone');
+                setErrors({ phone: errorMessage });
             }
         },
         verify: {
@@ -50,6 +101,9 @@ const PhoneCheck = () => {
         }
     }
 
+    // 가입 여부 조회
+    const { mutate: findAccount, isPending: isFindingAccount } = useFindAccountByPhone(handlers.findAccount)
+
     // SMS 인증코드 전송
     const { mutate: smsSend, isPending: isSmsSending } = useSms(handlers.sms)
 
@@ -58,14 +112,15 @@ const PhoneCheck = () => {
 
     const handleSendCode = () => {
         const sanitizedPhone = phoneNumber.replace(/[^0-9]/g, '')
-        
+
         // 휴대폰 번호 유효성 검사
         if (sanitizedPhone.length !== 11) {
             setErrors({ phone: '휴대폰 번호는 11자리여야 합니다' })
             return
         }
-        
-        smsSend({ phoneNumber: sanitizedPhone })
+
+        // 가입 여부 확인 후 인증번호 전송
+        findAccount({ phoneNumber: sanitizedPhone })
     }
 
 
@@ -96,8 +151,8 @@ const PhoneCheck = () => {
                 value={phoneNumber}
                 onChange={(e) => {
                     const input = e.target.value
-                    const sanitized = input.replace(/[^0-9]/g, '')
-                    setPhoneNumber(sanitized)
+                    const formatted = formatPhoneNumber(input)
+                    setPhoneNumber(formatted)
                     setErrors(prev => ({ ...prev, phone: undefined }))
                 }}
                 hasError={!!errors.phone}
@@ -107,9 +162,9 @@ const PhoneCheck = () => {
                 variant="default" 
                 size="base"
                 onClick={handleSendCode}
-                disabled={!phoneNumber || isSmsSending}
+                disabled={!phoneNumber || isSmsSending || isFindingAccount}
             >
-                인증번호 받기
+                {isFindingAccount ? '가입 여부 확인 중...' : isSmsSending ? '전송 중...' : '인증번호 받기'}
             </Button>
             </div>
             {isCodeSent && (

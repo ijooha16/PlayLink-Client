@@ -9,9 +9,9 @@ import { sendNotificationToken } from '@/services/notification/send-notification
 import {
   onForegroundMessage,
   requestPermissionAndGetToken,
-} from '@/shares/libs/firebase/firebase-messaging';
-import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
-import { useSearchStore } from '@/shares/stores/search-store';
+} from '@/libs/firebase/firebase-messaging';
+import { handleGetSessionStorage } from '@/utills/web-api';
+import { useSearchStore } from '@/stores/search-store';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -24,7 +24,7 @@ export default function Home() {
 
   //검색 페이지 이동
   useEffect(() => {
-    if (keyword || type) router.push(`/query?keyword=${keyword}&type=${type}`);
+    if (keyword || type) router.replace(`/query?keyword=${keyword}&type=${type}`);
   }, [keyword, type, router]);
 
   //알림 수신
@@ -37,7 +37,7 @@ export default function Home() {
     const handleRequestToken = async () => {
       const fcmToken = await requestPermissionAndGetToken();
       if (fcmToken) {
-        sendNotificationToken({ token, fcmToken });
+        sendNotificationToken(fcmToken);
       }
     };
     handleRequestToken();

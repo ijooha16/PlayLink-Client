@@ -1,8 +1,8 @@
 import type { StaticImageData } from 'next/image';
 
-import profileImage1 from '../../../../public/images/profileImages/profile-image1.png';
-import profileImage2 from '../../../../public/images/profileImages/profile-image2.png';
-import profileImage3 from '../../../../public/images/profileImages/profile-image3.png';
+import profileImage1 from '/public/images/profileImages/profile-image1.png';
+import profileImage2 from '/public/images/profileImages/profile-image2.png';
+import profileImage3 from '/public/images/profileImages/profile-image3.png';
 
 export type ProfileImg = string | StaticImageData;
 

@@ -1,17 +1,6 @@
-export const getNotification = async ({
-  token,
-}: {
-  token: string | null;
-}) => {
-  const response = await fetch('/api/notification/get-notification-list', {
-    method: 'GET',
-    headers: {
-      Authorization: token!,
-    },
-  });
+import { apiClient } from '@/services/axios';
 
-  if (!response.ok) {
-    throw new Error('Failed to add match');
-  }
-  return response.json();
+export const getNotification = async () => {
+  const { data } = await apiClient.get('/api/notification/get-notification-list');
+  return data;
 };

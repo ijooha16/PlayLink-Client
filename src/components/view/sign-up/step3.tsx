@@ -5,11 +5,11 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { SignUpStep1, SignUpStep2, SignUpStep3, signUpStep3Schema } from '@/features/play-link/types/sign-up/sign-up-schema';
+import { SignUpStep1, SignUpStep2, SignUpStep3, signUpStep3Schema } from '@/types/sign-up/sign-up-schema';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import SportCard from '@/components/common-components/sport-card';
-import useSignup from '@/hooks/common/useSignup';
-import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';
+import useSignup from '@/hooks/common/use-signup';
+import { getDeviceInfo } from '@/utills/get-device-info';
 
 type MaybeBaseData = Partial<SignUpStep1 & SignUpStep2>;
 

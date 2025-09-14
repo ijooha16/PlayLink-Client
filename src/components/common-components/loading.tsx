@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 type LoadingType = {
   variant: 'dim' | 'white';
@@ -8,7 +9,7 @@ type LoadingType = {
 
 export default function Loading({ variant = 'dim' }: LoadingType) {
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    // document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = 'auto';
     };
@@ -21,7 +22,21 @@ export default function Loading({ variant = 'dim' }: LoadingType) {
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center ${backgroundColor}`}
     >
-      <div className='h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-500'></div>
+      <motion.div
+        className='h-12 w-12 rounded-full border-4 border-gray-200'
+        style={{
+          borderTopColor: 'var(--color-primary)',
+          borderRightColor: 'var(--color-primary)',
+          borderBottomColor: 'transparent',
+          borderLeftColor: 'transparent',
+        }}
+        animate={{ rotate: 360 }}
+        transition={{
+          duration: 1.2,
+          repeat: Infinity,
+          ease: 'linear'
+        }}
+      />
     </div>
   );
 }

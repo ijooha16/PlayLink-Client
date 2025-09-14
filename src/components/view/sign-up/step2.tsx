@@ -4,13 +4,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { SignUpStep2, signUpStep2Schema } from '@/features/play-link/types/sign-up/sign-up-schema';
+import { SignUpStep2, signUpStep2Schema } from '@/types/sign-up/sign-up-schema';
 
-import { ProfileImg } from '@/shares/libs/utills/random-profile-image';
+import { ProfileImg } from '@/utills/random-profile-image';
 import Input from '@/components/common-components/input';
 
 // util
-import randomProfileImage from '@/shares/libs/utills/random-profile-image';
+import randomProfileImage from '@/utills/random-profile-image';
 
 const Step2 = ({
   onNext,
