@@ -4,8 +4,8 @@
 import { useEffect } from 'react';
 import { useModalStore } from '@/shares/stores/modal-store';
 import { X } from 'lucide-react';
-import MarkdownRenderer from '@/shares/common-components/markdown-renderer';
-import Button from '@/shares/common-components/button';
+import MarkdownRenderer from '@/components/common-components/markdown-renderer';
+import Button from '@/components/common-components/button';
 
 export default function GlobalModal() {
   const {

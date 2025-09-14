@@ -1,12 +1,10 @@
 'use client';
 
-import DropDown from '@/shares/common-components/drop-down';
+import DropDown from '@/components/common-components/drop-down';
 import { BellIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import SearchView from './search-view';
 import NotificationView from './notification-view';
-import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
-import { useGetNotificationQuery } from '@/hooks/react-query/notification/use-get-notification-query';
 
 const options = ['강남구', '추가 설정'];
 

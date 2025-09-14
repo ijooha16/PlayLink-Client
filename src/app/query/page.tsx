@@ -1,10 +1,10 @@
 'use client';
 
 import { MatchType } from '@/features/play-link/types/match/match';
-import MatchCards from '@/features/play-link/view/main/match-cards';
+import MatchCards from '@/components/view/main/match-cards';
 import { useGetMatchesMutation } from '@/hooks/react-query/match/use-get-searced-matches-mutation';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
-import Header from '@/shares/common-components/header';
+import Header from '@/components/common-components/header';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
 

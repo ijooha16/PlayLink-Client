@@ -3,24 +3,22 @@
 
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  SignUpStep1,
-  signUpStep1Schema,
-} from '../../types/sign-up/sign-up-schema';
+
 import { useState } from 'react';
-import Input from '@/shares/common-components/input';
+import Input from '@/components/common-components/input';
 
 import { useEmail } from '@/hooks/react-query/email/useEmail';
 import { useEmailVerify } from '@/hooks/react-query/email/useEmailVerify';
 
 import { useSms } from '@/hooks/react-query/sms/useSms';
 import { useSmsVerify } from '@/hooks/react-query/sms/useSmsVerify';
-import Button from '@/shares/common-components/button';
+import Button from '@/components/common-components/button';
 import { useModalStore } from '@/shares/stores/modal-store';
 
 import { ChevronDown } from 'lucide-react';
 
 import { POLICY } from '@/shares/constant/sigin-up-privacy';
+import { SignUpStep1, signUpStep1Schema } from '@/features/play-link/types/sign-up/sign-up-schema';
 
 type TermsKey =
   | 'agreeTerms'

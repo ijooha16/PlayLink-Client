@@ -1,4 +1,4 @@
-import Header from '@/shares/common-components/header';
+import Header from '@/components/common-components/header';
 
 const MyNearLayout = ({
   children,

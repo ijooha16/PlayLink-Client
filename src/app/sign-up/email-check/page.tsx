@@ -1,7 +1,7 @@
 'use client'
 
-import Button from "@/shares/common-components/button";
-import Input from "@/shares/common-components/input";
+import Button from "@/components/common-components/button";
+import Input from "@/components/common-components/input";
 import React, { useState } from "react";
 import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';

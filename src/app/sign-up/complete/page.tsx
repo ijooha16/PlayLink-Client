@@ -1,11 +1,11 @@
 'use client'
 
-import Button from "@/shares/common-components/button";
 import { useRouter } from 'next/navigation';
 import { useSignUpStepStore } from '@/shares/stores/sign-up-store';
 import { useEffect, useState } from 'react';
 import useSignup from '@/hooks/common/useSignup';
 import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';
+import Button from '@/components/common-components/button';
 
 const SignUpComplete = () => {
     const router = useRouter()

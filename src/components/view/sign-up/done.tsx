@@ -5,7 +5,7 @@ import {
   SignUpStep1,
   SignUpStep2,
   SignUpStep3,
-} from '../../types/sign-up/sign-up-schema';
+} from '@/features/play-link/types/sign-up/sign-up-schema';
 import useSignup from '@/hooks/common/useSignup';
 import { useEffect } from 'react';
 

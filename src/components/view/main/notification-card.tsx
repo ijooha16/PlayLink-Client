@@ -2,7 +2,7 @@ import {
   useApproveMatchMutation,
   useRejectMatchMutation,
 } from '@/hooks/react-query/match/use-approve-match-mutation';
-import MatchButton from '@/shares/common-components/match-button';
+import MatchButton from '@/components/common-components/match-button';
 import { useAlertStore } from '@/shares/stores/alert-store';
 import {
   Check,
@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { NotificationDataType } from '../../types/notification/notification';
+import { NotificationDataType } from '@/features/play-link/types/notification/notification';
 
 const NotificationCard = ({
   token,
