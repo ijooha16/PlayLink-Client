@@ -6,7 +6,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import {
   handleRemoveSessionStorage,
   handleGetSessionStorage,
-} from '@/shares/libs/utills/web-api';
+} from '@/utills/web-api';
 import { useGetProfileQuery } from '@/hooks/react-query/profile/use-get-profile-query';
 import { useUpdateProfileMutation } from '@/hooks/react-query/profile/use-update-profile-mutation';
 import { set } from 'date-fns';
@@ -79,18 +79,18 @@ console.log('profile', profile);
 
   // 이미지 업로드 핸들러
   const handleImageUpload = () => {
-    if (!selectedImage) return;
+    if (!selectedImage) {
+      alert('업로드할 이미지를 선택해주세요.');
+      return;
+    }
 
     const data = new FormData();
     data.append('img', selectedImage);
-    if (nicknameInput) {
-      data.append('nickname', nicknameInput);
+    if (nicknameInput && nicknameInput.trim()) {
+      data.append('nickname', nicknameInput.trim());
     }
 
-    updatProfile({ 
-      token, 
-      profileData: data 
-    }, {
+    updatProfile(data, {
       onSuccess: () => {
         // 성공 시 상태 초기화
         setSelectedImage(null);
@@ -119,13 +119,15 @@ console.log('profile', profile);
   };
 
   const handleUpdateProfile = () => {
-    const data = new FormData();
-    data.append('nickname', nicknameInput!);
+    if (!nicknameInput || nicknameInput.trim() === '') {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
 
-    updatProfile({ 
-      token, 
-      profileData: data 
-    }, {
+    const data = new FormData();
+    data.append('nickname', nicknameInput.trim());
+
+    updatProfile(data, {
       onSuccess: () => {
         setIsEditing(false);
         alert('닉네임이 성공적으로 업데이트되었습니다.');

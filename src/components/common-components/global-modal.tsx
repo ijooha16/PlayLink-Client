@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useModalStore } from '@/shares/stores/modal-store';
+import { useModalStore } from '@/stores/modal-store';
 import { X } from 'lucide-react';
 import MarkdownRenderer from '@/components/common-components/markdown-renderer';
 import Button from '@/components/common-components/button';

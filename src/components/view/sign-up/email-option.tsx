@@ -1,6 +1,6 @@
 'use client';
 
-import { EMAIL_LIST } from '@/shares/constant/email-list';
+import { EMAIL_LIST } from '@/constant/email-list';
 
 type PropsType = {
   selectorValue: string;

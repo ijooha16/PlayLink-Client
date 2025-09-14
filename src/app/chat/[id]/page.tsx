@@ -7,7 +7,7 @@ import { Plus, Send } from 'lucide-react';
 
 import ChatBox from '@/components/view/chat/chat-box';
 import { useChatRoom } from '@/hooks/react-query/chat/use-get-chat-room';
-import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
+import { handleGetSessionStorage } from '@/utills/web-api';
 
 type ChatMessage = {
   id: string;

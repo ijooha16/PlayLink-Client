@@ -1,44 +1,21 @@
-import { MatchType } from '@/features/play-link/types/match/match';
+import { apiClient } from '@/services/axios';
+import { MatchType } from '@/types/match/match';
 
-export const getMatches = async (): Promise<{
-  errCode: number;
-  data: MatchType[];
-}> => {
-  // const response = await fetch(`/api/match/get-matches`);
-
-  const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-  const backendApiUrl = `${fetchURL}/playlink/match`;
-  const response = await fetch(backendApiUrl);
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch matchs');
-  }
-  return response.json();
+export const getMatches = async (): Promise<{ errCode: number; data: MatchType[] }> => {
+  const { data } = await apiClient.get('/api/match/get-matches');
+  return data;
 };
 
 export const getMatchDetail = async (matchId: string | string[]) => {
-  const response = await fetch(
-    `/api/match/get-match-detail?matchId=${matchId}`
-  );
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch matchs');
-  }
-  return response.json();
+  const { data } = await apiClient.get(`/api/match/get-match-detail`, {
+    params: { matchId }
+  });
+  return data;
 };
 
-export const searchMatch = async ({
-  keyword,
-  type,
-}: {
-  keyword: string;
-  type: string;
-}) => {
-  const response = await fetch(
-    `/api/match/get-searched-match?keyword=${keyword}&type=${type}`
-  );
-  if (!response.ok) {
-    throw new Error('Failed to fetch matchs');
-  }
-  return response.json();
+export const searchMatch = async ({ keyword, type }: { keyword: string; type: string }) => {
+  const { data } = await apiClient.get('/api/match/get-searched-match', {
+    params: { keyword, type }
+  });
+  return data;
 };

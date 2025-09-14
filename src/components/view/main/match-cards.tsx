@@ -3,12 +3,28 @@
 // import { HeartIcon, MessagesSquareIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
-import { MatchType } from '@/features/play-link/types/match/match';
+import { MatchType } from '@/types/match/match';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { handleGetSessionStorage } from '@/utills/web-api';
 
 const MatchCards = (data: { data: MatchType }) => {
+  const router = useRouter();
   const { data: sports } = useGetSportsQuery();
+
+  const handleMatchClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = handleGetSessionStorage();
+
+    if (!token) {
+      // 인증되지 않은 경우 로그인 페이지로 이동
+      router.push('/sign-in');
+    } else {
+      // 인증된 경우 매치 상세 페이지로 이동
+      router.push(`/match/${matchId}`);
+    }
+  };
   const {
     matchId,
     title,
@@ -30,7 +46,7 @@ const MatchCards = (data: { data: MatchType }) => {
     )?.sports_name;
 
   return (
-    <Link key={title + matchId} href={`/match/${matchId}`}>
+    <div key={title + matchId} onClick={handleMatchClick} className='cursor-pointer'>
       <div className='my-2 flex border rounded-xl'>
         <div className='flex aspect-square h-[128px] min-h-[128px] w-[128px] min-w-[128px] items-center justify-center overflow-hidden p-2'>
           <Image
@@ -67,7 +83,7 @@ const MatchCards = (data: { data: MatchType }) => {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

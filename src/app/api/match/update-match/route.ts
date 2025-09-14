@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { backendClient } from '@/services/axios';
 
 export async function PUT(
   request: Request,
@@ -9,28 +10,13 @@ export async function PUT(
     const body = await request.formData();
     const matchId = params.matchId;
 
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-
-    const backendApiUrl = `${fetchURL}/playlink/match/${matchId}/modify`;
-
-    const response = await fetch(backendApiUrl, {
-      method: 'PUT',
+    const response = await backendClient.put(`/playlink/match/${matchId}/modify`, body, {
       headers: {
         Authorization: token!,
       },
-      body,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Backend API error:', errorData);
-      return NextResponse.json(
-        { status: 'error', message: errorData.message || 'Backend API error' },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
+    const data = response.data;
     return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: unknown) {
     console.error('Update match Route Handler error:', error);

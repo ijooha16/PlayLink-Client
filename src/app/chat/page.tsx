@@ -5,9 +5,24 @@ import Link from 'next/link';
 import React from 'react';
 import { useChatList } from '@/hooks/react-query/chat/use-get-chat-list';
 import Header from '@/components/common-components/header';
+import { useRouter } from 'next/navigation';
+import { handleGetSessionStorage } from '@/utills/web-api';
 
 const Chat = () => {
+  const router = useRouter();
   const { data, isLoading, error } = useChatList();
+
+  const handleChatClick = (roomId: string) => {
+    const token = handleGetSessionStorage();
+
+    if (!token) {
+      // 인증되지 않은 경우 로그인 페이지로 이동
+      router.push('/sign-in');
+    } else {
+      // 인증된 경우 채팅방으로 이동
+      router.push(`/chat/${roomId}`);
+    }
+  };
 
   if (isLoading)
     return (
@@ -29,7 +44,11 @@ const Chat = () => {
       <Header title='채팅' />
       <div>
         {data.data.data.lastChatList.map((item: Record<string, unknown>) => (
-          <Link key={item.room_id as string} href={`/chat/${item.room_id}`}>
+          <div
+            key={item.room_id as string}
+            onClick={() => handleChatClick(item.room_id as string)}
+            className="cursor-pointer"
+          >
             <ChatCard
               roomId={item.room_id as string}
               nickname={item.nickname as string}
@@ -37,7 +56,7 @@ const Chat = () => {
               sendAt={item.send_at as string}
               avatarUrl={item.image_url as string}
             />
-          </Link>
+          </div>
         ))}
       </div>
     </>

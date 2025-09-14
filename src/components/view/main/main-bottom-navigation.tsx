@@ -7,11 +7,26 @@ import {
   MessageSquareIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { handleGetSessionStorage } from '@/utills/web-api';
 
 const MainBottomNavigation = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const allowedPaths = ['/', '/chat', '/my-near', '/my-page'];
+
+  const handleAuthRequiredClick = (targetPath: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = handleGetSessionStorage();
+
+    if (!token) {
+      // 인증되지 않은 경우 로그인 페이지로 직접 이동
+      router.push('/sign-in');
+    } else {
+      // 인증된 경우 해당 페이지로 이동
+      router.push(targetPath);
+    }
+  };
 
   if (!allowedPaths.includes(pathname)) {
     return null;
@@ -25,26 +40,26 @@ const MainBottomNavigation = () => {
       >
         <HomeIcon size={24} />홈
       </Link>
-      <Link
-        href={'/my-near'}
+      <button
+        onClick={handleAuthRequiredClick('/my-near')}
         className='flex w-20 flex-col items-center text-center text-xs'
       >
         <MapPinIcon size={24} />내 근처
-      </Link>
-      <Link
-        href={'/chat'}
+      </button>
+      <button
+        onClick={handleAuthRequiredClick('/chat')}
         className='flex w-20 flex-col items-center text-center text-xs'
       >
         <MessageSquareIcon size={24} />
         채팅
-      </Link>
-      <Link
-        href={'/my-page'}
+      </button>
+      <button
+        onClick={handleAuthRequiredClick('/my-page')}
         className='flex w-20 flex-col items-center text-center text-xs'
       >
         <CircleUserIcon size={24} />
         마이페이지
-      </Link>
+      </button>
     </nav>
   );
 };

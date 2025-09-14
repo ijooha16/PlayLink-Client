@@ -1,58 +1,18 @@
-export const addMatch = async ({
-  formData,
-  token,
-}: {
-  formData: FormData;
-  token: string | null;
-}) => {
-  const response = await fetch('/api/match/add-match', {
-    method: 'POST',
-    headers: {
-      Authorization: token!,
-    },
-    body: formData,
-  });
+import { apiClient } from '@/services/axios';
 
-  if (!response.ok) {
-    throw new Error('Failed to add match');
-  }
-  return response.json();
+export const addMatch = async (formData: FormData) => {
+  const { data } = await apiClient.post('/api/match/add-match', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return data;
 };
 
-export const deleteMatch = async (matchId: string, token: string | null) => {
-  const response = await fetch(`/api/match/remove-match/${matchId}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: token!,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to delete match');
-  }
-  return response.json();
+export const deleteMatch = async (matchId: string) => {
+  const { data } = await apiClient.delete(`/api/match/remove-match/${matchId}`);
+  return data;
 };
 
-export const updateMatch = async ({
-  matchId,
-  formData,
-  token,
-}: {
-  matchId: string;
-  formData: FormData;
-  token: string | null;
-}) => {
-  const response = await fetch(`/api/match/update-match/${matchId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: token!,
-    },
-    body: JSON.stringify(formData),
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to update match');
-  }
-  return response.json();
+export const updateMatch = async ({ matchId, formData }: { matchId: string; formData: any }) => {
+  const { data } = await apiClient.put(`/api/match/update-match/${matchId}`, formData);
+  return data;
 };

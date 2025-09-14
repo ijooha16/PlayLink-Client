@@ -1,24 +1,10 @@
 import { NextResponse } from 'next/server';
+import { backendClient } from '@/services/axios';
 
 export async function POST(request: Request) {
   try {
     const payload = await request.json();
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-    const backendApiUrl = `${fetchURL}/playlink/signup/email/verify`;
-
-    const res = await fetch(backendApiUrl, {
-      method: 'POST',
-      body: payload,
-    });
-
-    if (!res.ok) {
-      const resJson = await res.json();
-      console.error('server email verify error', resJson);
-      return NextResponse.json({
-        status: 'error',
-        message: 'email verify server api error',
-      });
-    }
+    const res = await backendClient.post('/playlink/signup/email/verify', payload);
 
     return NextResponse.json({
       status: 'success',

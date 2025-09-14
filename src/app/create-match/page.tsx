@@ -1,15 +1,15 @@
 'use client';
 
 import Input from '@/components/common-components/input';
-import { DUMMY_PLACE } from '@/shares/dummy-data/dummy-data';
+import { DUMMY_PLACE } from '@/dummy-data/dummy-data';
 import { FormEvent, useState } from 'react';
-import { useAlertStore } from '@/shares/stores/alert-store';
+import { useAlertStore } from '@/stores/alert-store';
 import { useRouter } from 'next/navigation';
   import DatePickerModal from '@/components/common-components/date-picker-modal';
 import SelectExerciseModal from '@/components/common-components/select-exercise-modal';
 import { useAddMatchMutation } from '@/hooks/react-query/match/use-add-match-mutation';
-import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
-import { timeFormat } from '@/shares/libs/utills/create-match-formats';
+import { handleGetSessionStorage } from '@/utills/web-api';
+import { timeFormat } from '@/utills/format/create-match-formats';
 import DropdownInput from '@/components/view/create-match/dropdown-input';
 
 const CreateMatch = () => {
@@ -77,7 +77,7 @@ const CreateMatch = () => {
       }
     });
 
-    addMatch({ formData: data, token });
+    addMatch(data);
     router.push('/');
   };
 

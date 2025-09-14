@@ -2,25 +2,36 @@
 
 import Button from "@/components/common-components/button";
 import Input from "@/components/common-components/input";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useSignUpStepStore } from '@/shares/stores/sign-up-store';
-import { useTimer } from '@/hooks/common/useTimer';
+import { useSignUpStepStore } from '@/stores/sign-up-store';
+import { useTimer } from '@/hooks/common/use-timer';
 import { useEmail } from '@/hooks/react-query/email/useEmail';
 import { useEmailVerify } from '@/hooks/react-query/email/useEmailVerify';
+import { useFindAccountByPhoneEmail } from '@/hooks/react-query/auth/use-find-account';
+import { handleAuthError, handleAuthSuccess, handleVerificationError } from '@/services/auth/auth-error-handler';
 
 const EmailCheck = () => {
     const router = useRouter()
-    const { data, updateStep } = useSignUpStepStore()
+    const { data, updateStep, validateStep } = useSignUpStepStore()
+
+    // 페이지 진입 시 이전 단계 검증
+    useEffect(() => {
+        if (!validateStep('email')) {
+            router.push('/sign-up/phone-check')
+        }
+    }, [])
     const [email, setEmail] = useState(data.email || '')
     const [verificationCode, setVerificationCode] = useState('')
     const [isCodeSent, setIsCodeSent] = useState(false)
     const [isCodeVerified, setIsCodeVerified] = useState(false)
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [showPassword, setShowPassword] = useState(false)
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const [passwordState, setPasswordState] = useState({
+        password: '',
+        confirmPassword: '',
+        showPassword: false,
+        showConfirmPassword: false
+    })
     const { start, formattedTime } = useTimer(600) // 10분
     const [errors, setErrors] = useState<{
         email?: string
@@ -31,6 +42,43 @@ const EmailCheck = () => {
 
     // API 응답 핸들러
     const handlers = {
+        findAccount: {
+            onSuccess: (data: any) => {
+                console.log('Find account success:', data);
+
+                // errCode 0이면 기존 계정이 있음 - account-exists 페이지로 이동
+                if (data.errCode === 0 && data.data) {
+                    const params = new URLSearchParams({
+                        nickname: data.data.nickname || '',
+                        email: data.data.email || '',
+                        accountType: data.data.account_type?.toString() || '0',
+                        createdAt: data.data.created_at || ''
+                    });
+                    router.push(`/sign-up/account-exists?${params.toString()}`);
+                    return;
+                }
+
+                handleAuthSuccess(data, 'email', {
+                    onAccountExists: (message) => setErrors({ email: message }),
+                    onUnverifiedAccount: (message) => setErrors({ email: message }),
+                    onInvalidInput: (message) => setErrors({ email: message }),
+                    onAccountNotFound: () => emailSend({ email }),
+                    onServerError: () => emailSend({ email }),
+                    onUnknownError: () => emailSend({ email })
+                });
+            },
+            onError: (err: any) => {
+                console.log('Find account error:', err);
+                handleAuthError(err, 'email', {
+                    onAccountExists: (message) => setErrors({ email: message }),
+                    onUnverifiedAccount: (message) => setErrors({ email: message }),
+                    onInvalidInput: (message) => setErrors({ email: message }),
+                    onAccountNotFound: () => emailSend({ email }),
+                    onServerError: () => emailSend({ email }),
+                    onUnknownError: (message) => setErrors({ email: message })
+                });
+            }
+        },
         email: {
             onSuccess: () => {
                 setIsCodeSent(true)
@@ -39,7 +87,8 @@ const EmailCheck = () => {
                 alert('인증번호를 발송하였습니다.')
             },
             onError: (err: Error) => {
-                setErrors({ email: err.message || '인증 메일 전송에 실패했습니다.' })
+                const errorMessage = handleVerificationError(err, 'email');
+                setErrors({ email: errorMessage });
             }
         },
         verify: {
@@ -57,6 +106,9 @@ const EmailCheck = () => {
         }
     }
 
+    // 가입 여부 조회
+    const { mutate: findAccount, isPending: isFindingAccount } = useFindAccountByPhoneEmail(handlers.findAccount)
+
     // 이메일 인증코드 전송
     const { mutate: emailSend, isPending: isEmailSending } = useEmail(handlers.email)
 
@@ -69,7 +121,15 @@ const EmailCheck = () => {
             setErrors({ email: '올바른 이메일 형식을 입력해 주세요' })
             return
         }
-        emailSend({ email })
+
+        // 전화번호가 있으면 함께 조회, 없으면 이메일만 조회
+        if (data.phone) {
+            const sanitizedPhone = data.phone.replace(/[^0-9]/g, '')
+            findAccount({ phoneNumber: sanitizedPhone, email })
+        } else {
+            // 전화번호가 없는 경우 바로 인증번호 전송
+            emailSend({ email })
+        }
     }
 
     const handleVerifyCode = () => {
@@ -95,24 +155,24 @@ const EmailCheck = () => {
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newPassword = e.target.value
-        setPassword(newPassword)
+        setPasswordState(prev => ({ ...prev, password: newPassword }))
         
         const error = validatePassword(newPassword)
         setErrors(prev => ({ ...prev, password: error || undefined }))
         
         // 비밀번호 확인 필드도 다시 검증
-        if (confirmPassword && newPassword !== confirmPassword) {
+        if (passwordState.confirmPassword && newPassword !== passwordState.confirmPassword) {
             setErrors(prev => ({ ...prev, confirmPassword: '비밀번호가 일치하지 않습니다' }))
-        } else if (confirmPassword) {
+        } else if (passwordState.confirmPassword) {
             setErrors(prev => ({ ...prev, confirmPassword: undefined }))
         }
     }
 
     const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newConfirmPassword = e.target.value
-        setConfirmPassword(newConfirmPassword)
+        setPasswordState(prev => ({ ...prev, confirmPassword: newConfirmPassword }))
         
-        if (newConfirmPassword && password !== newConfirmPassword) {
+        if (newConfirmPassword && passwordState.password !== newConfirmPassword) {
             setErrors(prev => ({ ...prev, confirmPassword: '비밀번호가 일치하지 않습니다' }))
         } else {
             setErrors(prev => ({ ...prev, confirmPassword: undefined }))
@@ -143,9 +203,9 @@ const EmailCheck = () => {
                         variant="default" 
                         size="base"
                         onClick={handleSendCode}
-                        disabled={!email || isEmailSending}
+                        disabled={!email || isEmailSending || isFindingAccount}
                     >
-                        인증번호 받기
+                        {isFindingAccount ? '가입 여부 확인 중...' : isEmailSending ? '전송 중...' : '인증번호 받기'}
                     </Button>
                 </div>
                 
@@ -181,11 +241,11 @@ const EmailCheck = () => {
                             <p className="text-body-4 text-grey02 pb-[8px]">비밀번호</p>
                             <div className="relative">
                                 <Input
-                                    type={showPassword ? "text" : "password"}
+                                    type={passwordState.showPassword ? "text" : "password"}
                                     variant="default"
                                     sizes="lg"
                                     placeholder="비밀번호를 입력해주세요"
-                                    value={password}
+                                    value={passwordState.password}
                                     onChange={handlePasswordChange}
                                     hasError={!!errors.password}
                                     errorMessage={errors.password || ''}
@@ -194,12 +254,12 @@ const EmailCheck = () => {
                                     type="button"
                                     tabIndex={-1}
                                     className="absolute right-4 top-4 text-grey02 z-10"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() => setPasswordState(prev => ({ ...prev, showPassword: !prev.showPassword }))}
                                 >
-                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    {passwordState.showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
                             </div>
-                            {!errors.password && password.length === 0 && (
+                            {!errors.password && passwordState.password.length === 0 && (
                                 <p className="text-caption text-grey02 pt-[8px]">영문, 숫자, 특수문자 조합 8~16자</p>
                             )}
                         </div>
@@ -208,11 +268,11 @@ const EmailCheck = () => {
                             <p className="text-body-4 text-grey02 pb-[8px]">비밀번호 확인</p>
                             <div className="relative">
                                 <Input
-                                    type={showConfirmPassword ? "text" : "password"}
+                                    type={passwordState.showConfirmPassword ? "text" : "password"}
                                     variant="default"
                                     sizes="lg"
                                     placeholder="비밀번호를 다시 입력해주세요"
-                                    value={confirmPassword}
+                                    value={passwordState.confirmPassword}
                                     onChange={handleConfirmPasswordChange}
                                     hasError={!!errors.confirmPassword}
                                     errorMessage={errors.confirmPassword || ''}
@@ -221,9 +281,9 @@ const EmailCheck = () => {
                                     type="button"
                                     tabIndex={-1}
                                     className="absolute right-4 top-4 text-grey02 z-10"
-                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    onClick={() => setPasswordState(prev => ({ ...prev, showConfirmPassword: !prev.showConfirmPassword }))}
                                 >
-                                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    {passwordState.showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
                             </div>
                         </div>
@@ -243,12 +303,12 @@ const EmailCheck = () => {
                 ) : (
                     <Button 
                         variant="default" 
-                        disabled={!password || !confirmPassword || !!errors.password || !!errors.confirmPassword}
+                        disabled={!passwordState.password || !passwordState.confirmPassword || !!errors.password || !!errors.confirmPassword}
                         onClick={() => {
                             updateStep({ 
                                 email, 
-                                password,
-                                confirmPassword
+                                password: passwordState.password,
+                                confirmPassword: passwordState.confirmPassword
                             })
                             router.push('/sign-up/profile')
                         }}

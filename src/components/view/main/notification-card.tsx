@@ -3,7 +3,7 @@ import {
   useRejectMatchMutation,
 } from '@/hooks/react-query/match/use-approve-match-mutation';
 import MatchButton from '@/components/common-components/match-button';
-import { useAlertStore } from '@/shares/stores/alert-store';
+import { useAlertStore } from '@/stores/alert-store';
 import {
   Check,
   LucideEllipsisVertical,
@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { NotificationDataType } from '@/features/play-link/types/notification/notification';
+import { NotificationDataType } from '@/types/notification/notification';
 
 const NotificationCard = ({
   token,

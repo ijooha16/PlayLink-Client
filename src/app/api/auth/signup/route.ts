@@ -1,36 +1,19 @@
 import { NextResponse } from 'next/server';
+import { backendClient } from '@/services/axios';
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-
-    const backendApiUrl = `${fetchURL}/playlink/signup`;
-
-    const response = await fetch(backendApiUrl, {
-      method: 'POST',
-      body: formData,
+    const { data } = await backendClient.post('/playlink/signup', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Backend API error:', errorData);
-      return NextResponse.json(
-        { status: 'error', message: errorData.message || 'Backend API error' },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-    return NextResponse.json({ status: 'success', data }, { status: 200 });
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error('Signup Route Handler error:', error);
-      return NextResponse.json(
-        { status: 'error', message: error instanceof Error ? error.message : "Unknown error" },
-        { status: 500 }
-      );
-    }
+    return NextResponse.json({ status: 'success', data });
+  } catch (err: any) {
+    console.error('Signup Route Handler error:', err);
+    return NextResponse.json({
+      status: 'error',
+      message: err.response?.data?.message || err.message || 'Unknown error',
+    }, { status: err.response?.status || 500 });
   }
 }

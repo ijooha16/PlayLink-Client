@@ -1,8 +1,9 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { useAlertStore } from '@/shares/stores/alert-store';
+import { useAlertStore } from '@/stores/alert-store';
 import { useRouter } from 'next/navigation';
+import { apiClient } from '@/services/axios';
 interface SignupData {
   name: string;
   nickname: string;
@@ -48,21 +49,13 @@ const useSignup = () => {
     // console.log('커스텀 훅 FormData 내용:', formDataEntries);
 
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await apiClient.post('/api/auth/signup', formData);
 
       console.log('리스폰스', response);
       openAlert('회원가입 완료 !', `${signupData.name}님 반갑습니다`);
       router.push('/sign-in');
-      if (!response.ok) {
-        const error = await response.json();
-        openAlert('회원가입 실패 !', '회원가입에 실패했습니다');
-        throw new Error(error.message || '회원가입에 실패했습니다');
-      }
 
-      return response.json();
+      return response.data;
     } catch (err) {
       console.log('커스텀 훅에서 호출한 사인업 api 데이터 오류', err);
       openAlert('회원가입 실패 !', '회원가입에 실패했습니다');

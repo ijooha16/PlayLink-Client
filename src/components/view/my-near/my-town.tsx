@@ -1,6 +1,6 @@
 'use client';
 
-import { useAlertStore } from '@/shares/stores/alert-store';
+import { useAlertStore } from '@/stores/alert-store';
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 

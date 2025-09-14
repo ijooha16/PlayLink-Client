@@ -1,37 +1,22 @@
 import { NextResponse } from 'next/server';
+import { backendClient } from '@/services/axios';
 
 export async function POST(request: Request) {
   try {
     const payload = await request.json();
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-    const backendApiUrl = `${fetchURL}/playlink/signup/email`;
-    console.log(payload, JSON.stringify(payload));
 
-    const res = await fetch(backendApiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    const resJson = await res.json();
-
-    if (!res.ok) {
-      console.error('server api error', resJson);
-      return NextResponse.json({
-        status: 'error',
-        message: 'email server api error',
-      });
-    }
+    const { data } = await backendClient.post('/playlink/signup/email', payload);
 
     return NextResponse.json({
       status: 'success',
       message: '이메일 인증코드 발송 완료',
+      data
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error('email route error', err);
     return NextResponse.json({
-      status: 500,
-      message: err,
-    });
+      status: 'error',
+      message: err.response?.data?.message || err.message || 'email server api error',
+    }, { status: err.response?.status || 500 });
   }
 }

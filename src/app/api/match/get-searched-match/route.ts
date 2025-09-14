@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { backendClient } from '@/services/axios';
 
 export async function GET(request: Request) {
   try {
@@ -6,22 +7,8 @@ export async function GET(request: Request) {
     const keyword = searchParams.get('keyword') || '';
     const type = searchParams.get('type') || '';
 
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-
-    const backendApiUrl = `${fetchURL}/playlink/match?title=${keyword}&type=${type}`;
-
-    const response = await fetch(backendApiUrl);
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Backend API error:', errorData);
-      return NextResponse.json(
-        { status: 'error', message: errorData.message || 'Backend API error' },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
+    const response = await backendClient.get(`/playlink/match?title=${keyword}&type=${type}`);
+    const data = response.data;
     return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: unknown) {
     console.error('Get searched match Route Handler error:', error);

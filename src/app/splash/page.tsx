@@ -1,11 +1,11 @@
 'use client';
 
 import SocialIconButton from '@/components/common-components/social-icon-button';
-import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';
-import { useAlertStore } from '@/shares/stores/alert-store';
+import { getDeviceInfo } from '@/utills/get-device-info';
+import { useAlertStore } from '@/stores/alert-store';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
-import { useSignin } from '@/hooks/react-query/auth/useSignin';
+import { useSignin } from '@/hooks/react-query/auth/use-signin';
 import Loading from '@/components/common-components/loading';
 import Image from 'next/image';
 import { motion } from 'framer-motion';

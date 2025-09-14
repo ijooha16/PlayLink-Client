@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
+import { handleGetSessionStorage } from '@/utills/web-api';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

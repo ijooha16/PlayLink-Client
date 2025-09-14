@@ -1,12 +1,12 @@
 'use client';
 
 import Input from '@/components/common-components/input';
-import { getDeviceInfo } from '@/shares/libs/utills/get-device-info';
-import { useAlertStore } from '@/shares/stores/alert-store';
+import { getDeviceInfo } from '@/utills/get-device-info';
+import { useAlertStore } from '@/stores/alert-store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
-import { useSignin } from '@/hooks/react-query/auth/useSignin';
+import { useSignin } from '@/hooks/react-query/auth/use-signin';
 import Loading from '@/components/common-components/loading';
 import Header from '@/components/common-components/header';
 import Button from '@/components/common-components/button';
@@ -20,7 +20,14 @@ const SignIn = () => {
 
   const { mutate: signIn, isPending } = useSignin({
     onSuccess: () => {
-      router.replace('/');
+      // 저장된 리다이렉트 경로 확인
+      const redirectPath = sessionStorage.getItem('redirectAfterLogin');
+      if (redirectPath) {
+        sessionStorage.removeItem('redirectAfterLogin');
+        router.replace(redirectPath);
+      } else {
+        router.replace('/');
+      }
       openAlert('로그인 성공!', '매너 있는 플레이링크 부탁드립니다 :D');
     },
     onError: (err) => {

@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { Heart, MapPin, Share2 } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { handleGetSessionStorage } from '@/utills/web-api';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import Image from 'next/image';
@@ -10,7 +11,21 @@ import DynamicNaverMapForDetail from '@/components/common-components/dynamic-nav
 
 export default function MatchDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const { id } = params;
+
+  const handleApplyClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = handleGetSessionStorage();
+
+    if (!token) {
+      // 인증되지 않은 경우 로그인 페이지로 이동
+      router.push('/sign-in');
+    } else {
+      // 인증된 경우 신청 페이지로 이동
+      router.push(`/apply/${id}`);
+    }
+  };
   const { data } = useGetMatchesQuery({ matchId: id });
   const { data: sports } = useGetSportsQuery();
   const {
@@ -69,7 +84,7 @@ export default function MatchDetailPage() {
       <div className='flex flex-col gap-4'>
         <div className='flex flex-col gap-2'>
           <span className='pt-4 font-bold text-blue-500'>
-            {sportTypeForThisMatch[0].sports_name}
+            {sportTypeForThisMatch[0]?.sports_name}
           </span>
           <h1 className='text-2xl font-bold'>{title}</h1>
         </div>
@@ -124,17 +139,19 @@ export default function MatchDetailPage() {
         </div>
 
         {id !== '5' ? (
-          <Link href={`/apply/${id}`}>
-            <button className='rounded-lg bg-blue-500 px-6 py-3 font-bold text-white'>
-              참가하기
-            </button>
-          </Link>
+          <button
+            onClick={handleApplyClick}
+            className='rounded-lg bg-blue-500 px-6 py-3 font-bold text-white'
+          >
+            참가하기
+          </button>
         ) : (
-          <Link href={`/apply/${id}`}>
-            <button className='rounded-lg bg-blue-500 px-6 py-3 font-bold text-white'>
-              매치 관리하기
-            </button>
-          </Link>
+          <button
+            onClick={handleApplyClick}
+            className='rounded-lg bg-blue-500 px-6 py-3 font-bold text-white'
+          >
+            매치 관리하기
+          </button>
         )}
       </div>
     </div>
