@@ -63,7 +63,7 @@ const MatchCards = (data: { data: MatchType }) => {
             <span className='break-keep font-bold text-blue-500'>
               {sportsName}
             </span>
-            <span className='truncate font-semibold'>{title}</span>
+            <span className='truncate text-heading-01 font-semibold'>{title}</span>
           </div>
           <div className='flex gap-2 text-sm text-gray-400'>
             <span>{date}</span> | <span>{start_time}</span>
