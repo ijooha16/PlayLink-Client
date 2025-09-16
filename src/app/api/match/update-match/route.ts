@@ -1,14 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { backendClient } from '@/services/axios';
 
 export async function PUT(
-  request: Request,
-  { params }: { params: { matchId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ matchId: string }> }
 ) {
   try {
     const token = request.headers.get('Authorization');
     const body = await request.formData();
-    const matchId = params.matchId;
+    const { matchId } = await params;
 
     const response = await backendClient.put(`/playlink/match/${matchId}/modify`, body, {
       headers: {

@@ -18,7 +18,7 @@ const AccountExists = () => {
 
     const handleGoToLogin = () => {
         clearStep(); // zustand store 초기화
-        router.push('/sign-in');
+        router.push('/splash');
     };
 
 

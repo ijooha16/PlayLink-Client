@@ -15,6 +15,9 @@ const SignIn = () => {
   const [emailID, setEmailID] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [enableButton, setEnableButton] = useState<boolean[]>([false, false]);
+  
+  // 버튼 활성화 조건: 이메일과 비밀번호가 모두 입력되어야 함
+  const isButtonEnabled = enableButton[0] && enableButton[1];
   const openAlert = useAlertStore((state) => state.openAlert);
   const router = useRouter();
 
@@ -36,7 +39,6 @@ const SignIn = () => {
     },
   });
 
-  // Login Submit 기능 자체가 있었으나, email-login 페이지로 따로 옮겨질 예정
   const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!emailID || !password) return;
@@ -60,50 +62,47 @@ const SignIn = () => {
         <div className='mx-auto h-full w-full break-keep text-center'>
           <form
             onSubmit={(e) => handleLoginSubmit(e)}
-            className='flex flex-col gap-y-4'
+            className='flex flex-col gap-y-s-16'
           >
-            <label className='flex w-full flex-col gap-2 text-left text-body-5'>
-              이메일
-              <Input
-                type='email'
-                variant={'default'}
-                sizes={'md'}
-                onChange={(e) => {
-                  setEmailID(e.target.value);
-                  setEnableButton([e.target.value.length > 0, enableButton[1]]);
-                }}
-                placeholder='이메일 입력'
-              />
-            </label>
-            <label className='flex w-full flex-col gap-2 text-left text-body-5'>
-              비밀번호
-              <Input
-                type='password'
-                variant={'default'}
-                sizes={'md'}
-                autoComplete='current-password'
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setEnableButton([enableButton[0], e.target.value.length > 6]);
-                }}
-                placeholder='비밀번호 입력'
-              />
-            </label>
-            <Button type='submit' className='my-2' disabled={!enableButton.every((v) => v)}>
+            <Input
+              label='이메일'
+              type='email'
+              variant={'default'}
+              sizes={'md'}
+              onChange={(e) => {
+                setEmailID(e.target.value);
+                setEnableButton([e.target.value.length > 0, enableButton[1]]);
+              }}
+              placeholder='이메일 입력'
+            />
+            <Input
+              label='비밀번호'
+              type='password'
+              variant={'default'}
+              sizes={'md'}
+              autoComplete='current-password'
+              showPasswordToggle
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setEnableButton([enableButton[0], e.target.value.length > 0]);
+              }}
+              placeholder='비밀번호 입력'
+            />
+            <Button className='mt-s-24' fontSize='lg' type='submit' disabled={!isButtonEnabled}>
               로그인
             </Button>
           </form>
-          <div className='mx-auto mt-2 flex w-full justify-center gap-1 text-sub text-grey02'>
+          <div className='mx-auto text-label-s text-gray-500 mt-s-16 gap-s-8 flex w-full justify-center font-semibold'>
             <Link href={'/find-account'}>
               <p>아이디 찾기</p>
             </Link>
-            |
+            <span className='text-line-neutral'>|</span>
             <Link href={'/change-password'}>
               <p>비밀번호 찾기</p>
             </Link>
-            |
+            <span className='text-line-neutral'>|</span>
             <Link href={'/sign-up/terms'}>
-              <p>회원가입</p>
+              <p className='text-primary-800'>회원가입</p>
             </Link>
           </div>
         </div>

@@ -84,6 +84,12 @@
   --color-gray-900: #121212;
   --color-gray-1000: #000000;
 
+  /* line color */
+  --color-line-normal: #eeeeee;
+  --color-line-netural: #e2e2e2;
+  --color-line-alternative: #D0D0D0;
+  --color-line-strong: #121212;
+
   /* system color */
   --color-system-error: #eb003b;
   --color-system-warning: #ffb724;
@@ -146,28 +152,42 @@
   --font-regular: 400;
 
   /* 폰트 */
-  --font-heading-01: 36px/146% 0px;
-  --font-heading-02: 32px/146% 0px;
-  --font-heading-03: 28px/146% 0px;
+  --font-heading-01: 36px;
+  --font-heading-01-lh: 1.46;
+  --font-heading-02: 32px;
+  --font-heading-02-lh: 1.46;
+  --font-heading-03: 28px;
+  --font-heading-03-lh: 1.46;
 
-  --font-title-01: 24px/146% 0px;
-  --font-title-02: 20px/146% 0px;
-  --font-title-03: 18px/146% 0px;
+  --font-title-01: 24px;
+  --font-title-01-lh: 1.46;
+  --font-title-02: 20px;
+  --font-title-02-lh: 1.46;
+  --font-title-03: 18px;
+  --font-title-03-lh: 1.46;
 
-  --font-label-l: 16px/146% 0px;
-  --font-label-m: 14px/146% 0px;
-  --font-label-s: 12px/140% 0px;
+  --font-label-l: 16px;
+  --font-label-l-lh: 1.46;
+  --font-label-m: 14px;
+  --font-label-m-lh: 1.46;
+  --font-label-s: 12px;
+  --font-label-s-lh: 1.4;
 
-  --font-body-01: 16px/146% 0px;
-  --font-body-02: 14px/146% 0px;
+  --font-body-01: 16px;
+  --font-body-01-lh: 1.46;
+  --font-body-02: 14px;
+  --font-body-02-lh: 1.46;
 
-  --font-caption-01: 12px/140% 0px;
-  --font-caption-02: 11px/140% 0px;
+  --font-caption-01: 12px;
+  --font-caption-01-lh: 1.4;
+  --font-caption-02: 11px;
+  --font-caption-02-lh: 1.4;
 }
 
 * {
   @apply box-border;
 }
+
 
 body {
   color: var(--foreground);

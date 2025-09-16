@@ -19,7 +19,7 @@ const MatchCards = (data: { data: MatchType }) => {
 
     if (!token) {
       // 인증되지 않은 경우 로그인 페이지로 이동
-      router.push('/sign-in');
+      router.push('/splash');
     } else {
       // 인증된 경우 매치 상세 페이지로 이동
       router.push(`/match/${matchId}`);
@@ -63,7 +63,9 @@ const MatchCards = (data: { data: MatchType }) => {
             <span className='break-keep font-bold text-blue-500'>
               {sportsName}
             </span>
-            <span className='truncate text-heading-01 font-semibold'>{title}</span>
+            {/* text-heading-04 */}
+            <span className='truncate
+              font-semibold'>{title}</span>
           </div>
           <div className='flex gap-2 text-sm text-gray-400'>
             <span>{date}</span> | <span>{start_time}</span>

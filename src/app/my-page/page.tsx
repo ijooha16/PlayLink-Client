@@ -25,14 +25,14 @@ export default function MyPage() {
     const data = handleRemoveSessionStorage('PLAYLINK_AUTH');
 
     if (data.status === 'success') {
-      router.push('/sign-in');
+      router.push('/splash');
     }
   };
 
   useEffect(() => {
     const token = handleGetSessionStorage();
     if (!token) {
-      router.push('/sign-in');
+      router.push('/splash');
     }
   }, []);
 

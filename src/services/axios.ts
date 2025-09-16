@@ -44,7 +44,7 @@ const addInterceptors = (instance: any) => {
         err.message = ERROR_MESSAGES[code];
       }
       if (err.response?.status === 401) {
-        window.location.href = '/sign-in';
+        window.location.href = '/splash';
       }
       return Promise.reject(err);
     }

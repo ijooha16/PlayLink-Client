@@ -20,7 +20,7 @@ export default function MatchDetailPage() {
 
     if (!token) {
       // 인증되지 않은 경우 로그인 페이지로 이동
-      router.push('/sign-in');
+      router.push('/splash');
     } else {
       // 인증된 경우 신청 페이지로 이동
       router.push(`/apply/${id}`);
