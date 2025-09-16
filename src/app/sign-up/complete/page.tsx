@@ -5,7 +5,7 @@ import { useSignUpStepStore } from '@/stores/sign-up-store';
 import { useEffect, useState } from 'react';
 import useSignup from '@/hooks/common/use-signup';
 import { getDeviceInfo } from '@/utills/get-device-info';
-import Button from '@/components/common-components/button';
+import Button from '@/components/common/button';
 
 const SignUpComplete = () => {
     const router = useRouter()

@@ -5,14 +5,14 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useState } from 'react';
-import Input from '@/components/common-components/input';
+import Input from '@/components/common/input';
 
 import { useEmail } from '@/hooks/react-query/email/useEmail';
 import { useEmailVerify } from '@/hooks/react-query/email/useEmailVerify';
 
 import { useSms } from '@/hooks/react-query/sms/useSms';
 import { useSmsVerify } from '@/hooks/react-query/sms/useSmsVerify';
-import Button from '@/components/common-components/button';
+import Button from '@/components/common/button';
 import { useModalStore } from '@/stores/modal-store';
 
 import { ChevronDown } from 'lucide-react';

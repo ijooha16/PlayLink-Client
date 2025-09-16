@@ -1,6 +1,6 @@
 'use client'
 
-import Button from "@/components/common-components/button";
+import Button from "@/components/common/button";
 import React from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Mail, Apple } from 'lucide-react';
@@ -18,7 +18,7 @@ const AccountExists = () => {
 
     const handleGoToLogin = () => {
         clearStep(); // zustand store 초기화
-        router.push('/sign-in');
+        router.push('/splash');
     };
 
 

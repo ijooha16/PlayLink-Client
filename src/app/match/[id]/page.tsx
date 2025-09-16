@@ -7,7 +7,7 @@ import { handleGetSessionStorage } from '@/utills/web-api';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import Image from 'next/image';
-import DynamicNaverMapForDetail from '@/components/common-components/dynamic-naver-map-for-detail';
+import DynamicNaverMapForDetail from '@/components/common/dynamic-naver-map-for-detail';
 
 export default function MatchDetailPage() {
   const params = useParams();
@@ -20,7 +20,7 @@ export default function MatchDetailPage() {
 
     if (!token) {
       // 인증되지 않은 경우 로그인 페이지로 이동
-      router.push('/sign-in');
+      router.push('/splash');
     } else {
       // 인증된 경우 신청 페이지로 이동
       router.push(`/apply/${id}`);

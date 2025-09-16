@@ -10,7 +10,6 @@ import {
   onForegroundMessage,
   requestPermissionAndGetToken,
 } from '@/libs/firebase/firebase-messaging';
-import { handleGetSessionStorage } from '@/utills/web-api';
 import { useSearchStore } from '@/stores/search-store';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -19,7 +18,6 @@ export default function Home() {
   const { data } = useGetMatchesQuery();
   const { keyword, type } = useSearchStore();
   const router = useRouter();
-  const token = handleGetSessionStorage();
   // const {data: notificationData} = useGetNotificationQuery(token);
 
   //검색 페이지 이동

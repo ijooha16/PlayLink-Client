@@ -4,7 +4,7 @@ import ChatCard from '@/components/view/chat/chat-card';
 import Link from 'next/link';
 import React from 'react';
 import { useChatList } from '@/hooks/react-query/chat/use-get-chat-list';
-import Header from '@/components/common-components/header';
+import Header from '@/components/common/header';
 import { useRouter } from 'next/navigation';
 import { handleGetSessionStorage } from '@/utills/web-api';
 
@@ -17,7 +17,7 @@ const Chat = () => {
 
     if (!token) {
       // 인증되지 않은 경우 로그인 페이지로 이동
-      router.push('/sign-in');
+      router.push('/splash');
     } else {
       // 인증된 경우 채팅방으로 이동
       router.push(`/chat/${roomId}`);

@@ -53,7 +53,7 @@ const useSignup = () => {
 
       console.log('리스폰스', response);
       openAlert('회원가입 완료 !', `${signupData.name}님 반갑습니다`);
-      router.push('/sign-in');
+      router.push('/splash');
 
       return response.data;
     } catch (err) {

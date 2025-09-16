@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSignUpStepStore } from '@/stores/sign-up-store';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
-import SportCard from '@/components/common-components/sport-card';
-import Button from '@/components/common-components/button';
+import SportCard from '@/components/common/sport-card';
+import Button from '@/components/common/button';
 
 export default function SportsSelectionPage() {
   const router = useRouter();

@@ -3,12 +3,12 @@ import { backendClient } from '@/services/axios';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const incoming = req.headers.get('authorization'); // 클라가 준 토큰
   const auth = incoming?.replace(/^(bearer\s+)+/i, 'Bearer '); // => 'Bearer xxx'
 
-  const { id } = params; // '/api/chatlist/5' -> '5'
+  const { id } = await params; // '/api/chatlist/5' -> '5'
 
   try {
     const res = await backendClient.get(`/playlink/chattingLog?roomId=${encodeURIComponent(id)}`, {

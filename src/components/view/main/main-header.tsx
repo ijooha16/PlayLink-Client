@@ -1,6 +1,6 @@
 'use client';
 
-import DropDown from '@/components/common-components/drop-down';
+import DropDown from '@/components/common/drop-down';
 import { BellIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import SearchView from './search-view';
@@ -15,7 +15,6 @@ const click = (option: string) => {
 const MainHeader = () => {
   const [searchViewOpen, setSearchViewOpen] = useState(false);
   const [notificationViewOpen, setNotificationViewOpen] = useState(false);
-  // const token = handleGetSessionStorage();
   // const { data: notificationData } = useGetNotificationQuery(token);
   // const unread = notificationData?.data.data.notificationList.some(
   //   (message: MessageType) => !message.is_read

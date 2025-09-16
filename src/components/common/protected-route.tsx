@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // 홈화면과 인증 관련 페이지는 보호하지 않음
-  const publicPaths = ['/', '/sign-in', '/sign-up'];
+  const publicPaths = ['/', '/sign-in', '/sign-up', '/splash'];
   
   useEffect(() => {
     const checkAuth = () => {
@@ -27,8 +27,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       const token = handleGetSessionStorage();
       
       if (!token) {
-        console.log('토큰이 없습니다. 로그인 페이지로 이동합니다.');
-        router.push('/sign-in');
+        router.push('/splash');
         return;
       }
 

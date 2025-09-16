@@ -1,8 +1,8 @@
 'use client';
 
-import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
+import { ChevronLeft } from '@/components/common/icons';
 
 const Header = ({
   children,
@@ -19,10 +19,11 @@ const Header = ({
 
   return (
     <div
-      className={`fixed left-1/2 top-0 z-50 flex h-12 w-full max-w-[640px] -translate-x-1/2 items-center justify-between bg-white px-4 ${transparent ? 'bg-transparent text-white' : ''}`}
+      className={`fixed left-1/2 top-0 z-50 flex h-12 w-full max-w-[640px] -translate-x-1/2 items-center justify-between bg-white px-4 ${transparent ? 'bg-transparent  text-white' : ''}`}
     >
       {backbtn && (
         <button
+        className='text-icon-strong'
           onClick={() => {
             if (backbtn === 'home') {
               router.replace('/');
@@ -31,10 +32,10 @@ const Header = ({
             }
           }}
         >
-          <ChevronLeft size={24} />
+          <ChevronLeft />
         </button>
       )}
-      <div className='text-title-4'>{title}</div>
+      <div className='text-title-03  font-semibold'>{title}</div>
       <div className='w-6'>{children}</div>
     </div>
   );

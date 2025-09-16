@@ -1,4 +1,4 @@
-import Header from '@/components/common-components/header';
+import Header from '@/components/common/header';
 
 const DetailLayout = ({
   children,

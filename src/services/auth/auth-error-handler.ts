@@ -37,21 +37,23 @@ export const handleAuthError = (
   } = options;
 
   switch (errCode) {
-    case 0:
+    case 0: {
       // 이미 가입된 계정
       const accountExistsMessage = type === 'phone'
         ? '이미 가입된 전화번호입니다.'
         : '이미 가입된 이메일입니다.';
       onAccountExists?.(accountExistsMessage);
       break;
+    }
 
-    case 6001:
+    case 6001: {
       // 인증 안됨
       const unverifiedMessage = type === 'phone'
         ? '전화번호 인증이 필요한 계정입니다.'
         : '전화번호 인증이 완료되지 않았습니다.';
       onUnverifiedAccount?.(unverifiedMessage);
       break;
+    }
 
     case 1008:
       // body 값 오류
@@ -68,10 +70,11 @@ export const handleAuthError = (
       onServerError?.();
       break;
 
-    default:
+    default: {
       const defaultMessage = `가입 여부 확인 중 오류가 발생했습니다.${message ? ` (${message})` : ''}`;
       onUnknownError?.(defaultMessage);
       break;
+    }
   }
 };
 

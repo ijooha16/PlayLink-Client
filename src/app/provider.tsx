@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import GlobalModal from '@/components/common-components/global-modal';
+import GlobalModal from '@/components/common/global-modal';
 import { useState } from 'react';
 
 export default function Providers({ children }: { children: React.ReactNode }) {

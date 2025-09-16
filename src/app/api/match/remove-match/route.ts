@@ -1,13 +1,13 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { backendClient } from '@/services/axios';
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { matchId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ matchId: string }> }
 ) {
   try {
     const token = request.headers.get('Authorization');
-    const matchId = params.matchId;
+    const { matchId } = await params;
 
     const response = await backendClient.delete(`/playlink/match/${matchId}`, {
       headers: {

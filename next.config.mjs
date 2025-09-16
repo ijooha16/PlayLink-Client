@@ -4,10 +4,7 @@ const nextConfig = {
     styledComponents: true,
   },
   // reactStrictMode: false,
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
-  output: 'standalone',
+  serverExternalPackages: [],
 
   images: {
     remotePatterns: [
@@ -17,6 +14,14 @@ const nextConfig = {
         pathname: '/storage/v1/object/public/**',
       },
     ],
+  },
+
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
+    return config;
   },
 };
 

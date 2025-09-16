@@ -1,6 +1,6 @@
 'use client';
 
-import SuccessAlert from '@/components/common-components/success-alert';
+import SuccessAlert from '@/components/common/success-alert';
 import { useAlertStore } from '@/stores/alert-store';
 
 const LayoutClientSide = () => {
