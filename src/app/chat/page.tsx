@@ -4,7 +4,7 @@ import ChatCard from '@/components/view/chat/chat-card';
 import Link from 'next/link';
 import React from 'react';
 import { useChatList } from '@/hooks/react-query/chat/use-get-chat-list';
-import Header from '@/components/common-components/header';
+import Header from '@/components/common/header';
 import { useRouter } from 'next/navigation';
 import { handleGetSessionStorage } from '@/utills/web-api';
 

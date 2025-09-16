@@ -1,6 +1,6 @@
 'use client';
 
-import DropDown from '@/components/common-components/drop-down';
+import DropDown from '@/components/common/drop-down';
 import { BellIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import SearchView from './search-view';

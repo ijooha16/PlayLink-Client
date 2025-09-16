@@ -10,7 +10,7 @@ import {
 import { useGetProfileQuery } from '@/hooks/react-query/profile/use-get-profile-query';
 import { useUpdateProfileMutation } from '@/hooks/react-query/profile/use-update-profile-mutation';
 import { set } from 'date-fns';
-import Header from '@/components/common-components/header';
+import Header from '@/components/common/header';
 
 export default function MyPage() {
   const [token, setToken] = useState<string | null>(null);

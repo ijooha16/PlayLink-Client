@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { SignUpStep2, signUpStep2Schema } from '@/types/sign-up/sign-up-schema';
 
 import { ProfileImg } from '@/utills/random-profile-image';
-import Input from '@/components/common-components/input';
+import Input from '@/components/common/input';
 
 // util
 import randomProfileImage from '@/utills/random-profile-image';

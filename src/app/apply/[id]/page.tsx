@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAlertStore } from '@/stores/alert-store';
 import { handleGetSessionStorage } from '@/utills/web-api';
 import { useApplyMatchMutation } from '@/hooks/react-query/match/use-apply-match-mutation';
-import Header from '@/components/common-components/header';
+import Header from '@/components/common/header';
 
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';

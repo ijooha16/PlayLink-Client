@@ -4,7 +4,7 @@ import '../styles/globals.css';
 import LayoutClientSide from '@/components/view/main/layout-client-side';
 import Providers from './provider';
 import MainBottomNavigation from '@/components/view/main/main-bottom-navigation';
-import ProtectedRoute from '@/components/common-components/protected-route';
+import ProtectedRoute from '@/components/common/protected-route';
 
 const pretendard = localFont({
   src: '../../public/fonts/pretendard-variable.woff2',

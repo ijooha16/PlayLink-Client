@@ -1,15 +1,15 @@
 'use client';
 
-import Input from '@/components/common-components/input';
+import Input from '@/components/common/input';
 import { getDeviceInfo } from '@/utills/get-device-info';
 import { useAlertStore } from '@/stores/alert-store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import { useSignin } from '@/hooks/react-query/auth/use-signin';
-import Loading from '@/components/common-components/loading';
-import Header from '@/components/common-components/header';
-import Button from '@/components/common-components/button';
+import Loading from '@/components/common/loading';
+import Header from '@/components/common/header';
+import Button from '@/components/common/button';
 
 const SignIn = () => {
   const [emailID, setEmailID] = useState<string>();

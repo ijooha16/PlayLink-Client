@@ -1,6 +1,6 @@
 'use client'
 
-import Button from "@/components/common-components/button";
+import Button from "@/components/common/button";
 import React from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Mail, Apple } from 'lucide-react';

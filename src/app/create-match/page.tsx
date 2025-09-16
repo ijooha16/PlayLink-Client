@@ -1,12 +1,12 @@
 'use client';
 
-import Input from '@/components/common-components/input';
+import Input from '@/components/common/input';
 import { DUMMY_PLACE } from '@/dummy-data/dummy-data';
 import { FormEvent, useState } from 'react';
 import { useAlertStore } from '@/stores/alert-store';
 import { useRouter } from 'next/navigation';
-  import DatePickerModal from '@/components/common-components/date-picker-modal';
-import SelectExerciseModal from '@/components/common-components/select-exercise-modal';
+  import DatePickerModal from '@/components/common/date-picker-modal';
+import SelectExerciseModal from '@/components/common/select-exercise-modal';
 import { useAddMatchMutation } from '@/hooks/react-query/match/use-add-match-mutation';
 import { handleGetSessionStorage } from '@/utills/web-api';
 import { timeFormat } from '@/utills/format/create-match-formats';
