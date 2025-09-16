@@ -8,12 +8,10 @@ import { useRouter } from 'next/navigation';
   import DatePickerModal from '@/components/common/date-picker-modal';
 import SelectExerciseModal from '@/components/common/select-exercise-modal';
 import { useAddMatchMutation } from '@/hooks/react-query/match/use-add-match-mutation';
-import { handleGetSessionStorage } from '@/utills/web-api';
 import { timeFormat } from '@/utills/format/create-match-formats';
 import DropdownInput from '@/components/view/create-match/dropdown-input';
 
 const CreateMatch = () => {
-  const token = handleGetSessionStorage();
 
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');

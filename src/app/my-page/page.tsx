@@ -9,7 +9,6 @@ import {
 } from '@/utills/web-api';
 import { useGetProfileQuery } from '@/hooks/react-query/profile/use-get-profile-query';
 import { useUpdateProfileMutation } from '@/hooks/react-query/profile/use-update-profile-mutation';
-import { set } from 'date-fns';
 import Header from '@/components/common/header';
 
 export default function MyPage() {
@@ -42,12 +41,11 @@ export default function MyPage() {
   }, []);
 
   // 2) 토큰이 있어야 쿼리 실행
-  const { data: profileData } = useGetProfileQuery(token);
+  const { data: profileData } = useGetProfileQuery();
 
   // 3) 데이터 있을 때만 안전하게 접근
   const profile = profileData?.data?.data; // 서버 응답 래핑 구조 유지
   const { email, name, nickname, phoneNumber, img_url } = profile ?? {};
-console.log('profile', profile);
   const [nicknameInput, setNicknameInput] = useState(nickname);
 
   // 이미지 선택 핸들러

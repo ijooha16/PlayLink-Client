@@ -15,7 +15,6 @@ const click = (option: string) => {
 const MainHeader = () => {
   const [searchViewOpen, setSearchViewOpen] = useState(false);
   const [notificationViewOpen, setNotificationViewOpen] = useState(false);
-  // const token = handleGetSessionStorage();
   // const { data: notificationData } = useGetNotificationQuery(token);
   // const unread = notificationData?.data.data.notificationList.some(
   //   (message: MessageType) => !message.is_read

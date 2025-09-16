@@ -7,7 +7,6 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: [],
   },
-  output: 'standalone',
 
   images: {
     remotePatterns: [

@@ -11,7 +11,7 @@
   "rules": {
     "semi": ["warn", "always"],
     "quotes": ["warn", "single"],
-    "indent": ["warn", 2],
+    "indent": "off",
     "linebreak-style": ["off", "unix"],
     "no-trailing-spaces": "warn",
     "no-console": "off",

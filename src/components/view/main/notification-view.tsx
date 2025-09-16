@@ -4,7 +4,6 @@ import { ChevronLeft } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import NotificationCard from './notification-card';
 import { useGetNotificationQuery } from '@/hooks/react-query/notification/use-get-notification-query';
-import { handleGetSessionStorage } from '@/utills/web-api';
 import { NotificationDataType } from '@/types/notification/notification';
 
 const NotificationView = ({
@@ -12,8 +11,7 @@ const NotificationView = ({
 }: {
   setNotificationViewOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const token = handleGetSessionStorage();
-  const { data: notificationData } = useGetNotificationQuery(token);
+  const { data: notificationData } = useGetNotificationQuery();
   const [tab, setTab] = useState<'activity' | 'matching'>('activity');
   const tabs = ['activity', 'matching'] as const;
 
@@ -47,7 +45,6 @@ const NotificationView = ({
           {notificationList.map((notification) => (
             <NotificationCard
               key={notification.user_notifications_id}
-              token={token}
               data={notification}
               setNotificationViewOpen={setNotificationViewOpen}
             />

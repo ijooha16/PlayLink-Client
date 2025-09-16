@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { backendClient } from '@/services/axios';
 
+export const dynamic = 'force-dynamic';
+
 export async function PUT(request: Request) {
   try {
     const token = request.headers.get('Authorization');

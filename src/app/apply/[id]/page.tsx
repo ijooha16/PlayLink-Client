@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { useAlertStore } from '@/stores/alert-store';
-import { handleGetSessionStorage } from '@/utills/web-api';
 import { useApplyMatchMutation } from '@/hooks/react-query/match/use-apply-match-mutation';
 import Header from '@/components/common/header';
 
@@ -14,7 +13,6 @@ export default function ApplyPage() {
   const router = useRouter();
   const { id } = params;
   const alertOpen = useAlertStore((state) => state.openAlert);
-  const token = handleGetSessionStorage();
   const { mutate: applyMatch } = useApplyMatchMutation();
   const { data } = useGetMatchesQuery({ matchId: id });
   const { data: sports } = useGetSportsQuery();
@@ -45,7 +43,7 @@ export default function ApplyPage() {
       '매칭 신청이 완료되었어요!',
       '매치장이 승인하면 매칭 알람으로 알려드릴게요'
     );
-    applyMatch({ token, join_message: '신청해요~', matchId: match_id });
+    applyMatch({ join_message: '신청해요~', matchId: match_id });
     router.replace('/'); // 신청 후 상세 페이지로 돌아가기
   };
 

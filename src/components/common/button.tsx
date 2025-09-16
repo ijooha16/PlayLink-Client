@@ -3,7 +3,7 @@ import * as React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 const buttonVariants = cva(
-  'w-full h-[56px] box-border cursor-pointer rounded-lg bg-primary font-semibold text-white disabled:bg-grey04 px-4 disabled:text-grey02 transition-colors',
+  'w-full h-[48px] box-border cursor-pointer rounded-lg bg-primary- font-semibold text-white disabled:bg-grey04 px-4 disabled:text-grey02 transition-colors',
   {
     variants: {
       variant: {
@@ -11,7 +11,7 @@ const buttonVariants = cva(
         transparent: 'bg-transparent',
       },
       size: {
-        base: 'h-[56px]',
+        base: 'h-[48px]',
       },
     },
     defaultVariants: {},

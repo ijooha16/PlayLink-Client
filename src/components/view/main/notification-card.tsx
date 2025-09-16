@@ -15,11 +15,9 @@ import React, { useState } from 'react';
 import { NotificationDataType } from '@/types/notification/notification';
 
 const NotificationCard = ({
-  token,
   data,
   setNotificationViewOpen,
-}: {
-  token: string | null;
+}: {  
   data: NotificationDataType;
   setNotificationViewOpen: (b: boolean) => void;
 }) => {
@@ -68,7 +66,6 @@ const NotificationCard = ({
                 type='수락'
                 onClick={() => {
                   approveMatch({
-                    token,
                     matchId: data.match_id,
                     applicantId: data.target_id,
                   });
@@ -83,7 +80,6 @@ const NotificationCard = ({
                 type='거절'
                 onClick={() =>
                   rejectMatch({
-                    token,
                     matchId: data.match_id,
                     applicantId: data.target_id,
                   })
