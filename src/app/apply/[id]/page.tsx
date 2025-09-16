@@ -12,6 +12,9 @@ export default function ApplyPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
+  if (!id) {
+    return <div>잘못된 매치 ID입니다.</div>;
+  }
   const alertOpen = useAlertStore((state) => state.openAlert);
   const { mutate: applyMatch } = useApplyMatchMutation();
   const { data } = useGetMatchesQuery({ matchId: id });
