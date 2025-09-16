@@ -13,6 +13,11 @@ export default function MatchDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
+  
+  // id가 undefined인 경우 처리
+  if (!id) {
+    return <div>잘못된 매치 ID입니다.</div>;
+  }
 
   const handleApplyClick = (e: React.MouseEvent) => {
     e.preventDefault();
