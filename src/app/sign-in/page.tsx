@@ -10,15 +10,15 @@ import { useSignin } from '@/hooks/react-query/auth/use-signin';
 import Loading from '@/components/common/loading';
 import Header from '@/components/common/header';
 import Button from '@/components/common/button';
+import { toast } from '@/utills/toast';
 
 const SignIn = () => {
   const [emailID, setEmailID] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [enableButton, setEnableButton] = useState<boolean[]>([false, false]);
-  
+
   // 버튼 활성화 조건: 이메일과 비밀번호가 모두 입력되어야 함
   const isButtonEnabled = enableButton[0] && enableButton[1];
-  const openAlert = useAlertStore((state) => state.openAlert);
   const router = useRouter();
 
   const { mutate: signIn, isPending } = useSignin({
@@ -31,11 +31,11 @@ const SignIn = () => {
       } else {
         router.replace('/');
       }
-      openAlert('로그인 성공!', '매너 있는 플레이링크 부탁드립니다 :D');
+      toast.success('로그인 성공!', '매너 있는 플레이링크 부탁드립니다 :D');
     },
     onError: (err) => {
       console.error('로그인 실패:', err.message);
-      openAlert('로그인 실패', err.message);
+      toast.error('로그인 실패', {size:'md'});
     },
   });
 
@@ -62,7 +62,7 @@ const SignIn = () => {
         <div className='mx-auto h-full w-full break-keep text-center'>
           <form
             onSubmit={(e) => handleLoginSubmit(e)}
-            className='flex flex-col gap-y-s-16'
+            className='gap-y-s-16 flex flex-col'
           >
             <Input
               label='이메일'
@@ -88,11 +88,16 @@ const SignIn = () => {
               }}
               placeholder='비밀번호 입력'
             />
-            <Button className='mt-s-24' fontSize='lg' type='submit' disabled={!isButtonEnabled}>
+            <Button
+              className='mt-s-8'
+              fontSize='lg'
+              type='submit'
+              variant={isButtonEnabled ? 'default' : 'disabled'}
+            >
               로그인
             </Button>
           </form>
-          <div className='mx-auto text-label-s text-gray-500 mt-s-16 gap-s-8 flex w-full justify-center font-semibold'>
+          <div className='text-label-s text-text-neutral mt-s-16 gap-s-8 mx-auto flex w-full justify-center font-semibold'>
             <Link href={'/find-account'}>
               <p>아이디 찾기</p>
             </Link>
