@@ -89,9 +89,9 @@ const ProfileSetup = () => {
 
     return (
         <div className="flex flex-col min-h-[calc(100vh-144px)]">
-            <div className="px-[20px] pt-[24px]">
-                <h1 className="text-title-1 pb-[24px]">프로필을 설정해주세요</h1>
-                <p className="text-body-4 text-grey02 pb-[32px]">
+            <div className="">
+                <h1 className="text-title-01 pb-[24px]">프로필을 설정해주세요</h1>
+                <p className="text-body-04 text-grey02 pb-[32px]">
                     프로필 사진과 닉네임을 설정해서 나만의 개성을 표현해보세요!
                 </p>
 
@@ -130,7 +130,7 @@ const ProfileSetup = () => {
                 </div>
 
                 <div className="flex flex-col pb-[24px]">
-                    <p className="text-body-4 text-grey02 pb-[8px]">닉네임</p>
+                    <p className="text-body-04 text-grey02 pb-[8px]">닉네임</p>
                     <Input
                         variant="default"
                         sizes="lg"

@@ -25,8 +25,8 @@ export default function Loading({ variant = 'dim' }: LoadingType) {
       <motion.div
         className='h-12 w-12 rounded-full border-4 border-gray-200'
         style={{
-          borderTopColor: 'var(--color-primary)',
-          borderRightColor: 'var(--color-primary)',
+          borderTopColor: 'var(--color-primary-800)',
+          borderRightColor: 'var(--color-primary-800)',
           borderBottomColor: 'transparent',
           borderLeftColor: 'transparent',
         }}

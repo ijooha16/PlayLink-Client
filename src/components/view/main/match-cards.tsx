@@ -2,7 +2,7 @@
 
 // import { HeartIcon, MessagesSquareIcon } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { MatchType } from '@/types/match/match';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import Image from 'next/image';
@@ -12,6 +12,7 @@ import { handleGetSessionStorage } from '@/utills/web-api';
 const MatchCards = (data: { data: MatchType }) => {
   const router = useRouter();
   const { data: sports } = useGetSportsQuery();
+  const [imageError, setImageError] = useState(false);
 
   const handleMatchClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -49,14 +50,25 @@ const MatchCards = (data: { data: MatchType }) => {
     <div key={title + matchId} onClick={handleMatchClick} className='cursor-pointer'>
       <div className='my-2 flex border rounded-xl'>
         <div className='flex aspect-square h-[128px] min-h-[128px] w-[128px] min-w-[128px] items-center justify-center overflow-hidden p-2'>
-          <Image
-            src={`/images/sport-images/${sportsType}.png`}
-            alt={`${title} 이미지`}
-            objectFit='fit'
-            width={150}
-            height={150}
-            style={{borderRadius:'4px'}}
-          />
+          {imageError ? (
+            <div className='flex h-full w-full items-center justify-center rounded bg-gray-100 text-gray-400'>
+              <div className='text-center'>
+                <div className='text-xs'>{sportsName || '스포츠'}</div>
+              </div>
+            </div>
+          ) : (
+            <Image
+              src={`/images/sport-images/${sportsType}.png`}
+              alt={`${sportsName || '스포츠'} 이미지`}
+              objectFit='fit'
+              width={150}
+              height={150}
+              style={{borderRadius:'4px'}}
+              onError={() => {
+                setImageError(true);
+              }}
+            />
+          )}
         </div>
         <div className='relative flex w-full flex-col justify-evenly truncate p-2'>
           <div className='flex gap-2'>

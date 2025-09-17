@@ -8,6 +8,7 @@ import { Plus, Send } from 'lucide-react';
 import ChatBox from '@/components/view/chat/chat-box';
 import { useChatRoom } from '@/hooks/react-query/chat/use-get-chat-room';
 import { handleGetSessionStorage } from '@/utills/web-api';
+import Loading from '@/components/common/loading';
 
 type ChatMessage = {
   id: string;
@@ -133,7 +134,7 @@ export default function ChatRoom() {
     }
   };
 
-  if (isLoading) return <div className='p-4'>불러오는 중…</div>;
+  if (isLoading) return <Loading variant='white' />;
   if (error) return <div className='p-4 text-red-500'>채팅 내역 로드 에러</div>;
 
   return (

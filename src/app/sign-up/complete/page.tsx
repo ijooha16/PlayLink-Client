@@ -70,8 +70,8 @@ const SignUpComplete = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-144px)] px-[20px]">
             <div className="text-center mb-8">
-                <h1 className="text-title-1 mb-4">회원가입이 완료되었습니다!</h1>
-                <p className="text-body-2 text-grey02">
+                <h1 className="text-title-01 mb-4">회원가입이 완료되었습니다!</h1>
+                <p className="text-body-02 text-grey02">
                     PlayLink에 오신 것을 환영합니다
                 </p>
             </div>

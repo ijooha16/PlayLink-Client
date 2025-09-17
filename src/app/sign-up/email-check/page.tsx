@@ -182,9 +182,9 @@ const EmailCheck = () => {
 
     return (
         <div className="flex flex-col min-h-[calc(100vh-144px)]">
-            <div className="px-[20px] pt-[24px]">
-                <h1 className="text-title-1 pb-[24px]">이메일 인증 및 비밀번호 설정</h1>
-                <p className="text-body-4 text-grey02 pb-[8px]">이메일 주소</p>
+            <div className="">
+                <h1 className="text-title-01 pb-[24px]">이메일 인증 및 비밀번호 설정</h1>
+                <p className="text-body-04 text-grey02 pb-[8px]">이메일 주소</p>
                 <div className="flex flex-col gap-[16px] pb-[24px]">
                     <Input
                         variant="default"
@@ -211,7 +211,7 @@ const EmailCheck = () => {
                 
                 {isCodeSent && (
                     <div className="flex flex-col pb-[24px]">
-                        <p className="text-body-4 text-grey02 pb-[8px]">인증번호</p>
+                        <p className="text-body-04 text-grey02 pb-[8px]">인증번호</p>
                         <div className="relative">
                             <Input
                                 variant="default"
@@ -238,7 +238,7 @@ const EmailCheck = () => {
                 {isCodeVerified && (
                     <div className="flex flex-col gap-[24px]">
                         <div className="flex flex-col">
-                            <p className="text-body-4 text-grey02 pb-[8px]">비밀번호</p>
+                            <p className="text-body-04 text-grey02 pb-[8px]">비밀번호</p>
                             <div className="relative">
                                 <Input
                                     type={passwordState.showPassword ? "text" : "password"}
@@ -265,7 +265,7 @@ const EmailCheck = () => {
                         </div>
                         
                         <div className="flex flex-col">
-                            <p className="text-body-4 text-grey02 pb-[8px]">비밀번호 확인</p>
+                            <p className="text-body-04 text-grey02 pb-[8px]">비밀번호 확인</p>
                             <div className="relative">
                                 <Input
                                     type={passwordState.showConfirmPassword ? "text" : "password"}

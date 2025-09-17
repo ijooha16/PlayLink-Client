@@ -89,7 +89,7 @@ const PhoneCheck = () => {
             onSuccess: (data?: { status: string }) => {
                 if (data?.status === 'success') {
                     setErrors({})
-                    updateStep({ phone: phoneNumber, phoneVerified: true })
+                    updateStep({ phone: phoneNumber.replace(/[^0-9]/g, ''), phoneVerified: true })
                     router.push('/sign-up/email-check')
                 } else {
                     setErrors({ code: '인증번호가 올바르지 않습니다.' })
