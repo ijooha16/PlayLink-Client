@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useToastStore, ToastItem } from '@/stores/toast-alert-store';
 import { Circle } from 'lucide-react';
 
-const variants = {
+const icons = {
   default: <Circle />,
   error: <Circle />,
   warning: <Circle />,
@@ -36,7 +36,7 @@ function ToastItemView({ item }: { item: ToastItem }) {
       className={`rounded-8 h-s-48 px-s-20 text-body-02 gap-s-8 flex items-center bg-gray-800 text-white`}
       role='status'
     >
-      <div className={colors[item.variant!]}>{variants[item.variant!]}</div>
+      <div className={colors[item.variant!]}>{icons[item.variant!]}</div>
       <span className='whitespace-pre-line'>{item.message}</span>
     </div>
   );

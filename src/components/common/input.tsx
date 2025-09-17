@@ -138,7 +138,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {hasError && errorMessage && (
-          <p className='text-system-error pt-[8px] text-caption'>
+          <p className='text-system-error text-caption-01 w-full pt-[8px] text-left'>
             {errorMessage}
           </p>
         )}
