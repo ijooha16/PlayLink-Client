@@ -5,6 +5,7 @@ import LayoutClientSide from '@/components/view/main/layout-client-side';
 import Providers from './provider';
 import MainBottomNavigation from '@/components/view/main/main-bottom-navigation';
 import ProtectedRoute from '@/components/common/protected-route';
+import { ToastContainer } from '@/components/common/toast-alert';
 
 const pretendard = localFont({
   src: '../../public/fonts/pretendard-variable.woff2',
@@ -28,13 +29,14 @@ const RootLayout = ({
       <body className={`${pretendard.variable} antialiased`}>
         <LayoutClientSide />
         <div className='flex h-full flex-col'>
-          <div className='flex-1 px-4 pb-16 pt-[72px]'>
+          <div className='flex-1 px-5 pb-16 pt-20'>
             <Providers>
               <ProtectedRoute>{children}</ProtectedRoute>
             </Providers>
           </div>
           <MainBottomNavigation />
         </div>
+        <ToastContainer />
       </body>
     </html>
   );
