@@ -11,7 +11,7 @@ const Tag = ({
 }) => {
   return (
     <div
-      className={`rounded-full ${selected ? 'bg-primary text-white' : 'bg-gray-100'} whitespace-nowrap px-3 py-1`}
+      className={`rounded-full ${selected ? 'bg-primary-700 text-white' : 'bg-gray-100'} whitespace-nowrap px-3 py-1`}
       onClick={onClick}
     >
       {children}
