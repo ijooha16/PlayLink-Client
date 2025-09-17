@@ -1,29 +1,44 @@
 'use client';
 
+import * as React from 'react';
 import Input from '@/components/common/input';
 import { getDeviceInfo } from '@/utills/get-device-info';
-import { useAlertStore } from '@/stores/alert-store';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { useSignin } from '@/hooks/react-query/auth/use-signin';
 import Loading from '@/components/common/loading';
 import Header from '@/components/common/header';
 import Button from '@/components/common/button';
+import Link from 'next/link';
+import { toast } from '@/utills/toast';
 
 const SignIn = () => {
-  const [emailID, setEmailID] = useState<string>();
-  const [password, setPassword] = useState<string>();
-  const [enableButton, setEnableButton] = useState<boolean[]>([false, false]);
-  
-  // 버튼 활성화 조건: 이메일과 비밀번호가 모두 입력되어야 함
-  const isButtonEnabled = enableButton[0] && enableButton[1];
-  const openAlert = useAlertStore((state) => state.openAlert);
+  const [emailID, setEmailID] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const emailRef = useRef<HTMLInputElement>(null);
+  const [emailError, setEmailError] = useState<string>('');
+
   const router = useRouter();
+
+  const validateEmail = () => {
+    const el = emailRef.current;
+    if (!el) return false;
+
+    if (el.checkValidity()) {
+      setEmailError('');
+      return true;
+    }
+
+    const v = el.validity;
+    if (v.valueMissing || v.typeMismatch)
+      setEmailError('올바른 형식의 이메일 주소를 입력해 주세요.');
+    else setEmailError('올바른 형식의 이메일 주소를 입력해 주세요.');
+
+    return false;
+  };
 
   const { mutate: signIn, isPending } = useSignin({
     onSuccess: () => {
-      // 저장된 리다이렉트 경로 확인
       const redirectPath = sessionStorage.getItem('redirectAfterLogin');
       if (redirectPath) {
         sessionStorage.removeItem('redirectAfterLogin');
@@ -31,23 +46,28 @@ const SignIn = () => {
       } else {
         router.replace('/');
       }
-      openAlert('로그인 성공!', '매너 있는 플레이링크 부탁드립니다 :D');
+      toast.success('로그인 성공!', { duration: 2500 });
     },
     onError: (err) => {
-      console.error('로그인 실패:', err.message);
-      openAlert('로그인 실패', err.message);
+      console.error('로그인 실패:', (err as any)?.message ?? err);
+      toast.error('로그인 실패. 이메일/비밀번호를 확인해주세요.');
     },
   });
 
   const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!emailID || !password) return;
+
+    // 제출 전에 이메일 검증 (비밀번호는 길이만 간단 체크)
+    const emailOk = validateEmail();
+    const pwOk = password.length > 0;
+
+    if (!emailOk || !pwOk) return;
 
     const infos = await getDeviceInfo();
 
     signIn({
       email: emailID,
-      password: password,
+      password,
       device_id: infos.deviceId,
     });
   };
@@ -58,50 +78,63 @@ const SignIn = () => {
       <div className='mx-auto flex h-[calc(100vh-144px)] w-full max-w-screen-sm flex-col'>
         {isPending && <Loading variant='white' />}
 
-        {/* 중앙 콘텐츠 */}
         <div className='mx-auto h-full w-full break-keep text-center'>
           <form
-            onSubmit={(e) => handleLoginSubmit(e)}
-            className='flex flex-col gap-y-s-16'
+            noValidate
+            onSubmit={handleLoginSubmit}
+            className='gap-y-s-16 flex flex-col'
           >
             <Input
               label='이메일'
               type='email'
-              variant={'default'}
-              sizes={'md'}
+              variant='default'
+              sizes='md'
+              placeholder='이메일 입력'
+              ref={emailRef}
+              value={emailID}
+              errorMessage={emailError}
+              hasError={!!emailError}
               onChange={(e) => {
                 setEmailID(e.target.value);
-                setEnableButton([e.target.value.length > 0, enableButton[1]]);
+                if (emailError) setEmailError('');
               }}
-              placeholder='이메일 입력'
+              onBlur={validateEmail} // 포커스 아웃 시 검사
             />
+
             <Input
               label='비밀번호'
               type='password'
-              variant={'default'}
-              sizes={'md'}
+              variant='default'
+              sizes='md'
               autoComplete='current-password'
               showPasswordToggle
+              placeholder='비밀번호 입력'
+              value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                setEnableButton([enableButton[0], e.target.value.length > 0]);
               }}
-              placeholder='비밀번호 입력'
             />
-            <Button className='mt-s-24' fontSize='lg' type='submit' disabled={!isButtonEnabled}>
+
+            <Button
+              className='mt-s-8'
+              fontSize='lg'
+              type='submit'
+              variant={emailError || !password ? 'disabled' : 'default'}
+            >
               로그인
             </Button>
           </form>
-          <div className='mx-auto text-label-s text-gray-500 mt-s-16 gap-s-8 flex w-full justify-center font-semibold'>
-            <Link href={'/find-account'}>
+
+          <div className='text-label-s text-text-neutral mt-s-16 gap-s-8 mx-auto flex w-full justify-center font-semibold'>
+            <Link href='/find-account'>
               <p>아이디 찾기</p>
             </Link>
             <span className='text-line-neutral'>|</span>
-            <Link href={'/change-password'}>
+            <Link href='/change-password'>
               <p>비밀번호 찾기</p>
             </Link>
             <span className='text-line-neutral'>|</span>
-            <Link href={'/sign-up/terms'}>
+            <Link href='/sign-up/terms'>
               <p className='text-primary-800'>회원가입</p>
             </Link>
           </div>

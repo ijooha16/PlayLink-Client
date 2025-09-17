@@ -8,8 +8,7 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        disabled:
-        "bg-gray-200 text-text-disabled",
+        disabled: 'bg-gray-200 text-text-disabled',
         default:
           'bg-transparent rounded-lg border border-border-neutral focus:border-border-strong placeholder-text-disabled',
         error:
@@ -21,7 +20,7 @@ const inputVariants = cva(
         right: 'text-right',
       },
       sizes: {
-        lg: 'text-body-2',
+        lg: 'text-body-02',
         md: 'text-md',
         sm: 'text-sm',
         xs: 'text-xs',
@@ -58,52 +57,58 @@ type InputProps = VariantProps<typeof inputVariants> &
  */
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({
-    variant,
-    sizes,
-    line,
-    align,
-    errorMessage,
-    hasError,
-    label,
-    timer,
-    showPasswordToggle,
-    rightElement,
-    type = 'text',
-    ...props
-  }, ref) => {
+  (
+    {
+      variant,
+      sizes,
+      line,
+      align,
+      errorMessage,
+      hasError,
+      label,
+      timer,
+      showPasswordToggle,
+      rightElement,
+      type = 'text',
+      ...props
+    },
+    ref
+  ) => {
     const finalVariant = hasError ? 'error' : variant;
     const [showPassword, setShowPassword] = useState(false);
 
     // type이 password인 경우 showPassword 상태에 따라 타입 변경
-    const inputType = type === 'password' && !showPassword ? 'password' :
-                      type === 'password' && showPassword ? 'text' :
-                      type;
+    const inputType =
+      type === 'password' && !showPassword
+        ? 'password'
+        : type === 'password' && showPassword
+          ? 'text'
+          : type;
 
     return (
-      <div className="w-full">
+      <div className='w-full'>
         {label && (
-          <label className="block text-left text-body-02 text-text-alternative mb-s-8">
+          <label className='text-body-02 text-text-alternative mb-s-8 block text-left font-medium'>
             {label}
           </label>
         )}
-        <div className="relative w-full">
+        <div className='relative w-full'>
           <input
             ref={ref}
             type={inputType}
             className={twMerge(
               inputVariants({ variant: finalVariant, sizes, line, align }),
-              (timer || showPasswordToggle || rightElement) ? 'pr-12' : ''
+              timer || showPasswordToggle || rightElement ? 'pr-12' : ''
             )}
             {...props}
           />
 
           {/* 우측 요소 컨테이너 */}
           {(timer || showPasswordToggle || rightElement) && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <div className='absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-2'>
               {/* 타이머 표시 */}
               {timer && (
-                <span className="text-caption text-system-error font-medium">
+                <span className='text-system-error text-caption font-medium'>
                   {timer}
                 </span>
               )}
@@ -111,15 +116,17 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               {/* 비밀번호 토글 버튼 */}
               {type === 'password' && showPasswordToggle && (
                 <button
-                  type="button"
+                  type='button'
                   onClick={() => setShowPassword(!showPassword)}
-                  className="transition-colors p-1"
-                  aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                  className='p-1 transition-colors'
+                  aria-label={
+                    showPassword ? '비밀번호 숨기기' : '비밀번호 보기'
+                  }
                 >
                   {showPassword ? (
-                    <Eye size={24} className="text-icon-neutral" />
+                    <Eye size={24} className='text-icon-neutral' />
                   ) : (
-                    <EyeOff size={24} className="text-icon-neutral" />
+                    <EyeOff size={24} className='text-icon-neutral' />
                   )}
                 </button>
               )}
@@ -131,7 +138,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {hasError && errorMessage && (
-          <p className="text-caption text-system-error pt-[8px]">{errorMessage}</p>
+          <p className='text-system-error text-caption-01 w-full pt-[8px] text-left'>
+            {errorMessage}
+          </p>
         )}
       </div>
     );
