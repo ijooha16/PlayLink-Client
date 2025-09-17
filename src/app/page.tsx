@@ -13,16 +13,19 @@ import {
 import { useSearchStore } from '@/stores/search-store';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { handleGetSessionStorage } from '@/utills/web-api';
 
 export default function Home() {
   const { data } = useGetMatchesQuery();
   const { keyword, type } = useSearchStore();
   const router = useRouter();
   // const {data: notificationData} = useGetNotificationQuery(token);
+  const token = handleGetSessionStorage();
 
   //검색 페이지 이동
   useEffect(() => {
-    if (keyword || type) router.replace(`/query?keyword=${keyword}&type=${type}`);
+    if (keyword || type)
+      router.replace(`/query?keyword=${keyword}&type=${type}`);
   }, [keyword, type, router]);
 
   //알림 수신
@@ -38,7 +41,7 @@ export default function Home() {
         sendNotificationToken(fcmToken);
       }
     };
-    handleRequestToken();
+    token && handleRequestToken();
   }, []);
 
   return (
