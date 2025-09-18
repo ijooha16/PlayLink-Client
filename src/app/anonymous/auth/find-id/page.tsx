@@ -152,7 +152,11 @@ const FindId = () => {
             type='text'
             inputMode='numeric'
             timer={formattedTime}
-            splitedRightElement={<div className='text-primary-800 font-semibold text-label-l'>재전송</div>}
+            splitedRightElement={
+              <div className='text-primary-800 text-label-l font-semibold'>
+                재전송
+              </div>
+            }
             variant={'splited'}
             maxLength={4}
             placeholder='인증번호 4자리를 입력해 주세요.'
@@ -163,6 +167,12 @@ const FindId = () => {
             }}
             hasError={!!errors.code}
             errorMessage={errors.code || ''}
+            onBeforeInput={(e) => {
+              const be = e as unknown as InputEvent;
+              if (be.data && /[^\d]/.test(be.data)) {
+                e.preventDefault();
+              }
+            }}
           />
         )}
       </AuthLayoutContainer>
