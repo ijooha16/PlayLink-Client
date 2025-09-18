@@ -1,13 +1,11 @@
+import { backendClient } from '@/libs/api/axios';
 import { NextRequest, NextResponse } from 'next/server';
-import { backendClient } from '@/services/axios';
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ matchId: string }> }
-) {
+export async function DELETE(request: NextRequest) {
   try {
     const token = request.headers.get('Authorization');
-    const { matchId } = await params;
+    const { searchParams } = new URL(request.url);
+    const matchId = searchParams.get('matchId');
 
     const response = await backendClient.delete(`/playlink/match/${matchId}`, {
       headers: {
@@ -20,7 +18,7 @@ export async function DELETE(
   } catch (error: unknown) {
     console.error('Delete match Route Handler error:', error);
     return NextResponse.json(
-      { status: 'error', message: error instanceof Error ? error.message : "Unknown error" },
+      { status: 'error', message: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

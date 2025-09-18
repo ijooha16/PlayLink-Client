@@ -1,5 +1,5 @@
+import { backendClient } from '@/libs/api/axios';
 import { NextResponse } from 'next/server';
-import { backendClient } from '@/services/axios';
 
 export async function PUT(request: Request) {
   try {
@@ -18,7 +18,7 @@ export async function PUT(request: Request) {
   } catch (error: unknown) {
     console.error('Send notification token Route Handler error:', error);
     return NextResponse.json(
-      { status: 'error', message: error instanceof Error ? error.message : "Unknown error" },
+      { status: 'error', message: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

@@ -22,7 +22,6 @@ export const useTimer = (initialTime: number) => {
       const timer = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
-      
       return () => clearInterval(timer);
     }
   }, [isActive, timeLeft]);

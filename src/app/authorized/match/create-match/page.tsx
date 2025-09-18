@@ -1,15 +1,15 @@
 'use client';
 
-import Input from '@/components/common/input';
-import { DUMMY_PLACE } from '@/dummy-data/dummy-data';
-import { FormEvent, useState } from 'react';
-import { useAlertStore } from '@/stores/alert-store';
-import { useRouter } from 'next/navigation';
-  import DatePickerModal from '@/components/common/date-picker-modal';
-import SelectExerciseModal from '@/components/common/select-exercise-modal';
+import DatePickerModal from '@/components/forms/date-picker-modal';
+import DropdownInput from '@/components/forms/dropdown-input';
+import SelectExerciseModal from '@/components/forms/select-exercise-modal';
+import Input from '@/components/ui/input';
+import { DUMMY_PLACE, PATHS } from '@/constant';
 import { useAddMatchMutation } from '@/hooks/react-query/match/use-add-match-mutation';
+import { useAlertStore } from '@/store/alert-store';
 import { timeFormat } from '@/utills/format/create-match-formats';
-import DropdownInput from '@/components/view/create-match/dropdown-input';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useState } from 'react';
 
 const CreateMatch = () => {
 
@@ -216,7 +216,7 @@ const CreateMatch = () => {
             setFormData((prev) => ({ ...prev, contents: e.target.value }))
           }
           className='bg-transparnent h-32 w-full resize-none overflow-auto rounded-lg border border-gray-300 px-4 py-2 text-inherit placeholder-gray-400 focus:outline-none focus:ring-0'
-          placeholder={`이 운동을 어떻게 즐기고자 하는지 설명해주세요. \n 이 매치에 대해 궁금해하는 사람들을 위해 자세히 소개해주세요.`}
+          placeholder={'이 운동을 어떻게 즐기고자 하는지 설명해주세요. \n 이 매치에 대해 궁금해하는 사람들을 위해 자세히 소개해주세요.'}
         />
       </div>
       <button

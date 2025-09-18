@@ -1,4 +1,4 @@
-import { useToastStore } from '@/stores/toast-alert-store';
+import { useToastStore } from '@/store/toast-alert-store';
 
 export function showToast(
   message: string,

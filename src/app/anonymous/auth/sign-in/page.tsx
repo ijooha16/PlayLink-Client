@@ -1,17 +1,16 @@
 'use client';
 
-import * as React from 'react';
-import Input from '@/components/common/input';
+import Header from '@/components/layout/header';
+import Button from '@/components/ui/button';
+import Input from '@/components/ui/input';
+import Loading from '@/components/ui/loading';
+import { PATHS } from '@/constant/paths';
+import { useSignin } from '@/hooks/react-query/auth/use-signin';
 import { getDeviceInfo } from '@/utills/get-device-info';
+import { toast } from '@/utills/toast';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useRef, useState } from 'react';
-import { useSignin } from '@/hooks/react-query/auth/use-signin';
-import Loading from '@/components/common/loading';
-import Header from '@/components/common/layout/header';
-import Button from '@/components/common/button';
-import Link from 'next/link';
-import { toast } from '@/utills/toast';
-import { PATHS } from '@/constant/paths';
 
 const SignIn = () => {
   const [emailID, setEmailID] = useState<string>('');
@@ -40,13 +39,7 @@ const SignIn = () => {
 
   const { mutate: signIn, isPending } = useSignin({
     onSuccess: () => {
-      const redirectPath = sessionStorage.getItem('redirectAfterLogin');
-      if (redirectPath) {
-        sessionStorage.removeItem('redirectAfterLogin');
-        router.replace(redirectPath);
-      } else {
-        router.replace(PATHS.HOME);
-      }
+      router.replace(PATHS.HOME);
       toast.success('로그인 성공!');
     },
     onError: (err) => {
@@ -127,15 +120,15 @@ const SignIn = () => {
           </form>
 
           <div className='text-label-s text-text-neutral mt-s-16 gap-s-8 mx-auto flex w-full justify-center font-semibold'>
-            <Link href='/find-account'>
+            <Link href={PATHS.AUTH.FIND_ID}>
               <p>아이디 찾기</p>
             </Link>
             <span className='text-line-neutral'>|</span>
-            <Link href='/change-password'>
+            <Link href={PATHS.AUTH.RESET_PASSWORD}>
               <p>비밀번호 찾기</p>
             </Link>
             <span className='text-line-neutral'>|</span>
-            <Link href='/sign-up/terms'>
+            <Link href={PATHS.AUTH.SIGN_UP}>
               <p className='text-primary-800'>회원가입</p>
             </Link>
           </div>

@@ -1,11 +1,10 @@
+import TabNavigation from '@/components/features/navigation/tab-navigation';
+import { ToastContainer } from '@/components/feedback/toast-alert';
+import LayoutClientSide from '@/components/shared/layout-client-side';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import '../styles/globals.css';
-import LayoutClientSide from '@/components/view/main/layout-client-side';
 import Providers from './provider';
-import MainBottomNavigation from '@/components/view/main/main-bottom-navigation';
-import ProtectedRoute from '@/components/common/protected-route';
-import { ToastContainer } from '@/components/common/toast-alert';
 
 const pretendard = localFont({
   src: '../../public/fonts/pretendard-variable.woff2',
@@ -26,17 +25,17 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang='ko-KR' className='mx-auto h-full w-full max-w-screen-sm'>
-      <body className={`${pretendard.variable} antialiased`}>
+      <body className={`${pretendard.variable} antialiased`} suppressHydrationWarning>
+            <Providers>
         <LayoutClientSide />
         <div className='flex h-full flex-col'>
           <div className='flex-1 px-5 pb-16 pt-s-24'>
-            <Providers>
-              <ProtectedRoute>{children}</ProtectedRoute>
-            </Providers>
+              {children}
           </div>
-          <MainBottomNavigation />
+          <TabNavigation />
         </div>
         <ToastContainer />
+            </Providers>
       </body>
     </html>
   );

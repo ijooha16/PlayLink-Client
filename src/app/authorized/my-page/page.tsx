@@ -1,26 +1,23 @@
 'use client';
 
-import {
-  Check,
-  CheckSquare,
-  ChevronRight,
-  Edit3,
-  Camera,
-  X,
-} from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState, useRef } from 'react';
-import {
-  handleRemoveSessionStorage,
-  handleGetSessionStorage,
-} from '@/utills/web-api';
+import Header from '@/components/layout/header';
+import { PATHS } from '@/constant/paths';
 import { useGetProfileQuery } from '@/hooks/react-query/profile/use-get-profile-query';
 import { useUpdateProfileMutation } from '@/hooks/react-query/profile/use-update-profile-mutation';
-import Header from '@/components/common/layout/header';
-import { PATHS } from '@/constant/paths';
+import { fetchLogout } from '@/libs/api/auth/auth';
+import { useAuthStore } from '@/store/auth-store';
+import {
+    Camera,
+    Check,
+    ChevronRight,
+    Edit3,
+    X
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useRef, useState } from 'react';
 
 export default function MyPage() {
-  const [token, setToken] = useState<string | null>(null);
+  const token = useAuthStore((state) => state.token);
   const [isEditing, setIsEditing] = useState(false);
   const [isImageEditing, setIsImageEditing] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -30,24 +27,12 @@ export default function MyPage() {
     useUpdateProfileMutation();
 
   const router = useRouter();
-  const handleLogout = () => {
-    const data = handleRemoveSessionStorage('PLAYLINK_AUTH');
-
-    if (data.status === 'success') {
-      router.push(PATHS.SPLASH);
-    }
+  const handleLogout = async () => {
+    await fetchLogout();
+    router.push(PATHS.SPLASH);
   };
 
-  useEffect(() => {
-    const token = handleGetSessionStorage();
-    if (!token) {
-      router.push(PATHS.SPLASH);
-    }
-  }, []);
-
-  useEffect(() => {
-    setToken(handleGetSessionStorage()); // sessionStorage 접근은 브라우저에서만
-  }, []);
+  // 미들웨어가 인증을 처리하므로 불필요한 useEffect 제거
 
   // 2) 토큰이 있어야 쿼리 실행
   const { data: profileData } = useGetProfileQuery();

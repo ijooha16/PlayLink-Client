@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useAlertStore } from '@/stores/alert-store';
-import Loading from '@/components/common/loading';
+import Loading from '@/components/ui/loading';
+import { PATHS } from '@/constant';
+import { useAlertStore } from '@/store/alert-store';
 import axios from 'axios';
-import { PATHS } from '@/constant/paths';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 
-export default function KakaoCallbackPage() {
+function KakaoCallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const openAlert = useAlertStore((state) => state.openAlert);
@@ -93,4 +93,12 @@ export default function KakaoCallbackPage() {
   }
 
   return null;
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <KakaoCallbackPage />
+    </Suspense>
+  );
 }

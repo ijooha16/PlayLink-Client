@@ -3,18 +3,18 @@
 import Link from 'next/link';
 import { Heart, MapPin, Share2 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { handleGetSessionStorage } from '@/utills/web-api';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import Image from 'next/image';
-import DynamicNaverMapForDetail from '@/components/common/dynamic-naver-map-for-detail';
-import { PATHS } from '@/constant/paths';
+import DynamicNaverMapForDetail from '@/components/maps/dynamic-naver-map-for-detail';
 
 export default function MatchDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
-  
+  const { data } = useGetMatchesQuery({ matchId: id as string });
+  const { data: sports } = useGetSportsQuery();
+
   // id가 undefined인 경우 처리
   if (!id) {
     return <div>잘못된 매치 ID입니다.</div>;
@@ -22,18 +22,8 @@ export default function MatchDetailPage() {
 
   const handleApplyClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    const token = handleGetSessionStorage();
-
-    if (!token) {
-      // 인증되지 않은 경우 로그인 페이지로 이동
-      router.push(PATHS.SPLASH);
-    } else {
-      // 인증된 경우 신청 페이지로 이동
-      router.push(`/apply/${id}`);
-    }
+    router.push(`/apply/${id}`);
   };
-  const { data } = useGetMatchesQuery({ matchId: id });
-  const { data: sports } = useGetSportsQuery();
   const {
     title,
     start_time,

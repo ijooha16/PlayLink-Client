@@ -1,7 +1,7 @@
 'use client';
 
-import { getSports } from '@/services/sports/get-sports-types';
 import { QUERY_KEYS } from '@/constant/query-key';
+import { getSports } from '@/libs/api/sports/get-sports-types';
 import { useQuery } from '@tanstack/react-query';
 
 export const useGetSportsQuery = () => {

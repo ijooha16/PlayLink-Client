@@ -1,9 +1,9 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useAlertStore } from '@/stores/alert-store';
+import { useAlertStore } from '@/store/alert-store';
 import { useApplyMatchMutation } from '@/hooks/react-query/match/use-apply-match-mutation';
-import Header from '@/components/common/layout/header';
+import Header from '@/components/layout/header';
 
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
@@ -13,13 +13,14 @@ export default function ApplyPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
+  const alertOpen = useAlertStore((state) => state.openAlert);
+  const { mutate: applyMatch } = useApplyMatchMutation();
+  const { data } = useGetMatchesQuery({ matchId: id as string });
+  const { data: sports } = useGetSportsQuery();
+
   if (!id) {
     return <div>잘못된 매치 ID입니다.</div>;
   }
-  const alertOpen = useAlertStore((state) => state.openAlert);
-  const { mutate: applyMatch } = useApplyMatchMutation();
-  const { data } = useGetMatchesQuery({ matchId: id });
-  const { data: sports } = useGetSportsQuery();
   const {
     title,
     start_time,

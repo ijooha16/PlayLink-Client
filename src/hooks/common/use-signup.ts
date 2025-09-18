@@ -1,10 +1,10 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
-import { useAlertStore } from '@/stores/alert-store';
-import { useRouter } from 'next/navigation';
-import { apiClient } from '@/services/axios';
 import { PATHS } from '@/constant/paths';
+import { apiClient } from '@/libs/api/axios';
+import { useAlertStore } from '@/store/alert-store';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 interface SignupData {
   name: string;

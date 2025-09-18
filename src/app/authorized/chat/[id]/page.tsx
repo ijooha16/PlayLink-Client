@@ -5,10 +5,10 @@ import { useParams } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
 import { Plus, Send } from 'lucide-react';
 
-import ChatBox from '@/components/view/chat/chat-box';
+import ChatBox from '@/components/features/chat/chat-box';
 import { useChatRoom } from '@/hooks/react-query/chat/use-get-chat-room';
-import { handleGetSessionStorage } from '@/utills/web-api';
-import Loading from '@/components/common/loading';
+import { useAuthStore } from '@/store/auth-store';
+import Loading from '@/components/ui/loading';
 
 type ChatMessage = {
   id: string;
@@ -31,7 +31,7 @@ export default function ChatRoom() {
 
   const env_api = process.env.NEXT_PUBLIC_SOCKET_URL!;
 
-  const token = handleGetSessionStorage();
+  const token = useAuthStore((state) => state.token);
 
   useEffect(() => {
     if (!data) return;

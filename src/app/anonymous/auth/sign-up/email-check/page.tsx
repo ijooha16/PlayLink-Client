@@ -1,21 +1,21 @@
 'use client';
 
-import Button from '@/components/common/button';
-import Input from '@/components/common/input';
-import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useSignUpStepStore } from '@/stores/sign-up-store';
+import Button from '@/components/ui/button';
+import Input from '@/components/ui/input';
+import { PATHS } from '@/constant/paths';
 import { useTimer } from '@/hooks/common/use-timer';
+import { useFindAccountByPhoneEmail } from '@/hooks/react-query/auth/use-find-account';
 import { useEmail } from '@/hooks/react-query/email/useEmail';
 import { useEmailVerify } from '@/hooks/react-query/email/useEmailVerify';
-import { useFindAccountByPhoneEmail } from '@/hooks/react-query/auth/use-find-account';
 import {
-  handleAuthError,
-  handleAuthSuccess,
-  handleVerificationError,
-} from '@/services/auth/auth-error-handler';
-import { PATHS } from '@/constant/paths';
+    handleAuthError,
+    handleAuthSuccess,
+    handleVerificationError,
+} from '@/libs/api/auth/auth-error-handler';
+import { useSignUpStepStore } from '@/store/sign-up-store';
+import { Eye, EyeOff } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 const EmailCheck = () => {
   const router = useRouter();
