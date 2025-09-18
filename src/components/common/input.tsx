@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 import { Eye, EyeOff } from '@/components/common/icons';
 
 const inputVariants = cva(
-  'w-full px-4 py-2 focus:ring-0 focus:outline-none text-body-2 h-[48px]',
+  'w-full px-4 py-2 focus:ring-0 focus:outline-none text-body-02 h-[48px]',
   {
     variants: {
       variant: {
@@ -59,8 +59,8 @@ type InputProps = VariantProps<typeof inputVariants> &
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
-      variant,
-      sizes,
+      variant='default',
+      sizes='md',
       line,
       align,
       errorMessage,

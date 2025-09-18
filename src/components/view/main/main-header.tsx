@@ -5,7 +5,7 @@ import { BellIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import SearchView from './search-view';
 import NotificationView from './notification-view';
-import Header from '@/components/common/header';
+import Header from '@/components/common/layout/header';
 
 const options = ['강남구', '추가 설정'];
 
