@@ -26,7 +26,7 @@ const Header = ({
         className='text-icon-strong'
           onClick={() => {
             if (backbtn === 'home') {
-              router.replace('/');
+              router.replace(PATHS.HOME);
             } else {
               router.back();
             }

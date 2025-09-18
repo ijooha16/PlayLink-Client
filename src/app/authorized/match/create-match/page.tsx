@@ -76,7 +76,7 @@ const CreateMatch = () => {
     });
 
     addMatch(data);
-    router.push('/');
+    router.push(PATHS.HOME);
   };
 
   return (

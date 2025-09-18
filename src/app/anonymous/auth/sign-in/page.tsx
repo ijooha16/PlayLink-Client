@@ -44,13 +44,13 @@ const SignIn = () => {
         sessionStorage.removeItem('redirectAfterLogin');
         router.replace(redirectPath);
       } else {
-        router.replace('/');
+        router.replace(PATHS.HOME);
       }
-      toast.success('로그인 성공!', { duration: 2500 });
+      toast.success('로그인 성공!');
     },
     onError: (err) => {
       console.error('로그인 실패:', (err as any)?.message ?? err);
-      toast.error('로그인 실패. 이메일/비밀번호를 확인해주세요.');
+      toast.error('이메일 또는 비밀번호가 일치하지 않아요!');
     },
   });
 
@@ -119,7 +119,7 @@ const SignIn = () => {
               className='mt-s-8'
               fontSize='lg'
               type='submit'
-              variant={emailError || !password ? 'disabled' : 'default'}
+              disabled={!emailID || !password}
             >
               로그인
             </Button>

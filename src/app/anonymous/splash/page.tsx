@@ -37,7 +37,7 @@ const SignIn = () => {
 
   const { mutate: signIn, isPending } = useSignin({
     onSuccess: () => {
-      router.replace('/');
+      router.replace(PATHS.HOME);
       openAlert('로그인 성공!', '매너 있는 플레이링크 부탁드립니다 :D');
     },
     onError: (err) => {
@@ -172,7 +172,7 @@ const SignIn = () => {
         />
         <SocialIconButton
           type='email'
-          onClick={() => router.push('/sign-in')}
+          onClick={() => router.push(PATHS.AUTH.SIGN_IN)}
         />
       </div>
       {/* <SocialIconButton
