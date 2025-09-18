@@ -9,6 +9,7 @@ import { useSignin } from '@/hooks/react-query/auth/use-signin';
 import Loading from '@/components/common/loading';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { PATHS } from '@/constant/paths';
 
 const SignIn = () => {
   const openAlert = useAlertStore((state) => state.openAlert);

@@ -11,6 +11,7 @@ import Header from '@/components/common/header';
 import Button from '@/components/common/button';
 import Link from 'next/link';
 import { toast } from '@/utills/toast';
+import { PATHS } from '@/constant/paths';
 
 const SignIn = () => {
   const [emailID, setEmailID] = useState<string>('');

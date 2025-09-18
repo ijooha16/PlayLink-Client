@@ -14,7 +14,7 @@ import { PATHS } from '@/constant/paths';
 const MainBottomNavigation = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const allowedPaths = [PATHS.HOME, '/chat', PATHS.MY_NEAR, PATHS.MY_PAGE];
+  const allowedPaths = [PATHS.HOME, PATHS.CHAT, PATHS.MY_NEAR, PATHS.MY_PAGE];
 
   const handleAuthRequiredClick =
     (targetPath: string) => (e: React.MouseEvent) => {
@@ -49,7 +49,7 @@ const MainBottomNavigation = () => {
         <MapPinIcon size={24} />내 근처
       </button>
       <button
-        onClick={handleAuthRequiredClick('/chat')}
+        onClick={handleAuthRequiredClick(PATHS.CHAT)}
         className='flex w-20 flex-col items-center text-center text-xs'
       >
         <MessageSquareIcon size={24} />
