@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSignUpStepStore } from '@/stores/sign-up-store';
+import { useSignUpStepStore } from '@/store/sign-up-store';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
-import SportCard from '@/components/common/sport-card';
-import Button from '@/components/common/button';
+import SportCard from '@/components/features/match/sport-card';
+import Button from '@/components/ui/button';
 import { PATHS } from '@/constant/paths';
-import AuthLayoutContainer from '@/components/common/layout/auth-layout';
+import AuthLayoutContainer from '@/components/layout/auth-layout';
 
 export default function SportsSelectionPage() {
   const router = useRouter();

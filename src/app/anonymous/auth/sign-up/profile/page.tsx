@@ -1,14 +1,14 @@
 'use client';
 
-import Button from '@/components/common/button';
-import Input from '@/components/common/input';
+import Button from '@/components/ui/button';
+import Input from '@/components/ui/input';
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSignUpStepStore } from '@/stores/sign-up-store';
+import { useSignUpStepStore } from '@/store/sign-up-store';
 import Image from 'next/image';
 import { ProfileImg } from '@/utills/random-profile-image';
 import randomProfileImage from '@/utills/random-profile-image';
-import AuthLayoutContainer from '@/components/common/layout/auth-layout';
+import AuthLayoutContainer from '@/components/layout/auth-layout';
 
 const ProfileSetup = () => {
   const router = useRouter();

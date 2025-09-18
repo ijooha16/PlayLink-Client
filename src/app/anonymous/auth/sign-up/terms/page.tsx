@@ -1,14 +1,13 @@
 'use client';
 
-import { POLICY } from '@/constant/sigin-up-privacy';
+import AuthLayoutContainer from '@/components/layout/auth-layout';
+import Button from '@/components/ui/button';
+import { PATHS, POLICY } from '@/constant';
+import { useModalStore } from '@/store/modal-store';
+import { useSignUpStepStore } from '@/store/sign-up-store';
 import { ChevronRight } from 'lucide-react';
-import Button from '@/components/common/button';
-import { useState } from 'react';
-import { useModalStore } from '@/stores/modal-store';
 import { useRouter } from 'next/navigation';
-import { useSignUpStepStore } from '@/stores/sign-up-store';
-import { PATHS } from '@/constant/paths';
-import AuthLayoutContainer from '@/components/common/layout/auth-layout';
+import { useState } from 'react';
 
 const TermsScreen = () => {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});

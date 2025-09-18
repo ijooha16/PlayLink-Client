@@ -1,7 +1,7 @@
 'use client';
 
-import { getMatches } from '@/services/match/get-matche';
 import { QUERY_KEYS } from '@/constant/query-key';
+import { getMatches } from '@/libs/api/match/get-matche';
 import { useQuery } from '@tanstack/react-query';
 
 export const useGetMatchesQuery = () => {

@@ -1,5 +1,5 @@
+import { fetchSms } from '@/libs/api/auth/sms';
 import { useMutation } from '@tanstack/react-query';
-import { fetchSms } from '@/services/auth/sms';
 
 interface authType {
   onSuccess?: (data?: unknown) => void;

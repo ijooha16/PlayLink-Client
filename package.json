@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-icons": "node scripts/generate-icons.js"
+    "license": "license-checker --json --out src/constant/licenses.json"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -44,6 +44,8 @@
     "eslint-plugin-react": "^7.37.5",
     "postcss": "^8",
     "prettier": "^3.5.3",
+    "prettier-eslint": "^16.4.2",
+    "prettier-eslint-cli": "^8.0.1",
     "prettier-plugin-tailwindcss": "^0.6.12",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"

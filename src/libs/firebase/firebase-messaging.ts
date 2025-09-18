@@ -2,6 +2,7 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { firebaseApp } from './firebase-config';
 import { PATHS } from '@/constant/paths';
+import { requestPermissions } from '@/libs/permissions/permission';
 
 let messaging: ReturnType<typeof getMessaging> | null = null;
 
@@ -17,9 +18,8 @@ export async function requestPermissionAndGetToken(): Promise<string | null> {
   if (!messaging) return null;
 
   try {
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-      console.warn('알림 권한이 거부됨');
+    const permission = await requestPermissions.notification();
+    if (!permission) {
       return null;
     }
 

@@ -1,0 +1,1 @@
+export const PLAYLINK_AUTH = 'PLAYLINK_AUTH';

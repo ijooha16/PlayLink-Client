@@ -1,9 +1,9 @@
 'use client';
 
-import Button from '@/components/common/button';
-import Input from '@/components/common/input';
-import AuthLayoutContainer from '@/components/common/layout/auth-layout';
-import Header from '@/components/common/layout/header';
+import Button from '@/components/ui/button';
+import Input from '@/components/ui/input';
+import AuthLayoutContainer from '@/components/layout/auth-layout';
+import Header from '@/components/layout/header';
 import { PATHS } from '@/constant/paths';
 import { useTimer } from '@/hooks/common/use-timer';
 import { formatPhoneNumber } from '@/utills/format/phone-formats';

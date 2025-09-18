@@ -1,22 +1,22 @@
 'use client';
 
-import Button from '@/components/common/button';
-import Input from '@/components/common/input';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSignUpStepStore } from '@/stores/sign-up-store';
+import AuthLayoutContainer from '@/components/layout/auth-layout';
+import Button from '@/components/ui/button';
+import Input from '@/components/ui/input';
+import { PATHS } from '@/constant/paths';
 import { useTimer } from '@/hooks/common/use-timer';
+import { useFindAccountByPhone } from '@/hooks/react-query/auth/use-find-account';
 import { useSms } from '@/hooks/react-query/sms/useSms';
 import { useSmsVerify } from '@/hooks/react-query/sms/useSmsVerify';
-import { useFindAccountByPhone } from '@/hooks/react-query/auth/use-find-account';
-import { formatPhoneNumber } from '@/utills/format/phone-formats';
 import {
-  handleAuthError,
-  handleAuthSuccess,
-  handleVerificationError,
-} from '@/services/auth/auth-error-handler';
-import AuthLayoutContainer from '@/components/common/layout/auth-layout';
-import { PATHS } from '@/constant/paths';
+    handleAuthError,
+    handleAuthSuccess,
+    handleVerificationError,
+} from '@/libs/api/auth/auth-error-handler';
+import { useSignUpStepStore } from '@/store/sign-up-store';
+import { formatPhoneNumber } from '@/utills/format/phone-formats';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 const PhoneCheck = () => {
   const router = useRouter();
   const { data, updateStep, validateStep } = useSignUpStepStore();

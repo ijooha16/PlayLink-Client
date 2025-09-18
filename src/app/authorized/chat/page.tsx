@@ -1,28 +1,18 @@
 'use client';
 
-import ChatCard from '@/components/view/chat/chat-card';
+import ChatCard from '@/components/features/chat/chat-card';
 import Link from 'next/link';
 import React from 'react';
 import { useChatList } from '@/hooks/react-query/chat/use-get-chat-list';
-import Header from '@/components/common/layout/header';
+import Header from '@/components/layout/header';
 import { useRouter } from 'next/navigation';
-import { handleGetSessionStorage } from '@/utills/web-api';
-import { PATHS } from '@/constant/paths';
 
 const Chat = () => {
   const router = useRouter();
   const { data, isLoading, error } = useChatList();
 
   const handleChatClick = (roomId: string) => {
-    const token = handleGetSessionStorage();
-
-    if (!token) {
-      // 인증되지 않은 경우 로그인 페이지로 이동
-      router.push(PATHS.SPLASH);
-    } else {
-      // 인증된 경우 채팅방으로 이동
-      router.push(`/chat/${roomId}`);
-    }
+    router.push(`/chat/${roomId}`);
   };
 
   if (isLoading)

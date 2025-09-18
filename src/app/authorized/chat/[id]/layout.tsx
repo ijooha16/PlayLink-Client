@@ -1,4 +1,4 @@
-import Header from '@/components/common/layout/header';
+import Header from '@/components/layout/header';
 import { EllipsisVertical } from 'lucide-react';
 
 const CreateChatRoomLayout = ({
@@ -8,9 +8,7 @@ const CreateChatRoomLayout = ({
 }>) => {
   return (
     <div className='h-full w-full'>
-      <Header title={'채팅룸'} backbtn>
-        <EllipsisVertical />
-      </Header>
+      <Header title={'채팅룸'} backbtn right={<EllipsisVertical />} />
       {children}
     </div>
   );

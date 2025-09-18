@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useSignUpStepStore } from '@/stores/sign-up-store';
+import { useSignUpStepStore } from '@/store/sign-up-store';
 import { useEffect, useState } from 'react';
 import useSignup from '@/hooks/common/use-signup';
 import { getDeviceInfo } from '@/utills/get-device-info';
-import Button from '@/components/common/button';
+import Button from '@/components/ui/button';
 import { PATHS } from '@/constant/paths';
 
 const SignUpComplete = () => {

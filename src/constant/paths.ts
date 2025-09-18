@@ -20,19 +20,5 @@ export const PATHS = {
   MY_PAGE: '/authorized/my-page',
 };
 
-const extractPaths = (obj: Record<string, any>): string[] =>
-  Object.values(obj).flatMap((v) =>
-    typeof v === 'string' ? [v] : extractPaths(v)
-  );
 
-export const ALL_PATHS = extractPaths(PATHS);
 
-// 모든 anonymouse pages
-export const ANONYMOUS_PAGES = ALL_PATHS.filter((p) =>
-  p.startsWith('/anonymous')
-);
-
-// 모든 authorized pages
-export const AUTHORIZED_PAGES = ALL_PATHS.filter((p) =>
-  p.startsWith('/authorized')
-);

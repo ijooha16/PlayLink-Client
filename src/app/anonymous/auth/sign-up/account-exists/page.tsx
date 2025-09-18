@@ -1,15 +1,15 @@
 'use client';
 
-import Button from '@/components/common/button';
-import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Mail, Apple } from 'lucide-react';
+import AuthLayoutContainer from '@/components/layout/auth-layout';
+import Button from '@/components/ui/button';
+import { PATHS } from '@/constant';
+import { useSignUpStepStore } from '@/store/sign-up-store';
+import { Apple, Mail } from 'lucide-react';
 import Image from 'next/image';
-import { useSignUpStepStore } from '@/stores/sign-up-store';
-import { PATHS } from '@/constant/paths';
-import AuthLayoutContainer from '@/components/common/layout/auth-layout';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-const AccountExists = () => {
+const AccountExistsContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { clearStep } = useSignUpStepStore();
@@ -71,6 +71,14 @@ const AccountExists = () => {
         로그인하기
       </Button>
     </AuthLayoutContainer>
+  );
+};
+
+const AccountExists = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AccountExistsContent />
+    </Suspense>
   );
 };
 
