@@ -8,6 +8,7 @@ import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { handleGetSessionStorage } from '@/utills/web-api';
+import { PATHS } from '@/constant/paths';
 
 const MatchCards = (data: { data: MatchType }) => {
   const router = useRouter();
@@ -20,7 +21,7 @@ const MatchCards = (data: { data: MatchType }) => {
 
     if (!token) {
       // 인증되지 않은 경우 로그인 페이지로 이동
-      router.push('/splash');
+      router.push(PATHS.SPLASH);
     } else {
       // 인증된 경우 매치 상세 페이지로 이동
       router.push(`/match/${matchId}`);
@@ -47,8 +48,12 @@ const MatchCards = (data: { data: MatchType }) => {
     )?.sports_name;
 
   return (
-    <div key={title + matchId} onClick={handleMatchClick} className='cursor-pointer'>
-      <div className='my-2 flex border rounded-xl'>
+    <div
+      key={title + matchId}
+      onClick={handleMatchClick}
+      className='cursor-pointer'
+    >
+      <div className='my-2 flex rounded-xl border'>
         <div className='flex aspect-square h-[128px] min-h-[128px] w-[128px] min-w-[128px] items-center justify-center overflow-hidden p-2'>
           {imageError ? (
             <div className='flex h-full w-full items-center justify-center rounded bg-gray-100 text-gray-400'>
@@ -63,7 +68,7 @@ const MatchCards = (data: { data: MatchType }) => {
               objectFit='fit'
               width={150}
               height={150}
-              style={{borderRadius:'4px'}}
+              style={{ borderRadius: '4px' }}
               onError={() => {
                 setImageError(true);
               }}
@@ -76,8 +81,7 @@ const MatchCards = (data: { data: MatchType }) => {
               {sportsName}
             </span>
             {/* text-heading-04 */}
-            <span className='truncate
-              font-semibold'>{title}</span>
+            <span className='truncate font-semibold'>{title}</span>
           </div>
           <div className='flex gap-2 text-sm text-gray-400'>
             <span>{date}</span> | <span>{start_time}</span>

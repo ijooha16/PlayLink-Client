@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { handleGetSessionStorage } from '@/utills/web-api';
+import { PATHS } from '@/constant/paths';
 
 const ERROR_MESSAGES: Record<number, string> = {
   1001: '필수 항목을 모두 입력해주세요',
@@ -10,18 +11,18 @@ const ERROR_MESSAGES: Record<number, string> = {
   1006: '비밀번호가 일치하지 않습니다',
   1007: '사용자를 찾을 수 없습니다',
   1008: '잘못된 요청입니다',
-  1009: '이미 존재하는 사용자입니다'
+  1009: '이미 존재하는 사용자입니다',
 };
 
 // 내부 API 라우트용 (/api/...)
 export const apiClient = axios.create({
-  timeout: 10000
+  timeout: 10000,
 });
 
 // 외부 백엔드용 (NEXT_PUBLIC_DB_URL/...)
 export const backendClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_DB_URL,
-  timeout: 10000
+  timeout: 10000,
 });
 
 const addInterceptors = (instance: any) => {
@@ -30,7 +31,9 @@ const addInterceptors = (instance: any) => {
     const token = handleGetSessionStorage();
     if (token) {
       // 이미 Bearer로 시작하는지 확인
-      config.headers.Authorization = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+      config.headers.Authorization = token.startsWith('Bearer ')
+        ? token
+        : `Bearer ${token}`;
     }
     return config;
   });
@@ -44,7 +47,7 @@ const addInterceptors = (instance: any) => {
         err.message = ERROR_MESSAGES[code];
       }
       if (err.response?.status === 401) {
-        window.location.href = '/splash';
+        window.location.href = PATHS.SPLASH;
       }
       return Promise.reject(err);
     }

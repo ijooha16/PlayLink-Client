@@ -7,6 +7,7 @@ import Header from '@/components/common/header';
 
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
+import { PATHS } from '@/constant/paths';
 
 export default function ApplyPage() {
   const params = useParams();
@@ -47,7 +48,7 @@ export default function ApplyPage() {
       '매치장이 승인하면 매칭 알람으로 알려드릴게요'
     );
     applyMatch({ join_message: '신청해요~', matchId: match_id });
-    router.replace('/'); // 신청 후 상세 페이지로 돌아가기
+    router.replace(PATHS.HOME); // 신청 후 상세 페이지로 돌아가기
   };
 
   return (

@@ -20,7 +20,7 @@ const MyTown = ({ myList }: MyTownProps) => {
                 '동네 설정이 완료 되었습니다.',
                 '강남구 위주로 매칭을 찾아볼게요!'
               );
-              router.replace('/');
+              router.replace(PATHS.HOME);
             }}
             className='flex h-12 w-full place-items-center justify-center gap-2 rounded-lg bg-gray-200'
           >

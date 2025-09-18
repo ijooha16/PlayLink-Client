@@ -3,6 +3,7 @@
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { handleGetSessionStorage } from '@/utills/web-api';
+import { PATHS } from '@/constant/paths';
 
 const MainNewButton = () => {
   const router = useRouter();
@@ -13,10 +14,10 @@ const MainNewButton = () => {
 
     if (!token) {
       // 인증되지 않은 경우 로그인 페이지로 이동
-      router.push('/splash');
+      router.push(PATHS.SPLASH);
     } else {
       // 인증된 경우 글쓰기 페이지로 이동
-      router.push('/create-match');
+      router.push(PATHS.MATCH.CREATE_MATCH);
     }
   };
 

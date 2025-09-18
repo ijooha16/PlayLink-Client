@@ -25,7 +25,7 @@ export async function requestPermissionAndGetToken(): Promise<string | null> {
     const registration = await navigator.serviceWorker.register(
       '/firebase-messaging-sw.js',
       {
-        scope: '/', // ← 현재 사이트 전체를 커버
+        scope: PATHS.HOME, // ← 현재 사이트 전체를 커버
       }
     );
 

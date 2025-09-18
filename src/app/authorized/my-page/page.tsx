@@ -1,6 +1,13 @@
 'use client';
 
-import { Check, CheckSquare, ChevronRight, Edit3, Camera, X } from 'lucide-react';
+import {
+  Check,
+  CheckSquare,
+  ChevronRight,
+  Edit3,
+  Camera,
+  X,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState, useRef } from 'react';
 import {
@@ -10,6 +17,7 @@ import {
 import { useGetProfileQuery } from '@/hooks/react-query/profile/use-get-profile-query';
 import { useUpdateProfileMutation } from '@/hooks/react-query/profile/use-update-profile-mutation';
 import Header from '@/components/common/header';
+import { PATHS } from '@/constant/paths';
 
 export default function MyPage() {
   const [token, setToken] = useState<string | null>(null);
@@ -18,21 +26,22 @@ export default function MyPage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { mutate: updatProfile, isPending: isUpdating } = useUpdateProfileMutation();
+  const { mutate: updatProfile, isPending: isUpdating } =
+    useUpdateProfileMutation();
 
   const router = useRouter();
   const handleLogout = () => {
     const data = handleRemoveSessionStorage('PLAYLINK_AUTH');
 
     if (data.status === 'success') {
-      router.push('/splash');
+      router.push(PATHS.SPLASH);
     }
   };
 
   useEffect(() => {
     const token = handleGetSessionStorage();
     if (!token) {
-      router.push('/splash');
+      router.push(PATHS.SPLASH);
     }
   }, []);
 
@@ -57,7 +66,7 @@ export default function MyPage() {
         alert('파일 크기는 5MB 이하여야 합니다.');
         return;
       }
-      
+
       // 이미지 파일 타입 검증
       if (!file.type.startsWith('image/')) {
         alert('이미지 파일만 업로드 가능합니다.');
@@ -65,7 +74,7 @@ export default function MyPage() {
       }
 
       setSelectedImage(file);
-      
+
       // 미리보기 URL 생성
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -102,7 +111,7 @@ export default function MyPage() {
       onError: (error) => {
         console.error('이미지 업로드 실패:', error);
         alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
-      }
+      },
     });
   };
 
@@ -133,7 +142,7 @@ export default function MyPage() {
       onError: (error) => {
         console.error('닉네임 업데이트 실패:', error);
         alert('닉네임 업데이트에 실패했습니다. 다시 시도해주세요.');
-      }
+      },
     });
   };
 
@@ -143,31 +152,31 @@ export default function MyPage() {
       <div className='mt-10 flex flex-col items-center space-y-3'>
         {/* 프로필 이미지 영역 */}
         <div className='relative'>
-          <div className='h-24 w-24 rounded-full bg-gray-200 overflow-hidden'>
-            <img 
-              src={previewImage || img_url} 
-              alt='profile' 
-              className='h-full w-full object-cover' 
+          <div className='h-24 w-24 overflow-hidden rounded-full bg-gray-200'>
+            <img
+              src={previewImage || img_url}
+              alt='profile'
+              className='h-full w-full object-cover'
             />
           </div>
-          
+
           {/* 이미지 편집 버튼 */}
           {!isImageEditing && (
             <button
               onClick={() => setIsImageEditing(true)}
-              className='absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors'
+              className='absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white transition-colors hover:bg-blue-600'
             >
               <Camera size={16} />
             </button>
           )}
-          
+
           {/* 이미지 편집 모드 */}
           {isImageEditing && (
             <div className='absolute -bottom-1 -right-1 flex gap-1'>
               <button
                 onClick={handleImageUpload}
                 disabled={!selectedImage || isUpdating}
-                className='h-8 w-8 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed'
+                className='bg-green-500 hover:bg-green-600 flex h-8 w-8 items-center justify-center rounded-full text-white transition-colors disabled:cursor-not-allowed disabled:bg-gray-400'
               >
                 {isUpdating ? (
                   <div className='h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
@@ -177,7 +186,7 @@ export default function MyPage() {
               </button>
               <button
                 onClick={handleImageEditCancel}
-                className='h-8 w-8 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors'
+                className='bg-red-500 hover:bg-red-600 flex h-8 w-8 items-center justify-center rounded-full text-white transition-colors'
               >
                 <X size={16} />
               </button>
@@ -201,21 +210,21 @@ export default function MyPage() {
               <input
                 value={nicknameInput}
                 onChange={(e) => setNicknameInput(e.target.value)}
-                className='border border-gray-300 rounded px-2 py-1 text-center'
+                className='rounded border border-gray-300 px-2 py-1 text-center'
                 placeholder='닉네임을 입력하세요'
               />
-              <Check 
-                size={18} 
-                onClick={() => handleUpdateProfile()} 
-                className='cursor-pointer text-green-500 hover:text-green-600'
+              <Check
+                size={18}
+                onClick={() => handleUpdateProfile()}
+                className='text-green-500 hover:text-green-600 cursor-pointer'
               />
             </>
           ) : (
             <>
-              {nickname} 
-              <Edit3 
-                size={18} 
-                onClick={() => setIsEditing(true)} 
+              {nickname}
+              <Edit3
+                size={18}
+                onClick={() => setIsEditing(true)}
                 className='cursor-pointer text-blue-500 hover:text-blue-600'
               />
             </>
@@ -226,7 +235,7 @@ export default function MyPage() {
         {isImageEditing && !selectedImage && (
           <button
             onClick={() => fileInputRef.current?.click()}
-            className='text-sm text-blue-500 hover:text-blue-600 underline'
+            className='text-sm text-blue-500 underline hover:text-blue-600'
           >
             이미지 선택하기
           </button>

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAlertStore } from '@/stores/alert-store';
 import Loading from '@/components/common/loading';
 import axios from 'axios';
+import { PATHS } from '@/constant/paths';
 
 export default function KakaoCallbackPage() {
   const router = useRouter();
@@ -28,15 +29,18 @@ export default function KakaoCallbackPage() {
 
       if (error && !code) {
         console.error('카카오 인증 실패:', error, errorDescription);
-        openAlert('카카오 인증 실패', errorDescription || error || '알 수 없는 오류가 발생했습니다.');
-        router.replace('/splash');
+        openAlert(
+          '카카오 인증 실패',
+          errorDescription || error || '알 수 없는 오류가 발생했습니다.'
+        );
+        router.replace(PATHS.SPLASH);
         return;
       }
 
       if (!code) {
         console.error('인가 코드 없음');
         openAlert('인증 실패', '인가 코드를 받지 못했습니다.');
-        router.replace('/splash');
+        router.replace(PATHS.SPLASH);
         return;
       }
 
@@ -55,14 +59,19 @@ export default function KakaoCallbackPage() {
           }
 
           openAlert('로그인 성공', '카카오 로그인이 완료되었습니다.');
-          router.replace('/');
+          router.replace(PATHS.HOME);
         } else {
           throw new Error(response.data.error || '로그인 처리 실패');
         }
       } catch (error: any) {
         console.error('카카오 로그인 처리 에러:', error);
-        openAlert('로그인 실패', error.response?.data?.error || error.message || '로그인 처리 중 오류가 발생했습니다.');
-        router.replace('/splash');
+        openAlert(
+          '로그인 실패',
+          error.response?.data?.error ||
+            error.message ||
+            '로그인 처리 중 오류가 발생했습니다.'
+        );
+        router.replace(PATHS.SPLASH);
       } finally {
         setIsProcessing(false);
       }
@@ -73,11 +82,11 @@ export default function KakaoCallbackPage() {
 
   if (isProcessing) {
     return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loading variant="white" />
-        <div className="mt-4 text-center">
-          <p className="text-lg font-medium">카카오 로그인 처리 중...</p>
-          <p className="text-sm text-gray-500">잠시만 기다려 주세요.</p>
+      <div className='flex h-screen w-full items-center justify-center'>
+        <Loading variant='white' />
+        <div className='mt-4 text-center'>
+          <p className='text-lg font-medium'>카카오 로그인 처리 중...</p>
+          <p className='text-sm text-gray-500'>잠시만 기다려 주세요.</p>
         </div>
       </div>
     );

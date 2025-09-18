@@ -3,13 +3,13 @@ import * as React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 const buttonVariants = cva(
-  'w-full h-[48px] box-border cursor-pointer rounded-lg bg-primary-800 font-semibold text-white px-4 transition-colors',
+  'w-full h-[48px] box-border cursor-pointer rounded-lg bg-primary-800 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:text-text-disabled font-semibold text-white px-4 transition-colors',
   {
     variants: {
       variant: {
         default: 'bg-primary-800',
         transparent: 'bg-transparent',
-        disabled: 'bg-gray-200 cursor-not-allowed text-text-disabled'
+        disabled: 'bg-gray-200 cursor-not-allowed text-text-disabled',
       },
       fontSize: {
         sm: 'text-label-s',
