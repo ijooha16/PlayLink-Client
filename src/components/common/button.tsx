@@ -3,7 +3,9 @@ import * as React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 const buttonVariants = cva(
-  'w-full h-[48px] box-border cursor-pointer rounded-lg bg-primary-800 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:text-text-disabled font-semibold text-white px-4 transition-colors',
+  `w-full h-[48px] box-border cursor-pointer rounded-lg bg-primary-800 
+   disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-text-disabled 
+   font-semibold text-white px-4 transition-colors`,
   {
     variants: {
       variant: {
@@ -20,34 +22,35 @@ const buttonVariants = cva(
         base: 'h-[48px]',
       },
     },
-    defaultVariants: {},
+    defaultVariants: {
+      size: 'base',
+      variant: 'default',
+    },
   }
 );
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants> & {
+    isFloat?: boolean;
     children: React.ReactNode;
     className?: string;
   };
 
-/**
- * 버튼 공통 컴포넌트
- * @param variant - 버튼의 테마 종류
- * @param size - 버튼의 크기 종류
- * @param children - 버튼 안에 들어가는 텍스트
- * @param props - 버튼의 기본 속성
- * @returns - 버튼 컴포넌트
- */
 const Button = ({
   variant,
   size,
   className,
   children,
+  isFloat = false,
   ...props
 }: ButtonProps) => {
   return (
     <button
-      className={twMerge(buttonVariants({ variant, size }), className)}
+      className={twMerge(
+        buttonVariants({ variant, size }),
+        isFloat &&
+          `fixed bottom-3 left-0 right-0 z-50 mx-auto mb-[env(safe-area-inset-bottom)] w-[calc(100%-40px)] max-w-[640px]`
+      )}
       {...props}
     >
       {children}

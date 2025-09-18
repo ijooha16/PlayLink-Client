@@ -29,7 +29,7 @@ const RootLayout = ({
       <body className={`${pretendard.variable} antialiased`}>
         <LayoutClientSide />
         <div className='flex h-full flex-col'>
-          <div className='flex-1 px-5 pb-16 pt-20'>
+          <div className='flex-1 px-5 pb-16 pt-s-24'>
             <Providers>
               <ProtectedRoute>{children}</ProtectedRoute>
             </Providers>

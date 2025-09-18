@@ -1,6 +1,7 @@
 // /firebase/firebaseMessaging.ts
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { firebaseApp } from './firebase-config';
+import { PATHS } from '@/constant/paths';
 
 let messaging: ReturnType<typeof getMessaging> | null = null;
 
@@ -48,7 +49,9 @@ export async function requestPermissionAndGetToken(): Promise<string | null> {
 /**
  * 포그라운드 메시지 수신 리스너
  */
-export function onForegroundMessage(callback: (payload: Record<string, unknown>) => void) {
+export function onForegroundMessage(
+  callback: (payload: Record<string, unknown>) => void
+) {
   if (!messaging) return;
 
   onMessage(messaging, (payload) => {

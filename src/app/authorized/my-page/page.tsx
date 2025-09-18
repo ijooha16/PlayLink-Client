@@ -16,7 +16,7 @@ import {
 } from '@/utills/web-api';
 import { useGetProfileQuery } from '@/hooks/react-query/profile/use-get-profile-query';
 import { useUpdateProfileMutation } from '@/hooks/react-query/profile/use-update-profile-mutation';
-import Header from '@/components/common/header';
+import Header from '@/components/common/layout/header';
 import { PATHS } from '@/constant/paths';
 
 export default function MyPage() {
