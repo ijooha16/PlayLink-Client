@@ -49,7 +49,7 @@ const FindId = () => {
   //     onError: (err: any) => {
   //       console.log('Find id error:', err);
   //       const sanitizedPhone = phoneNumber.replace(/[^0-9]/g, '');
-        
+
   //       // handleAuthError(err, 'phone', {
   //       //   onAccountExists: (message) => setErrors({ phone: message }),
   //       //   onUnverifiedAccount: () => smsSend({ phoneNumber: sanitizedPhone }),
@@ -151,6 +151,9 @@ const FindId = () => {
             label='인증번호'
             type='text'
             inputMode='numeric'
+            timer={formattedTime}
+            splitedRightElement={<div className='text-primary-800 font-semibold text-label-l'>재전송</div>}
+            variant={'splited'}
             maxLength={4}
             placeholder='인증번호 4자리를 입력해 주세요.'
             value={verificationCode}
@@ -167,7 +170,10 @@ const FindId = () => {
         <Button
           disabled={phoneNumber.length < 11}
           isFloat
-          onClick={() => setIsCodeSent(true)}
+          onClick={() => {
+            setIsCodeSent(true);
+            start();
+          }}
         >
           인증번호 받기
         </Button>

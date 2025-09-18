@@ -4,15 +4,19 @@ import { twMerge } from 'tailwind-merge';
 import { Eye, EyeOff } from '@/components/common/icons';
 
 const inputVariants = cva(
-  'w-full px-4 py-2 focus:ring-0 focus:outline-none text-body-02 h-[48px]',
+  'bg-transparent px-3 flex gap-2 items-center flex-1',
   {
     variants: {
       variant: {
+        default: 'rounded-lg',
+        splited: 'bg-transparent rounded-l-lg border',
+      },
+      state: {
+        default: 'border border-border-neutral',
+        focused: 'border border-border-strong',
+        error: 'border border-system-error',
+        hover: '',
         disabled: 'bg-gray-200 text-text-disabled',
-        default:
-          'bg-transparent rounded-lg border border-border-neutral focus:border-border-strong placeholder-text-disabled',
-        error:
-          'bg-transparent rounded-lg border border-system-error placeholder-text-disabled disabled:bg-bg-neutral',
       },
       align: {
         left: 'text-left',
@@ -20,10 +24,10 @@ const inputVariants = cva(
         right: 'text-right',
       },
       sizes: {
-        lg: 'text-body-02',
-        md: 'text-md',
-        sm: 'text-sm',
-        xs: 'text-xs',
+        lg: 'text-body-02 h-[48px]',
+        md: 'text-body-02 h-[48px]',
+        sm: 'text-body-02 h-[48px]',
+        xs: 'text-body-02 h-[48px]',
       },
       line: {
         underline: 'underline',
@@ -43,24 +47,28 @@ type InputProps = VariantProps<typeof inputVariants> &
     timer?: string;
     showPasswordToggle?: boolean;
     rightElement?: React.ReactNode;
+    splitedRightElement?: React.ReactNode;
   };
 
 /**
  * 인풋 공통 컴포넌트
  * @param variant - Input의 테마 종류
+ * @param state - Input의 상태
  * @param sizes - Input의 크기 종류
  * @param label - Input 상단에 표시될 라벨
  * @param timer - 우측에 표시될 타이머
  * @param showPasswordToggle - 비밀번호 보기/숨기기 토글 버튼 표시 여부
  * @param rightElement - 우측에 표시될 커스텀 요소
+ * @param splitedRightElement - 우측에 표시될 커스텀 요소, 인풋창과 나눠진 경우
  * @returns - <input />
  */
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
-      variant='default',
-      sizes='md',
+      variant = 'default',
+      state = 'default',
+      sizes = 'lg',
       line,
       align,
       errorMessage,
@@ -70,12 +78,22 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       showPasswordToggle,
       rightElement,
       type = 'text',
+      splitedRightElement,
+      onBlur,
       ...props
     },
     ref
   ) => {
-    const finalVariant = hasError ? 'error' : variant;
     const [showPassword, setShowPassword] = useState(false);
+    const [focused, setFocused] = useState(false);
+    const [hover, setHover] = useState(false);
+    const finalState = hasError
+      ? 'error'
+      : hover
+        ? 'hover'
+        : focused
+          ? 'focused'
+          : state;
 
     // type이 password인 경우 showPassword 상태에 따라 타입 변경
     const inputType =
@@ -86,29 +104,39 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           : type;
 
     return (
-      <div className='w-full'>
+      <div className='gap-s-8 flex w-full flex-col'>
         {label && (
-          <label className='text-body-02 text-text-alternative mb-s-8 block text-left font-medium'>
+          <label className='text-body-02 text-text-alternative block text-left font-medium'>
             {label}
           </label>
         )}
-        <div className='relative w-full'>
-          <input
-            ref={ref}
-            type={inputType}
+        <div className='flex'>
+          <div
             className={twMerge(
-              inputVariants({ variant: finalVariant, sizes, line, align }),
-              timer || showPasswordToggle || rightElement ? 'pr-12' : ''
+              inputVariants({ variant, state: finalState, sizes, line, align }),
+              !sizes && 'flex-1'
             )}
-            {...props}
-          />
+          >
+            <input
+              ref={ref}
+              type={inputType}
+              {...props}
+              onFocus={() => setFocused(true)}
+              onBlur={(e) => {
+                setFocused(false);
+                onBlur?.(e);
+              }}
+              className='placeholder:text-text-disabled flex-1'
+              onMouseDown={() => setHover(true)}
+              onMouseUp={() => setHover(false)}
+            />
 
-          {/* 우측 요소 컨테이너 */}
-          {(timer || showPasswordToggle || rightElement) && (
-            <div className='absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-2'>
+            {/* 우측 요소 컨테이너 */}
+
+            <div className='flex items-center gap-2'>
               {/* 타이머 표시 */}
               {timer && (
-                <span className='text-system-error text-caption font-medium'>
+                <span className='text-system-error text-caption-01 font-medium'>
                   {timer}
                 </span>
               )}
@@ -134,11 +162,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               {/* 커스텀 우측 요소 - 아이콘이나 버튼 등 뭐든 들어올 수 있음 */}
               {rightElement}
             </div>
+          </div>
+          {splitedRightElement && (
+            <div className='border-border-neutral flex items-center justify-center rounded-r-lg border-y border-r px-[19px]'>
+              {splitedRightElement}
+            </div>
           )}
         </div>
 
         {hasError && errorMessage && (
-          <p className='text-system-error text-caption-01 w-full pt-[8px] text-left'>
+          <p className='text-system-error text-caption-01 w-full text-left'>
             {errorMessage}
           </p>
         )}

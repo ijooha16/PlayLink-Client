@@ -1,4 +1,4 @@
-import Header from '@/components/common/header';
+import Header from '@/components/common/layout/header';
 
 const SignUpLayout = ({
   children,
@@ -6,12 +6,10 @@ const SignUpLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <div className='h-full w-full'>
-      <div className='flex'>
-        <Header title={'회원가입'} backbtn={true} />
-      </div>
+    <>
+      <Header title={'이메일로 시작하기'} backbtn />
       {children}
-    </div>
+    </>
   );
 };
 
