@@ -1,0 +1,141 @@
+'use client';
+
+import Header from '@/components/layout/header';
+import Button from '@/components/ui/button';
+import Input from '@/components/ui/input';
+import Loading from '@/components/ui/loading';
+import { PATHS } from '@/constant/paths';
+import { useSignin } from '@/hooks/react-query/auth/use-signin';
+import { getDeviceInfo } from '@/utills/get-device-info';
+import { toast } from '@/utills/toast';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useRef, useState } from 'react';
+
+const SignIn = () => {
+  const [emailID, setEmailID] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const emailRef = useRef<HTMLInputElement>(null);
+  const [emailError, setEmailError] = useState<string>('');
+
+  const router = useRouter();
+
+  const validateEmail = () => {
+    const el = emailRef.current;
+    if (!el) return false;
+
+    if (el.checkValidity()) {
+      setEmailError('');
+      return true;
+    }
+
+    const v = el.validity;
+    if (v.valueMissing || v.typeMismatch)
+      setEmailError('올바른 형식의 이메일 주소를 입력해 주세요.');
+    else setEmailError('올바른 형식의 이메일 주소를 입력해 주세요.');
+
+    return false;
+  };
+
+  const { mutate: signIn, isPending } = useSignin({
+    onSuccess: () => {
+      router.replace(PATHS.HOME);
+      toast.success('로그인 성공!');
+    },
+    onError: (err) => {
+      console.error('로그인 실패:', (err as any)?.message ?? err);
+      toast.error('이메일 또는 비밀번호가 일치하지 않아요!');
+    },
+  });
+
+  const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // 제출 전에 이메일 검증 (비밀번호는 길이만 간단 체크)
+    const emailOk = validateEmail();
+    const pwOk = password.length > 0;
+
+    if (!emailOk || !pwOk) return;
+
+    const infos = await getDeviceInfo();
+
+    signIn({
+      email: emailID,
+      password,
+      device_id: infos.deviceId,
+    });
+  };
+
+  return (
+    <>
+      <Header title='이메일로 시작하기' backbtn />
+      <div className='mx-auto flex h-[calc(100vh-144px)] w-full max-w-screen-sm flex-col'>
+        {isPending && <Loading variant='white' />}
+
+        <div className='mx-auto h-full w-full break-keep text-center'>
+          <form
+            noValidate
+            onSubmit={handleLoginSubmit}
+            className='gap-y-s-16 flex flex-col'
+          >
+            <Input
+              label='이메일'
+              type='email'
+              variant='default'
+              sizes='md'
+              placeholder='이메일 입력'
+              ref={emailRef}
+              value={emailID}
+              errorMessage={emailError}
+              hasError={!!emailError}
+              onChange={(e) => {
+                setEmailID(e.target.value);
+                if (emailError) setEmailError('');
+              }}
+              onBlur={validateEmail} // 포커스 아웃 시 검사
+            />
+
+            <Input
+              label='비밀번호'
+              type='password'
+              variant='default'
+              sizes='md'
+              autoComplete='current-password'
+              showPasswordToggle
+              placeholder='비밀번호 입력'
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+
+            <Button
+              className='mt-s-8'
+              fontSize='lg'
+              type='submit'
+              disabled={!emailID || !password}
+            >
+              로그인
+            </Button>
+          </form>
+
+          <div className='text-label-s text-text-neutral mt-s-16 gap-s-8 mx-auto flex w-full justify-center font-semibold'>
+            <Link href={PATHS.AUTH.FIND_ID}>
+              <p>아이디 찾기</p>
+            </Link>
+            <span className='text-line-neutral'>|</span>
+            <Link href={PATHS.AUTH.RESET_PASSWORD}>
+              <p>비밀번호 찾기</p>
+            </Link>
+            <span className='text-line-neutral'>|</span>
+            <Link href={PATHS.AUTH.SIGN_UP}>
+              <p className='text-primary-800'>회원가입</p>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default SignIn;

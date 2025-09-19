@@ -1,14 +1,12 @@
-import { NextResponse } from 'next/server';
-import { backendClient } from '@/services/axios';
+import { backendClient } from '@/libs/api/axios';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { matchId: string } }
-) {
+export async function PUT(request: NextRequest) {
   try {
     const token = request.headers.get('Authorization');
     const body = await request.formData();
-    const matchId = params.matchId;
+    const { searchParams } = new URL(request.url);
+    const matchId = searchParams.get('matchId');
 
     const response = await backendClient.put(`/playlink/match/${matchId}/modify`, body, {
       headers: {
@@ -21,7 +19,7 @@ export async function PUT(
   } catch (error: unknown) {
     console.error('Update match Route Handler error:', error);
     return NextResponse.json(
-      { status: 'error', message: error instanceof Error ? error.message : "Unknown error" },
+      { status: 'error', message: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

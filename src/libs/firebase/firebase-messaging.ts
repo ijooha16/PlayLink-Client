@@ -1,6 +1,8 @@
 // /firebase/firebaseMessaging.ts
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { firebaseApp } from './firebase-config';
+import { PATHS } from '@/constant/paths';
+import { requestPermissions } from '@/libs/permissions/permission';
 
 let messaging: ReturnType<typeof getMessaging> | null = null;
 
@@ -16,16 +18,15 @@ export async function requestPermissionAndGetToken(): Promise<string | null> {
   if (!messaging) return null;
 
   try {
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-      console.warn('알림 권한이 거부됨');
+    const permission = await requestPermissions.notification();
+    if (!permission) {
       return null;
     }
 
     const registration = await navigator.serviceWorker.register(
       '/firebase-messaging-sw.js',
       {
-        scope: '/', // ← 현재 사이트 전체를 커버
+        scope: PATHS.HOME, // ← 현재 사이트 전체를 커버
       }
     );
 
@@ -48,7 +49,9 @@ export async function requestPermissionAndGetToken(): Promise<string | null> {
 /**
  * 포그라운드 메시지 수신 리스너
  */
-export function onForegroundMessage(callback: (payload: Record<string, unknown>) => void) {
+export function onForegroundMessage(
+  callback: (payload: Record<string, unknown>) => void
+) {
   if (!messaging) return;
 
   onMessage(messaging, (payload) => {

@@ -1,5 +1,5 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { backendClient } from '@/services/axios';
+import { backendClient } from '@/libs/api/axios';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   const incoming = req.headers.get('authorization'); // 클라가 준 토큰

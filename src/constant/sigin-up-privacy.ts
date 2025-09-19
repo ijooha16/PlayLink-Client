@@ -111,10 +111,10 @@ const MARKETING_POLICY = `
  * @required 필수 여부
  */
 export const POLICY = [
-    { id: "agreeTerms", title: "이용약관", content: TERMS_OF_SERVICE, required: true },
-    { id: "agreePrivacy", title: "개인정보 처리방침", content: PRIVACY_POLICY, required: true },
-    { id: "agreeLocation", title: "위치정보 이용 동의", content: LOCATION_POLICY, required: true },
-    { id: "isOver14", title: "만 14세 이상 확인", content: "만 14세 이상만 서비스를 이용할 수 있습니다.", required: true },
-    { id: "agreeThirdParty", title: "제3자 정보 제공 동의", content: THIRD_PARTY_POLICY, required: true },
-    { id: "agreeMarketing", title: "마케팅 정보 수신 동의", content: MARKETING_POLICY, required: false },
-]
+    { id: 'agreeTerms', title: '이용약관', content: TERMS_OF_SERVICE, required: true },
+    { id: 'agreePrivacy', title: '개인정보 처리방침', content: PRIVACY_POLICY, required: true },
+    { id: 'agreeLocation', title: '위치정보 이용 동의', content: LOCATION_POLICY, required: true },
+    { id: 'isOver14', title: '만 14세 이상 확인', content: '만 14세 이상만 서비스를 이용할 수 있습니다.', required: true },
+    { id: 'agreeThirdParty', title: '제3자 정보 제공 동의', content: THIRD_PARTY_POLICY, required: true },
+    { id: 'agreeMarketing', title: '마케팅 정보 수신 동의', content: MARKETING_POLICY, required: false },
+];

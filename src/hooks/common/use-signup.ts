@@ -1,9 +1,11 @@
 'use client';
 
+import { PATHS } from '@/constant/paths';
+import { apiClient } from '@/libs/api/axios';
+import { useAlertStore } from '@/store/alert-store';
 import { useMutation } from '@tanstack/react-query';
-import { useAlertStore } from '@/stores/alert-store';
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/services/axios';
+
 interface SignupData {
   name: string;
   nickname: string;
@@ -53,7 +55,7 @@ const useSignup = () => {
 
       console.log('리스폰스', response);
       openAlert('회원가입 완료 !', `${signupData.name}님 반갑습니다`);
-      router.push('/sign-in');
+      router.push(PATHS.SPLASH);
 
       return response.data;
     } catch (err) {

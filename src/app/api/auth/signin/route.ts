@@ -1,5 +1,6 @@
+import { PLAYLINK_AUTH } from '@/constant/cookie';
+import { backendClient } from '@/libs/api/axios';
 import { NextResponse } from 'next/server';
-import { backendClient } from '@/services/axios';
 
 export async function POST(request: Request) {
   try {
@@ -14,12 +15,12 @@ export async function POST(request: Request) {
       accessToken
     });
 
-    // 쿠키 설정
-    if (response.data.refreshToken) {
-      finalResponse.cookies.set('refreshToken', response.data.refreshToken, {
-        httpOnly: true,
+    // Access Token을 HttpOnly 쿠키로 설정 (미들웨어 인증용)
+    if (accessToken) {
+      finalResponse.cookies.set(PLAYLINK_AUTH, accessToken, {
+        httpOnly: true,  // XSS 방어
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7,
+        maxAge: 60 * 60 * 24, // 24시간
         path: '/',
         sameSite: 'lax',
       });

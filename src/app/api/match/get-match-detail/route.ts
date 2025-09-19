@@ -1,5 +1,7 @@
+import { backendClient } from '@/libs/api/axios';
 import { NextResponse } from 'next/server';
-import { backendClient } from '@/services/axios';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {

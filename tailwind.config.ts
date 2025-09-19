@@ -1,4 +1,3 @@
-import { bg } from 'date-fns/locale';
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
@@ -12,50 +11,137 @@ const config: Config = {
   theme: {
     extend: {
       fontSize: {
-        'title-1': [
-          '24px',
-          { lineHeight: '130%', letterSpacing: '-2%', fontWeight: '700' },
-        ],
-        'title-2': [
-          '20px',
-          { lineHeight: '140%', letterSpacing: '-2%', fontWeight: '700' },
-        ],
-        'title-3': [
-          '18px',
-          { lineHeight: '140%', letterSpacing: '-2%', fontWeight: '700' },
-        ],
-        'title-4': [
-          '16px',
-          { lineHeight: '140%', letterSpacing: '-2%', fontWeight: '600' },
-        ],
-        'body-1': [
-          '20px',
-          { lineHeight: '140%', letterSpacing: '-2.5%', fontWeight: '400' },
-        ],
-        'body-2': [
-          '16px',
-          { lineHeight: '140%', letterSpacing: '-2.5%', fontWeight: '400' },
-        ],
-        'body-3': [
-          '16px',
-          { lineHeight: '140%', letterSpacing: '-2.5%', fontWeight: '500' },
-        ],
-        'body-4': [
-          '14px',
-          { lineHeight: '150%', letterSpacing: '-3%', fontWeight: '400' },
-        ],
-        'body-5': [
-          '14px',
-          { lineHeight: '140%', letterSpacing: '-3%', fontWeight: '600' },
-        ],
-        sub: [
-          '13px',
-          { lineHeight: '130%', letterSpacing: '-3%', fontWeight: '400' },
-        ],
-        caption: [
-          '12px',
-          { lineHeight: '130%', letterSpacing: '-3%', fontWeight: '500' },
-        ],
+        'heading-01': ['var(--font-heading-01)', 'var(--font-heading-01-lh)'],
+        'heading-02': ['var(--font-heading-02)', 'var(--font-heading-02-lh)'],
+        'heading-03': ['var(--font-heading-03)', 'var(--font-heading-03-lh)'],
+        'title-01': ['var(--font-title-01)', 'var(--font-title-01-lh)'],
+        'title-02': ['var(--font-title-02)', 'var(--font-title-02-lh)'],
+        'title-03': ['var(--font-title-03)', 'var(--font-title-03-lh)'],
+        'label-l': ['var(--font-label-l)', 'var(--font-label-l-lh)'],
+        'label-m': ['var(--font-label-m)', 'var(--font-label-m-lh)'],
+        'label-s': ['var(--font-label-s)', 'var(--font-label-s-lh)'],
+        'body-01': ['var(--font-body-01)', 'var(--font-body-01-lh)'],
+        'body-02': ['var(--font-body-02)', 'var(--font-body-02-lh)'],
+        'caption-01': ['var(--font-caption-01)', 'var(--font-caption-01-lh)'],
+        'caption-02': ['var(--font-caption-02)', 'var(--font-caption-02-lh)'],
+      },
+      spacing: {
+        's-2': 'var(--space-2)',
+        's-4': 'var(--space-4)',
+        's-6': 'var(--space-6)',
+        's-8': 'var(--space-8)',
+        's-12': 'var(--space-12)',
+        's-16': 'var(--space-16)',
+        's-20': 'var(--space-20)',
+        's-24': 'var(--space-24)',
+        's-28': 'var(--space-28)',
+        's-32': 'var(--space-32)',
+        's-36': 'var(--space-36)',
+        's-40': 'var(--space-40)',
+        's-44': 'var(--space-44)',
+        's-48': 'var(--space-48)',
+        's-56': 'var(--space-56)',
+        's-60': 'var(--space-60)',
+        's-64': 'var(--space-64)',
+        's-68': 'var(--space-68)',
+        's-72': 'var(--space-72)',
+        's-76': 'var(--space-76)',
+        's-80': 'var(--space-80)',
+      },
+      borderRadius: {
+        4: 'var(--radius-4)',
+        8: 'var(--radius-8)',
+        12: 'var(--radius-12)',
+        16: 'var(--radius-16)',
+        20: 'var(--radius-20)',
+        24: 'var(--radius-24)',
+      },
+      boxShadow: {
+        'level-1': 'var(--shadow-level-1)',
+        'level-2': 'var(--shadow-level-2)',
+        'level-3': 'var(--shadow-level-3)',
+        'level-4': 'var(--shadow-level-4)',
+      },
+      colors: {
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        primary: {
+          50: 'var(--color-primary-50)',
+          100: 'var(--color-primary-100)',
+          200: 'var(--color-primary-200)',
+          300: 'var(--color-primary-300)',
+          400: 'var(--color-primary-400)',
+          500: 'var(--color-primary-500)',
+          600: 'var(--color-primary-600)',
+          700: 'var(--color-primary-700)',
+          800: 'var(--color-primary-800)',
+          900: 'var(--color-primary-900)',
+        },
+        secondary: {
+          50: 'var(--color-secondary-50)',
+          100: 'var(--color-secondary-100)',
+          200: 'var(--color-secondary-200)',
+          300: 'var(--color-secondary-300)',
+          400: 'var(--color-secondary-400)',
+          500: 'var(--color-secondary-500)',
+          600: 'var(--color-secondary-600)',
+          700: 'var(--color-secondary-700)',
+          800: 'var(--color-secondary-800)',
+        },
+        gray: {
+          0: 'var(--color-gray-0)',
+          50: 'var(--color-gray-50)',
+          100: 'var(--color-gray-100)',
+          200: 'var(--color-gray-200)',
+          300: 'var(--color-gray-300)',
+          400: 'var(--color-gray-400)',
+          500: 'var(--color-gray-500)',
+          600: 'var(--color-gray-600)',
+          700: 'var(--color-gray-700)',
+          800: 'var(--color-gray-800)',
+          900: 'var(--color-gray-900)',
+          1000: 'var(--color-gray-1000)',
+        },
+        text: {
+          disabled: 'var(--color-gray-400)',
+          neutral: 'var(--color-gray-500)',
+          alternative: 'var(--color-gray-700)',
+          strong: 'var(--color-gray-900)',
+        },
+        border: {
+          normal: 'var(--color-gray-100)',
+          neutral: 'var(--color-gray-200)',
+          alternative: 'var(--color-gray-300)',
+          strong: 'var(--color-gray-900)',
+        },
+        line: {
+          normal: 'var(--color-line-normal)',
+          neutral: 'var(--color-line-netural)',
+          alternative: 'var(--color-line-alternative)',
+          strong: 'var(--color-line-strong)',
+        },
+        bg: {
+          white: 'var(--color-gray-0)',
+          normal: 'var(--color-gray-50)',
+          neutral: 'var(--color-gray-100)',
+          alternative: 'var(--color-gray-200)',
+        },
+        system: {
+          error: 'var(--color-system-error)',
+          warning: 'var(--color-system-warning)',
+          success: 'var(--color-system-success)',
+          information: 'var(--color-system-information)',
+        },
+        icon: {
+          white: 'var(--color-gray-0)',
+          disabled: 'var(--color-gray-400)',
+          neutral: 'var(--color-gray-600)',
+          strong: 'var(--color-gray-900)',
+        },
+        brand: {
+          primary: 'var(--color-primary-800)',
+          secondary: 'var(--color-secondary-800)',
+        },
       },
       keyframes: {
         fadeInBottom: {
@@ -90,29 +176,6 @@ const config: Config = {
         'fade-in-left': 'fadeInLeft 0.4s ease-out forwards',
         'fade-out-right': 'fadeOutRight 0.4s ease-in forwards',
         'fade-out-left': 'fadeOutLeft 0.4s ease-in forwards',
-      },
-      colors: {
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
-
-        black: 'var(--color-black)',
-        white: 'var(--color-white)',
-        red: 'var(--color-red)',
-        green: 'var(--color-green)',
-
-        primary: 'var(--color-primary)',
-        sub01: 'var(--color-sub-01)',
-        sub02: 'var(--color-sub-02)',
-
-        bg01: 'var(--color-bg-sel)',
-
-        grey01: 'var(--color-grey-01)',
-        grey02: 'var(--color-grey-02)',
-        grey03: 'var(--color-grey-03)',
-        grey04: 'var(--color-grey-04)',
-        grey05: 'var(--color-grey-05)',
-
-        toast: 'var(--color-toast)',
       },
     },
   },

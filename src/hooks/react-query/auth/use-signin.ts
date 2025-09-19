@@ -1,5 +1,5 @@
+import { fetchSignIn } from '@/libs/api/auth/auth';
 import { useMutation } from '@tanstack/react-query';
-import { fetchSignIn } from '@/services/auth/auth';
 
 interface authType {
   onSuccess?: (data?: unknown) => void;

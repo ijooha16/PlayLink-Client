@@ -1,5 +1,5 @@
+import { fetchEmail } from '@/libs/api/auth/email';
 import { useMutation } from '@tanstack/react-query';
-import { fetchEmail } from '@/services/auth/email';
 
 interface authType {
   onSuccess?: (data?: unknown) => void;

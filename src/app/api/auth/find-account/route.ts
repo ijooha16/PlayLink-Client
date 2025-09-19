@@ -1,10 +1,9 @@
+import { backendClient } from '@/libs/api/axios';
 import { NextResponse } from 'next/server';
-import { backendClient } from '@/services/axios';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log('findAccount body', body);
 
     // 백엔드 API가 GET + body 형태이므로 axios GET 요청에 data 포함
     const { data } = await backendClient.request({

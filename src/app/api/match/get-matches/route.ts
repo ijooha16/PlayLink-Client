@@ -1,5 +1,5 @@
+import { backendClient } from '@/libs/api/axios';
 import { NextResponse } from 'next/server';
-import { backendClient } from '@/services/axios';
 
 export async function GET() {
   try {
