@@ -4,7 +4,7 @@ type AuthErrorHandlerOptions = {
   onAccountExists?: (message: string) => void;
   onUnverifiedAccount?: (message: string) => void;
   onInvalidInput?: (message: string) => void;
-  onAccountNotFound?: () => void;
+  onAccountNotFound?: (message: string) => void;
   onServerError?: () => void;
   onUnknownError?: (message: string) => void;
 };
@@ -60,10 +60,14 @@ export const handleAuthError = (
       onInvalidInput?.('입력 정보에 오류가 있습니다.');
       break;
 
-    case 4006:
+    case 4006: {
       // 가입된 계정 없음
-      onAccountNotFound?.();
+      const notFoundMessage = type === 'phone'
+        ? '등록된 전화번호가 없습니다.'
+        : '등록된 이메일이 없습니다.';
+      onAccountNotFound?.(notFoundMessage);
       break;
+    }
 
     case 99999:
       // 서버 내부 오류

@@ -1,5 +1,6 @@
 'use client';
 
+import AuthLayoutContainer from '@/components/layout/auth-layout';
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
 import { PATHS } from '@/constant/paths';
@@ -7,26 +8,23 @@ import { useTimer } from '@/hooks/common/use-timer';
 import { useFindAccountByPhoneEmail } from '@/hooks/react-query/auth/use-find-account';
 import { useEmail } from '@/hooks/react-query/email/useEmail';
 import { useEmailVerify } from '@/hooks/react-query/email/useEmailVerify';
+import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
 import {
-    handleAuthError,
-    handleAuthSuccess,
-    handleVerificationError,
+  handleAuthError,
+  handleAuthSuccess,
+  handleVerificationError,
 } from '@/libs/api/auth/auth-error-handler';
+import { validateEmail, validatePassword, validatePasswordConfirm, validateVerificationCode } from '@/libs/valid/auth';
 import { useSignUpStepStore } from '@/store/sign-up-store';
-import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const EmailCheck = () => {
   const router = useRouter();
-  const { data, updateStep, validateStep } = useSignUpStepStore();
-
-  // 페이지 진입 시 이전 단계 검증
-  useEffect(() => {
-    if (!validateStep('email')) {
-      router.push(PATHS.AUTH.SIGN_UP + '/phone-check');
-    }
-  }, []);
+  const { data, updateStep } = useSignUpStepStore();
+  const { goToNext, currentStepTitle } = useSignUpNavigation({
+    currentStep: 'email-check',
+  });
   const [email, setEmail] = useState(data.email || '');
   const [verificationCode, setVerificationCode] = useState('');
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -34,10 +32,8 @@ const EmailCheck = () => {
   const [passwordState, setPasswordState] = useState({
     password: '',
     confirmPassword: '',
-    showPassword: false,
-    showConfirmPassword: false,
   });
-  const { start, formattedTime } = useTimer(600); // 10분
+  const { start, formattedTime, isTimeout } = useTimer(300); // 5분
   const [errors, setErrors] = useState<{
     email?: string;
     code?: string;
@@ -128,9 +124,9 @@ const EmailCheck = () => {
   );
 
   const handleSendCode = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setErrors({ email: '올바른 이메일 형식을 입력해 주세요' });
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) {
+      setErrors({ email: emailValidation.error });
       return;
     }
 
@@ -144,45 +140,32 @@ const EmailCheck = () => {
     }
   };
 
+  const handleResendCode = () => {
+    start(); // 타이머 재시작
+    emailSend({ email });
+  };
+
   const handleVerifyCode = () => {
-    if (!verificationCode.trim()) {
-      setErrors({ code: '인증번호를 입력해 주세요' });
+    const codeValidation = validateVerificationCode(verificationCode);
+    if (!codeValidation.isValid) {
+      setErrors({ code: codeValidation.error });
       return;
     }
     emailVerify({ email, code: verificationCode.trim() });
   };
 
-  const validatePassword = (pwd: string) => {
-    const hasLetter = /[a-zA-Z]/.test(pwd);
-    const hasNumber = /\d/.test(pwd);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
-    const isValidLength = pwd.length >= 8 && pwd.length <= 16;
-
-    if (!pwd) return '';
-    if (!isValidLength || !hasLetter || !hasNumber || !hasSpecial) {
-      return '영문, 숫자, 특수문자 조합 8~16자';
-    }
-    return '';
-  };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
     setPasswordState((prev) => ({ ...prev, password: newPassword }));
 
-    const error = validatePassword(newPassword);
-    setErrors((prev) => ({ ...prev, password: error || undefined }));
+    const passwordValidation = validatePassword(newPassword);
+    setErrors((prev) => ({ ...prev, password: passwordValidation.error }));
 
     // 비밀번호 확인 필드도 다시 검증
-    if (
-      passwordState.confirmPassword &&
-      newPassword !== passwordState.confirmPassword
-    ) {
-      setErrors((prev) => ({
-        ...prev,
-        confirmPassword: '비밀번호가 일치하지 않습니다',
-      }));
-    } else if (passwordState.confirmPassword) {
-      setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
+    if (passwordState.confirmPassword) {
+      const confirmValidation = validatePasswordConfirm(newPassword, passwordState.confirmPassword);
+      setErrors((prev) => ({ ...prev, confirmPassword: confirmValidation.error }));
     }
   };
 
@@ -195,29 +178,21 @@ const EmailCheck = () => {
       confirmPassword: newConfirmPassword,
     }));
 
-    if (newConfirmPassword && passwordState.password !== newConfirmPassword) {
-      setErrors((prev) => ({
-        ...prev,
-        confirmPassword: '비밀번호가 일치하지 않습니다',
-      }));
-    } else {
-      setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
-    }
+    const confirmValidation = validatePasswordConfirm(passwordState.password, newConfirmPassword);
+    setErrors((prev) => ({ ...prev, confirmPassword: confirmValidation.error }));
   };
 
   return (
-    <div className='flex min-h-[calc(100vh-144px)] flex-col'>
-      <div className=''>
-        <h1 className='text-title-01 pb-[24px]'>
-          이메일 인증 및 비밀번호 설정
-        </h1>
-        <p className='text-body-04 pb-[8px] text-grey02'>이메일 주소</p>
-        <div className='flex flex-col gap-[16px] pb-[24px]'>
+    <AuthLayoutContainer title={currentStepTitle}>
+
+        <div className='flex flex-col gap-s-16 pb-[24px]'>
           <Input
+            label='이메일 주소'
             variant='default'
             sizes='lg'
             placeholder='playlink@example.com'
             value={email}
+            showCancelToggle={!!email && !isCodeSent}
             onChange={(e) => {
               setEmail(e.target.value);
               setErrors((prev) => ({ ...prev, email: undefined }));
@@ -226,154 +201,123 @@ const EmailCheck = () => {
             errorMessage={errors.email || ''}
             disabled={isCodeSent}
           />
-          <Button
-            variant='default'
-            size='base'
-            onClick={handleSendCode}
-            disabled={!email || isEmailSending || isFindingAccount}
-          >
-            {isFindingAccount
-              ? '가입 여부 확인 중...'
-              : isEmailSending
-                ? '전송 중...'
-                : '인증번호 받기'}
-          </Button>
-        </div>
 
         {isCodeSent && (
-          <div className='flex flex-col pb-[24px]'>
-            <p className='text-body-04 pb-[8px] text-grey02'>인증번호</p>
-            <div className='relative'>
-              <Input
-                variant='default'
-                sizes='lg'
-                placeholder='인증번호 4자리를 입력해주세요'
-                value={verificationCode}
-                onChange={(e) => {
-                  setVerificationCode(e.target.value);
-                  setErrors((prev) => ({ ...prev, code: undefined }));
-                }}
-                hasError={!!errors.code}
-                errorMessage={errors.code || ''}
-                disabled={isCodeVerified}
-              />
-              {!isCodeVerified && (
-                <div className='absolute right-4 top-3 z-10 text-sub text-red'>
-                  {formattedTime}
-                </div>
-              )}
-            </div>
-          </div>
+          <Input
+            label='인증번호'
+            variant='splited'
+            sizes='lg'
+            placeholder='인증번호 6자리를 입력해주세요'
+            value={verificationCode}
+            onChange={(e) => {
+              setVerificationCode(e.target.value);
+              setErrors((prev) => ({ ...prev, code: undefined }));
+            }}
+            hasError={!!errors.code || isTimeout}
+            errorMessage={errors.code || (isTimeout ? '인증번호를 다시 보내주세요.' : '')}
+            disabled={isCodeVerified}
+            timer={formattedTime}
+            splitedRightElement={
+              <button
+                onClick={handleResendCode}
+                className='text-primary-800 text-label-l font-semibold px-4'
+                disabled={isEmailSending}
+              >
+                재전송
+              </button>
+            }
+            maxLength={6}
+            inputMode='numeric'
+            onBeforeInput={(e) => {
+              const be = e as unknown as InputEvent;
+              if (be.data && /[^\d]/.test(be.data)) {
+                e.preventDefault();
+              }
+            }}
+          />
         )}
 
         {isCodeVerified && (
-          <div className='flex flex-col gap-[24px]'>
-            <div className='flex flex-col'>
-              <p className='text-body-04 pb-[8px] text-grey02'>비밀번호</p>
-              <div className='relative'>
-                <Input
-                  type={passwordState.showPassword ? 'text' : 'password'}
-                  variant='default'
-                  sizes='lg'
-                  placeholder='비밀번호를 입력해주세요'
-                  value={passwordState.password}
-                  onChange={handlePasswordChange}
-                  hasError={!!errors.password}
-                  errorMessage={errors.password || ''}
-                />
-                <button
-                  type='button'
-                  tabIndex={-1}
-                  className='absolute right-4 top-4 z-10 text-grey02'
-                  onClick={() =>
-                    setPasswordState((prev) => ({
-                      ...prev,
-                      showPassword: !prev.showPassword,
-                    }))
-                  }
-                >
-                  {passwordState.showPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
-                </button>
-              </div>
-              {!errors.password && passwordState.password.length === 0 && (
-                <p className='pt-[8px] text-caption text-grey02'>
-                  영문, 숫자, 특수문자 조합 8~16자
-                </p>
-              )}
-            </div>
+          <div className='flex flex-col gap-s-24'>
+            <Input
+              label='비밀번호'
+              type='password'
+              variant='default'
+              sizes='lg'
+              placeholder='비밀번호를 입력해주세요'
+              value={passwordState.password}
+              onChange={handlePasswordChange}
+              hasError={!!errors.password}
+              errorMessage={errors.password || ''}
+              helperText={passwordState.password.length === 0 ? '영문, 숫자, 특수문자 조합 8~16자' : ''}
+              showCancelToggle={!!passwordState.password}
+              showPasswordToggle={true}
+            />
 
-            <div className='flex flex-col'>
-              <p className='text-body-04 pb-[8px] text-grey02'>비밀번호 확인</p>
-              <div className='relative'>
-                <Input
-                  type={passwordState.showConfirmPassword ? 'text' : 'password'}
-                  variant='default'
-                  sizes='lg'
-                  placeholder='비밀번호를 다시 입력해주세요'
-                  value={passwordState.confirmPassword}
-                  onChange={handleConfirmPasswordChange}
-                  hasError={!!errors.confirmPassword}
-                  errorMessage={errors.confirmPassword || ''}
-                />
-                <button
-                  type='button'
-                  tabIndex={-1}
-                  className='absolute right-4 top-4 z-10 text-grey02'
-                  onClick={() =>
-                    setPasswordState((prev) => ({
-                      ...prev,
-                      showConfirmPassword: !prev.showConfirmPassword,
-                    }))
-                  }
-                >
-                  {passwordState.showConfirmPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
-                </button>
-              </div>
-            </div>
+            <Input
+              label='비밀번호 확인'
+              type='password'
+              variant='default'
+              sizes='lg'
+              placeholder='비밀번호를 다시 입력해주세요'
+              value={passwordState.confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              hasError={!!errors.confirmPassword}
+              errorMessage={errors.confirmPassword || ''}
+              showCancelToggle={!!passwordState.confirmPassword}
+              showPasswordToggle={true}
+            />
           </div>
         )}
       </div>
 
-      <div className='mt-auto px-[20px]'>
-        {!isCodeVerified ? (
-          <Button
-            variant='default'
-            disabled={!isCodeSent || !verificationCode || isEmailVerifying}
-            onClick={handleVerifyCode}
-          >
-            인증 확인
-          </Button>
-        ) : (
-          <Button
-            variant='default'
-            disabled={
-              !passwordState.password ||
-              !passwordState.confirmPassword ||
-              !!errors.password ||
-              !!errors.confirmPassword
-            }
-            onClick={() => {
-              updateStep({
-                email,
-                password: passwordState.password,
-                confirmPassword: passwordState.confirmPassword,
-              });
-              router.push(PATHS.AUTH.SIGN_UP + '/profile');
-            }}
-          >
-            다음
-          </Button>
-        )}
-      </div>
-    </div>
+      {!isCodeVerified ? (
+        <Button
+          variant='default'
+          size='base'
+          fontSize='lg'
+          isFloat
+          disabled={
+            (!isCodeSent && (!email || isEmailSending || isFindingAccount)) ||
+            (isCodeSent && (verificationCode.length !== 6 || isEmailVerifying))
+          }
+          onClick={!isCodeSent ? handleSendCode : handleVerifyCode}
+        >
+          {!isCodeSent
+            ? (isFindingAccount
+                ? '가입 여부 확인 중...'
+                : isEmailSending
+                  ? '전송 중...'
+                  : '인증번호 받기')
+            : (isEmailVerifying ? '확인 중...' : '인증 확인')
+          }
+        </Button>
+      ) : (
+        <Button
+          variant='default'
+          size='base'
+          fontSize='lg'
+          isFloat
+          disabled={
+            !passwordState.password ||
+            !passwordState.confirmPassword ||
+            !!errors.password ||
+            !!errors.confirmPassword
+          }
+          onClick={() => {
+            updateStep({
+              email,
+              password: passwordState.password,
+              confirmPassword: passwordState.confirmPassword,
+            });
+            goToNext();
+          }}
+        >
+          다음
+        </Button>
+      )}
+    </AuthLayoutContainer>
+
   );
 };
 

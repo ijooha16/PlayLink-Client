@@ -102,6 +102,7 @@ const SignIn = () => {
               sizes='md'
               autoComplete='current-password'
               showPasswordToggle
+              showCancelToggle={!!password}
               placeholder='비밀번호 입력'
               value={password}
               onChange={(e) => {
@@ -119,16 +120,16 @@ const SignIn = () => {
             </Button>
           </form>
 
-          <div className='text-label-s text-text-neutral mt-s-16 gap-s-8 mx-auto flex w-full justify-center font-semibold'>
+          <div className='text-label-s text-text-netural mt-s-16 gap-s-8 mx-auto flex w-full justify-center font-semibold'>
             <Link href={PATHS.AUTH.FIND_ID}>
               <p>아이디 찾기</p>
             </Link>
-            <span className='text-line-neutral'>|</span>
+            <span className='text-line-netural'>|</span>
             <Link href={PATHS.AUTH.RESET_PASSWORD}>
               <p>비밀번호 찾기</p>
             </Link>
-            <span className='text-line-neutral'>|</span>
-            <Link href={PATHS.AUTH.SIGN_UP}>
+            <span className='text-line-netural'>|</span>
+            <Link prefetch={true} href={PATHS.AUTH.SIGN_UP}>
               <p className='text-primary-800'>회원가입</p>
             </Link>
           </div>
