@@ -2,16 +2,19 @@
 
 import { useRouter } from 'next/navigation';
 import { useSignUpStepStore } from '@/store/sign-up-store';
-import { useEffect, useState } from 'react';
+import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
+import { useState } from 'react';
 import useSignup from '@/hooks/common/use-signup';
 import { getDeviceInfo } from '@/utills/get-device-info';
 import Button from '@/components/ui/button';
-import { PATHS } from '@/constant/paths';
+import AuthLayoutContainer from '@/components/layout/auth-layout';
 
 const SignUpComplete = () => {
   const router = useRouter();
-  const { data, clearStep, validateStep, isStepCompleted } =
-    useSignUpStepStore();
+  const { data, clearStep } = useSignUpStepStore();
+  const { currentStepTitle } = useSignUpNavigation({
+    currentStep: 'complete',
+  });
   const { signup, isLoading } = useSignup();
   const [isSigningUp, setIsSigningUp] = useState(false);
 
@@ -57,38 +60,30 @@ const SignUpComplete = () => {
     }
   };
 
-  useEffect(() => {
-    // 모든 단계가 완료되었는지 검증
-    if (
-      !isStepCompleted('terms') ||
-      !isStepCompleted('phone') ||
-      !isStepCompleted('email') ||
-      !isStepCompleted('nickname') ||
-      !isStepCompleted('favoriteSports')
-    ) {
-      router.push(PATHS.AUTH.SIGN_UP + '/terms');
-    }
-  }, [isStepCompleted, router]);
 
   return (
-    <div className='flex min-h-[calc(100vh-144px)] flex-col items-center justify-center px-[20px]'>
-      <div className='mb-8 text-center'>
-        <h1 className='text-title-01 mb-4'>회원가입이 완료되었습니다!</h1>
-        <p className='text-body-02 text-grey02'>
-          PlayLink에 오신 것을 환영합니다
-        </p>
+    <AuthLayoutContainer title={currentStepTitle}>
+      <div className="flex flex-col items-center justify-center py-s-40">
+        <div className="text-center mb-s-40">
+          <div className="text-6xl mb-s-24">🎉</div>
+          <h2 className="text-title-02 font-bold text-text-primary mb-s-16">
+            회원가입이 완료되었습니다!
+          </h2>
+          <p className="text-body-02 text-text-alternative">
+            PlayLink에서 즐거운 스포츠 경험을 시작해보세요
+          </p>
+        </div>
       </div>
 
-      <div className='w-full max-w-md'>
-        <Button
-          variant='default'
-          onClick={handleComplete}
-          disabled={isLoading || isSigningUp}
-        >
-          {isLoading || isSigningUp ? '회원가입 중...' : '회원가입 완료'}
-        </Button>
-      </div>
-    </div>
+      <Button
+        variant="default"
+        onClick={handleComplete}
+        disabled={isLoading || isSigningUp}
+        isFloat
+      >
+        {isLoading || isSigningUp ? '회원가입 중...' : '회원가입 완료'}
+      </Button>
+    </AuthLayoutContainer>
   );
 };
 

@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export default function Error({
   error,
   reset,
@@ -18,12 +20,12 @@ export default function Error({
         >
           다시 시도
         </button>
-        <a
+        <Link
           href="/"
           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
         >
           홈으로 돌아가기
-        </a>
+        </Link>
       </div>
     </div>
   );

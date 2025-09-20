@@ -8,6 +8,8 @@ export const PATHS = {
     RESET_PASSWORD: '/anonymous/auth/reset-password',
     KAKAO: '/anonymous/auth/oauth/kakao',
     KAKAO_CALLBACK: '/anonymous/auth/oauth/kakao/callback',
+    NOT_FOUND: '/anonymous/auth/find-id/result/not-found',    
+    FOUND: '/anonymous/auth/find-id/result/found',
   },
   MATCH: {
     APPLY_MATCH: '/authorized/match/apply-match',

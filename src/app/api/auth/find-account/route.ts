@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    // 백엔드 API가 GET + body 형태이므로 axios GET 요청에 data 포함
+    // 백엔드가 GET + body 형태를 요구하므로 특별 처리
     const { data } = await backendClient.request({
       method: 'GET',
       url: '/playlink/findAccount',
@@ -49,6 +49,9 @@ export async function POST(request: Request) {
     }
   } catch (err: any) {
     console.error('Find account route error:', err);
+    console.error('Error response data:', err.response?.data);
+    console.error('Error response status:', err.response?.status);
+    console.error('Request config:', err.config);
 
     // 백엔드에서 500 응답이 와도 errCode가 있으면 성공으로 전달
     if (err.response?.data?.errCode) {

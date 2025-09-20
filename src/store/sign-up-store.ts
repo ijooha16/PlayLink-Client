@@ -1,3 +1,4 @@
+import { SignUpStep, getStepConfig } from '@/constant/sign-up-flow';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
@@ -10,63 +11,66 @@ interface SignUpData {
   confirmPassword: string;
   nickname: string;
   profileImage: File | null;
+  address: string;
+  participationType: 'participate' | 'watch' | 'both' | null;
   favoriteSports: number[];
 }
 
 interface SignUpStepStore {
   data: Partial<SignUpData>;
+  currentStep: SignUpStep | null;
   updateStep: (newData: Partial<SignUpData>) => void;
   clearStep: () => void;
-  validateStep: (step: 'terms' | 'phone' | 'email' | 'profile' | 'sports') => boolean;
-  isStepCompleted: (step: keyof SignUpData) => boolean;
+  setCurrentStep: (step: SignUpStep) => void;
+  canNavigateToStep: (step: SignUpStep) => boolean;
+  isStepCompleted: (step: SignUpStep) => boolean;
 }
 
 export const useSignUpStepStore = create<SignUpStepStore>()(
   devtools(
     (set, get) => ({
       data: {},
+      currentStep: null,
+
       updateStep: (newData: Partial<SignUpData>) =>
         set((state) => ({
           data: { ...state.data, ...newData },
         })),
-      clearStep: () => set({ data: {} }),
 
-      isStepCompleted: (step: keyof SignUpData) => {
-        const { data } = get();
-        switch (step) {
-          case 'terms':
-            return data.terms === true;
-          case 'phone':
-            return !!(data.phone && data.phoneVerified);
-          case 'email':
-            return !!(data.email && data.password && data.confirmPassword);
-          case 'nickname':
-            return !!data.nickname;
-          case 'favoriteSports':
-            return !!(data.favoriteSports && data.favoriteSports.length > 0);
-          default:
-            return false;
-        }
-      },
+      clearStep: () => set({ data: {}, currentStep: null }),
 
-      validateStep: (step: 'terms' | 'phone' | 'email' | 'profile' | 'sports') => {
+      setCurrentStep: (step: SignUpStep) => set({ currentStep: step }),
+
+      canNavigateToStep: (step: SignUpStep) => {
         const { isStepCompleted } = get();
+        const stepConfig = getStepConfig(step);
 
-        switch (step) {
-          case 'terms':
-            return true; // 약관은 첫 단계라 이전 검증 불필요
-          case 'phone':
-            return isStepCompleted('terms');
-          case 'email':
-            return isStepCompleted('terms') && isStepCompleted('phone');
-          case 'profile':
-            return isStepCompleted('terms') && isStepCompleted('phone') && isStepCompleted('email');
-          case 'sports':
-            return isStepCompleted('terms') && isStepCompleted('phone') && isStepCompleted('email') && isStepCompleted('nickname');
-          default:
-            return false;
+        if (!stepConfig) return false;
+        if (step === 'terms') return true;
+
+        let currentCheck = stepConfig.previousStep;
+        while (currentCheck) {
+          if (!isStepCompleted(currentCheck)) return false;
+          const prevConfig = getStepConfig(currentCheck);
+          currentCheck = prevConfig?.previousStep;
         }
+        return true;
       },
-    })
-  )
+
+      isStepCompleted: (step: SignUpStep) => {
+        const { data } = get();
+        const stepConfig = getStepConfig(step);
+
+        if (!stepConfig) return false;
+
+        return stepConfig.requiredData.every(field => {
+          const value = data[field as keyof SignUpData];
+          if (field === 'terms') return value === true;
+          if (field === 'phoneVerified') return value === true;
+          if (field === 'favoriteSports') return Array.isArray(value) && value.length > 0;
+          return !!value;
+        });
+      },
+    }),
+  ),
 );
