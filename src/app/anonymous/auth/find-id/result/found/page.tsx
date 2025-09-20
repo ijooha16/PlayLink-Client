@@ -24,7 +24,7 @@ const AccountExistsContent = () => {
 
   const handleGoToLogin = () => {
     clearStep(); // zustand store 초기화
-    router.push(PATHS.AUTH.FOUND);
+    router.push(PATHS.AUTH.SIGN_IN);
   };
   return (
     <AuthLayoutContainer title={"해당 정보 \n 이미 가입된 계정이 있어요!"} content="해당 계정으로 로그인 해주세요">
