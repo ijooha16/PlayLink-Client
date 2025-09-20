@@ -68,7 +68,7 @@ const SignIn = () => {
 
   return (
     <>
-      <Header title='이메일로 시작하기' backbtn />
+      <Header title='회원가입' backbtn />
       <div className='mx-auto flex h-[calc(100vh-144px)] w-full max-w-screen-sm flex-col'>
         {isPending && <Loading variant='white' />}
 

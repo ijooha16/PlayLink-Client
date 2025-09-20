@@ -7,7 +7,7 @@ const SignUpLayout = ({
 }>) => {
   return (
     <>
-      <Header title={'이메일로 시작하기'} backbtn />
+      <Header title={'회원가입'} backbtn />
       {children}
     </>
   );
