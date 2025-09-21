@@ -8,6 +8,7 @@ import { useFindAccount } from '@/hooks/react-query/auth/use-find-account';
 import { useVerification } from '@/hooks/react-query/auth/use-verification';
 import { validateEmail, validateVerificationCode } from '@/libs/valid/auth';
 import React, { useState } from 'react';
+import { useSignUpStepStore } from '@/store/sign-up-store';
 
 interface EmailVerificationProps {
   initialEmail?: string;
@@ -20,6 +21,11 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
   phoneNumber,
   onSuccess,
 }) => {
+  const { data: storeData } = useSignUpStepStore();
+
+  // phoneNumber prop이 없으면 store에서 가져오기
+  const actualPhoneNumber = phoneNumber || storeData.phone;
+
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const { start, formattedTime, isTimeout } = useTimer(300);
@@ -68,8 +74,8 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
       return;
     }
 
-    if (phoneNumber) {
-      const sanitizedPhone = phoneNumber.replace(/[^0-9]/g, '');
+    if (actualPhoneNumber) {
+      const sanitizedPhone = actualPhoneNumber.replace(/[^0-9]/g, '');
       findAccount({ phoneNumber: sanitizedPhone, email: values.email });
     } else {
       send(values.email);
@@ -130,7 +136,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
             splitedRightElement={
               <button
                 onClick={() => { start(); resend(values.email); }}
-                className='text-primary-800 text-label-l font-semibold px-4'
+                className='text-primary-800 text-label-l font-semibold'
                 disabled={isLoading.sending}
               >
                 재전송

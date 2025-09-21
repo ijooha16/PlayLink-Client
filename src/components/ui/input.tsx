@@ -142,7 +142,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 sizes,
                 line,
                 align,
-              })
+              }),
+              'flex items-center'
             )}
             onMouseEnter={(e) => {
               setHover(true);
@@ -153,7 +154,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           >
             {/* 좌측 요소 */}
             {leftElement && (
-              <div className='flex items-center'>
+              <div className='flex items-center flex-shrink-0'>
                 {leftElement}
               </div>
             )}
@@ -165,7 +166,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               disabled={disabled}
               aria-invalid={hasError ? true : undefined}
               aria-describedby={describedById}
-              className='placeholder:text-text-disabled flex-1 outline-none'
+              className='placeholder:text-text-disabled flex-1 outline-none bg-transparent min-w-0'
               onFocus={(e) => {
                 setFocused(true);
               }}
@@ -177,7 +178,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             />
 
             {/* 우측 요소 컨테이너 */}
-            <div className='flex items-center gap-s-8'>
+            <div className='flex items-center gap-s-8 flex-shrink-0'>
               {/* 타이머 표시 */}
               {timer && (
                 <span className='text-system-error text-caption-01 font-medium'>
