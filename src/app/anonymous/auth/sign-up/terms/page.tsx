@@ -1,19 +1,22 @@
 'use client';
 
 import AuthLayoutContainer from '@/components/layout/auth-layout';
+import { ChevronRight } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
-import { PATHS, POLICY } from '@/constant';
+import { POLICY } from '@/constant';
+import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
 import { useModalStore } from '@/store/modal-store';
 import { useSignUpStepStore } from '@/store/sign-up-store';
-import { ChevronRight } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const TermsScreen = () => {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const { openModal } = useModalStore();
-  const router = useRouter();
   const { updateStep } = useSignUpStepStore();
+  const { goToNext, currentStepTitle } = useSignUpNavigation({
+    currentStep: 'terms',
+    skipValidation: true,
+  });
 
   const handleCheckboxChange = (id: string) => {
     setCheckedItems((prev) => ({
@@ -56,35 +59,33 @@ const TermsScreen = () => {
   const handleNextClick = () => {
     if (isAllRequiredChecked) {
       updateStep({ terms: true });
-      router.push(PATHS.AUTH.SIGN_UP + '/phone-check');
+      goToNext();
     }
   };
 
   return (
-    <AuthLayoutContainer title={'서비스 이용을 위해 \n 약관에 동의해주세요.'}>
-      <button className='flex justify-between' onClick={handleAllCheck}>
-        <div className='flex select-none items-center gap-[16px]'>
+    <AuthLayoutContainer title={currentStepTitle}>
+      <button className='flex justify-between pt-s-40' onClick={handleAllCheck}>
+        <div className='flex select-none items-center gap-s-16'>
           <input
             type='checkbox'
-            className='checkbox-all'
             checked={isAllChecked}
             readOnly
           />
-          <h4 className='text-title-04'>전체 동의하기</h4>
+          <h4 className='text-title-04 font-semibold'>전체 동의하기</h4>
         </div>
       </button>
-      <div className='my-[16px] h-[1px] bg-grey05' />
+      <div className='my-s-16 h-[1px] bg-border-netural' />
       <div className='flex flex-col space-y-4'>
         {POLICY.map((policy) => (
           <div key={policy.id} className='flex justify-between'>
-            <label className='flex cursor-pointer select-none items-center gap-[16px]'>
+            <label className='flex cursor-pointer select-none items-center gap-s-16'>
               <input
                 type='checkbox'
-                className='checkbox-base'
                 checked={checkedItems[policy.id] || false}
                 onChange={() => handleCheckboxChange(policy.id)}
               />
-              <span>
+              <span className='text-text-alternative'>
                 [{policy.required ? '필수' : '선택'}] {policy.title}
               </span>
             </label>
@@ -94,7 +95,7 @@ const TermsScreen = () => {
               className='cursor-pointer p-1'
               onClick={() => showTermsModal(policy.id)}
             >
-              <ChevronRight color='var(--color-black)' size={18} />
+              <ChevronRight size={18} />
             </button>
           </div>
         ))}

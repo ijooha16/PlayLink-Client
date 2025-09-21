@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    // 백엔드 API가 GET + body 형태이므로 axios GET 요청에 data 포함
+    // 백엔드가 GET + body 형태를 요구하므로 특별 처리
     const { data } = await backendClient.request({
       method: 'GET',
       url: '/playlink/findAccount',
@@ -24,10 +24,11 @@ export async function POST(request: Request) {
         data: null
       });
     } else if (data.errCode === 6001) {
-      // 인증되지 않은 번호 - 가입 가능한 번호로 처리
+      // 인증되지 않은 번호 - 인증 필요 상태로 처리
       return NextResponse.json({
         status: 'success',
         errCode: data.errCode,
+        // message: '인증되지 않은 휴대폰 번호입니다.',
         message: '인증 처리 됐습니다.',
         data: null
       });
@@ -49,6 +50,9 @@ export async function POST(request: Request) {
     }
   } catch (err: any) {
     console.error('Find account route error:', err);
+    console.error('Error response data:', err.response?.data);
+    console.error('Error response status:', err.response?.status);
+    console.error('Request config:', err.config);
 
     // 백엔드에서 500 응답이 와도 errCode가 있으면 성공으로 전달
     if (err.response?.data?.errCode) {
@@ -58,6 +62,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
           status: 'success',
           errCode: errCode,
+          // message: '인증되지 않은 휴대폰 번호입니다.',
           message: '인증 처리 됐습니다.',
           data: null
         });

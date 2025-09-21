@@ -19,6 +19,7 @@
     "eqeqeq": ["warn", "always"],
     "react/jsx-uses-vars": "error",
     "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
     "prefer-const": "warn",
     "no-var": "error",
     "no-eval": "error",

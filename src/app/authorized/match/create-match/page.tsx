@@ -7,7 +7,7 @@ import Input from '@/components/ui/input';
 import { DUMMY_PLACE, PATHS } from '@/constant';
 import { useAddMatchMutation } from '@/hooks/react-query/match/use-add-match-mutation';
 import { useAlertStore } from '@/store/alert-store';
-import { timeFormat } from '@/utills/format/create-match-formats';
+import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 
@@ -65,9 +65,9 @@ const CreateMatch = () => {
         // Date를 ISO 문자열로 변환
         data.append(key, value.toISOString());
       } else if (key === 'startTime') {
-        data.append(key, timeFormat(startTime));
+        data.append(key, startTime.padStart(5, '0'));
       } else if (key === 'endTime') {
-        data.append(key, timeFormat(endTime));
+        data.append(key, endTime.padStart(5, '0'));
       } else if (key === 'placeAddress') {
         data.append(key, placeId);
       } else {

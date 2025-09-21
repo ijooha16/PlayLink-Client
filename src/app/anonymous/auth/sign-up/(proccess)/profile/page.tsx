@@ -1,25 +1,20 @@
 'use client';
 
+import AuthLayoutContainer from '@/components/layout/auth-layout';
+import { Edit } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
-import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
 import { useSignUpStepStore } from '@/store/sign-up-store';
+import randomProfileImage, { ProfileImg } from '@/utills/random-profile-image';
 import Image from 'next/image';
-import { ProfileImg } from '@/utills/random-profile-image';
-import randomProfileImage from '@/utills/random-profile-image';
-import AuthLayoutContainer from '@/components/layout/auth-layout';
+import React, { useEffect, useRef, useState } from 'react';
 
 const ProfileSetup = () => {
-  const router = useRouter();
-  const { data, updateStep, validateStep } = useSignUpStepStore();
-
-  // 페이지 진입 시 이전 단계 검증
-  useEffect(() => {
-    if (!validateStep('profile')) {
-      router.push('/sign-up/email-check');
-    }
-  }, []);
+  const { data, updateStep } = useSignUpStepStore();
+  const { goToNext, currentStepTitle } = useSignUpNavigation({
+    currentStep: 'profile',
+  });
   const [nickname, setNickname] = useState(data.nickname || '');
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -85,22 +80,22 @@ const ProfileSetup = () => {
       nickname,
       profileImage,
     });
-    router.push('/sign-up/sports');
+    goToNext();
   };
 
   return (
-    <AuthLayoutContainer title={'프로필 사진과 닉네임을 \n 설정해주세요!'}>
+    <AuthLayoutContainer title={currentStepTitle} content="나중에 변경할 수 있어요.">
       <div className='flex flex-col items-center'>
-        <div className='relative'>
+        <div className='relative my-s-24'>
           <div
-            className='flex h-[120px] w-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-full bg-gray-200'
+            className='flex h-[100px] w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-full bg-gray-200'
             onClick={() => fileInputRef.current?.click()}
           >
             <Image
               src={preview || randomImgRef.current}
               alt='profile_img'
-              width={120}
-              height={120}
+              width={150}
+              height={150}
               className='object-cover'
               priority={true}
             />
@@ -109,9 +104,9 @@ const ProfileSetup = () => {
           <button
             type='button'
             onClick={() => fileInputRef.current?.click()}
-            className='absolute bottom-0 right-0 flex h-[32px] w-[32px] items-center justify-center rounded-full bg-blue-500 text-lg text-white shadow-md'
+            className='absolute bottom-0 right-0 h-[32px] w-[32px] items-center justify-center flex bg-bg-netural border-white border-2 rounded-full'
           >
-            +
+            <Edit size={24} />
           </button>
 
           <input
@@ -125,27 +120,27 @@ const ProfileSetup = () => {
       </div>
 
       <div className='flex flex-col pb-[24px]'>
-        <p className='text-body-04 pb-[8px] text-grey02'>닉네임</p>
         <Input
+          label='닉네임'
           variant='default'
           sizes='lg'
           placeholder='닉네임을 입력해주세요'
           value={nickname}
           onChange={handleNicknameChange}
+          showCancelToggle={!!nickname}
+
+          helperText={nickname.length === 0 ? '닉네임은 2자 이상 15자 이하로 입력해주세요' : ''}
           hasError={!!errors.nickname}
           errorMessage={errors.nickname || ''}
+          // TODO SUCCESS 및 디바운싱 db호출 구현
         />
-        {!errors.nickname && (
-          <p className='pt-[8px] text-caption text-grey02'>
-            닉네임은 2자 이상 15자 이하로 입력해주세요
-          </p>
-        )}
       </div>
 
       <Button
         variant='default'
         onClick={handleNext}
         disabled={!nickname.trim() || !!errors.nickname}
+        isFloat
       >
         다음
       </Button>

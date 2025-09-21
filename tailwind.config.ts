@@ -61,6 +61,9 @@ const config: Config = {
         'level-2': 'var(--shadow-level-2)',
         'level-3': 'var(--shadow-level-3)',
         'level-4': 'var(--shadow-level-4)',
+        'brand-soft': '0 0 15px rgba(90, 184, 255, 0.25)',
+        'brand-medium': '0 0 20px rgba(90, 184, 255, 0.35)',
+        'brand-strong': '0 0 25px rgba(90, 184, 255, 0.45)',
       },
       colors: {
         background: 'var(--background)',
@@ -104,26 +107,26 @@ const config: Config = {
         },
         text: {
           disabled: 'var(--color-gray-400)',
-          neutral: 'var(--color-gray-500)',
+          netural: 'var(--color-gray-500)',
           alternative: 'var(--color-gray-700)',
           strong: 'var(--color-gray-900)',
         },
         border: {
           normal: 'var(--color-gray-100)',
-          neutral: 'var(--color-gray-200)',
+          netural: 'var(--color-gray-200)',
           alternative: 'var(--color-gray-300)',
           strong: 'var(--color-gray-900)',
         },
         line: {
           normal: 'var(--color-line-normal)',
-          neutral: 'var(--color-line-netural)',
+          netural: 'var(--color-line-netural)',
           alternative: 'var(--color-line-alternative)',
           strong: 'var(--color-line-strong)',
         },
         bg: {
           white: 'var(--color-gray-0)',
           normal: 'var(--color-gray-50)',
-          neutral: 'var(--color-gray-100)',
+          netural: 'var(--color-gray-100)',
           alternative: 'var(--color-gray-200)',
         },
         system: {
@@ -135,7 +138,7 @@ const config: Config = {
         icon: {
           white: 'var(--color-gray-0)',
           disabled: 'var(--color-gray-400)',
-          neutral: 'var(--color-gray-600)',
+          netural: 'var(--color-gray-600)',
           strong: 'var(--color-gray-900)',
         },
         brand: {
