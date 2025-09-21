@@ -1,36 +1,33 @@
-import { NextResponse, NextRequest } from 'next/server';
+import { backendClient } from '@/libs/api/axios';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: number } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const incoming = req.headers.get('authorization'); // 클라가 준 토큰
   const auth = incoming?.replace(/^(bearer\s+)+/i, 'Bearer '); // => 'Bearer xxx'
 
-  const { id } = params; // '/api/chatlist/5' -> '5'
+  const { id } = await params; // '/api/chatlist/5' -> '5'
 
   try {
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-    const backendApiUrl = `${fetchURL}/playlink/chattingLog?roomId=${encodeURIComponent(id)}`;
-    const res = await fetch(backendApiUrl, {
-      method: 'GET',
+    const res = await backendClient.get(`/playlink/chattingLog?roomId=${encodeURIComponent(id)}`, {
       headers: {
         ...(auth ? { Authorization: auth } : {}),
       },
     });
-    const json = await res.json();
-    if (res.ok) {
-      return NextResponse.json({
-        status: 'ㅇㅎㅇㅎㅇㅎㅇ',
-        data: json,
-      });
-    } else {
-      return NextResponse.json({
-        status: 'error',
-        message: json.message,
-      });
-    }
-  } catch (err) {
+    return NextResponse.json({
+      status: 'success',
+      data: res.data,
+    });
+  } catch (err: any) {
     console.error('get chat-room detail router handler error', err);
+    return NextResponse.json(
+      {
+        status: 'error',
+        message: err.response?.data?.message || err.message || 'Unknown error',
+      },
+      { status: err.response?.status || 500 }
+    );
   }
 }

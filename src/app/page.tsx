@@ -1,17 +1,18 @@
 'use client';
 
-import MainHeader from '@/components/view/main/main-header';
-import MainNewButton from '@/components/view/main/main-new-button';
-import MatchCards from '@/components/view/main/match-cards';
+
+import MatchCards from '@/components/features/match/match-cards';
+import MainHeader from '@/components/features/navigation/main-header';
+import MainNewButton from '@/components/features/navigation/main-new-button';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-matches-query';
 // import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
-import { sendNotificationToken } from '@/services/notification/send-notification-token';
+import { sendNotificationToken } from '@/libs/api/notification/send-notification-token';
 import {
   onForegroundMessage,
   requestPermissionAndGetToken,
-} from '@/shares/libs/firebase/firebase-messaging';
-import { handleGetSessionStorage } from '@/shares/libs/utills/web-api';
-import { useSearchStore } from '@/shares/stores/search-store';
+} from '@/libs/firebase/firebase-messaging';
+import { useAuthStore } from '@/store/auth-store';
+import { useSearchStore } from '@/store/search-store';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -19,12 +20,12 @@ export default function Home() {
   const { data } = useGetMatchesQuery();
   const { keyword, type } = useSearchStore();
   const router = useRouter();
-  const token = handleGetSessionStorage();
   // const {data: notificationData} = useGetNotificationQuery(token);
-
+  const token = useAuthStore((state) => state.token);
   //검색 페이지 이동
   useEffect(() => {
-    if (keyword || type) router.push(`/query?keyword=${keyword}&type=${type}`);
+    if (keyword || type)
+      router.replace(`/query?keyword=${keyword}&type=${type}`);
   }, [keyword, type, router]);
 
   //알림 수신
@@ -37,10 +38,12 @@ export default function Home() {
     const handleRequestToken = async () => {
       const fcmToken = await requestPermissionAndGetToken();
       if (fcmToken) {
-        sendNotificationToken({ token, fcmToken });
+        sendNotificationToken(fcmToken);
       }
     };
-    handleRequestToken();
+    if (token) {
+      handleRequestToken();
+    }
   }, []);
 
   return (

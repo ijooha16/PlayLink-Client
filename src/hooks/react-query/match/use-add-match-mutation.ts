@@ -1,6 +1,6 @@
+import { QUERY_KEYS } from '@/constant/query-key';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addMatch } from '../../../services/match/match-crud';
-import { QUERY_KEYS } from '@/shares/constant/query-key';
+import { addMatch } from '../../../libs/api/match/match-crud';
 
 export const useAddMatchMutation = () => {
   const queryClient = useQueryClient();

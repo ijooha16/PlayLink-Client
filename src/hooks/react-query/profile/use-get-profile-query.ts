@@ -1,11 +1,12 @@
-import { getProfile } from '@/services/profile/profile';
-import { QUERY_KEYS } from '@/shares/constant/query-key';
+import { QUERY_KEYS } from '@/constant/query-key';
+import { getProfile } from '@/libs/api/profile/profile';
+import { useAuthStore } from '@/store/auth-store';
 import { useQuery } from '@tanstack/react-query';
 
-export const useGetProfileQuery = (token: string | null) => {
+export const useGetProfileQuery = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.PROFILE],
-    queryFn: () => getProfile(token),
-    enabled: !!token,
+    queryFn: () => getProfile(),
+    enabled: !!useAuthStore.getState().token,
   });
 };

@@ -1,36 +1,21 @@
+import { backendClient } from '@/libs/api/axios';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
     const payload = await request.json();
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-    const backendApiUrl = `${fetchURL}/playlink/signup/sms/verify`;
-
-    const res = await fetch(backendApiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    const resJson = await res.json();
-
-    if (!res.ok) {
-      console.error('server api error', resJson);
-      return NextResponse.json({
-        status: 'error',
-        message: 'sms verify server api error',
-      });
-    }
+    const { data } = await backendClient.post('/playlink/signup/sms/verify', payload);
 
     return NextResponse.json({
       status: 'success',
       message: 'sms 인증코드 확인 되었습니다',
+      data
     });
-  } catch (err) {
-    console.error('sms route error', err);
+  } catch (err: any) {
+    console.error('sms verify route error', err);
     return NextResponse.json({
-      status: 500,
-      message: err,
-    });
+      status: 'error',
+      message: err.response?.data?.message || err.message || 'sms verify server api error',
+    }, { status: err.response?.status || 500 });
   }
 }

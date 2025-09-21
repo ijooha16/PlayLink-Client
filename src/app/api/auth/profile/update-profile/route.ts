@@ -1,3 +1,4 @@
+import { backendClient } from '@/libs/api/axios';
 import { NextResponse } from 'next/server';
 
 export async function PUT(request: Request) {
@@ -5,42 +6,19 @@ export async function PUT(request: Request) {
     const body = await request.formData();
     const token = request.headers.get('Authorization');
 
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-
-    const backendApiUrl = `${fetchURL}/playlink/profile`;
-
-    const response = await fetch(backendApiUrl, {
-      method: 'PUT',
+    const { data } = await backendClient.put('/playlink/profile', body, {
       headers: {
-        Authorization: token!,
-      },
-      body,
+        'Content-Type': 'multipart/form-data',
+        Authorization: token || ''
+      }
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Backend API error:', errorData);
-      return NextResponse.json(
-        { status: 'error', message: errorData.message || 'Backend API error' },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-    return NextResponse.json({ status: 'success', data }, { status: 200 });
-  } catch (error: unknown) {
-    console.error('Edit profile Route Handler error:', error);
-    return NextResponse.json(
-      {
-        status: 'error',
-        message:
-          error instanceof Error
-            ? error instanceof Error
-              ? error.message
-              : 'Unknown error'
-            : 'Unknown error',
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ status: 'success', data });
+  } catch (err: any) {
+    console.error('Edit profile Route Handler error:', err);
+    return NextResponse.json({
+      status: 'error',
+      message: err.response?.data?.message || err.message || 'Unknown error',
+    }, { status: err.response?.status || 500 });
   }
 }

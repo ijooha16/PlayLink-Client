@@ -1,11 +1,12 @@
-import { getNotification } from '@/services/notification/get-notification';
-import { QUERY_KEYS } from '@/shares/constant/query-key';
+import { QUERY_KEYS } from '@/constant/query-key';
+import { getNotification } from '@/libs/api/notification/get-notification';
+import { useAuthStore } from '@/store/auth-store';
 import { useQuery } from '@tanstack/react-query';
 
-export const useGetNotificationQuery = (token: string | null) => {
+export const useGetNotificationQuery = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.NOTIFICATION],
-    queryFn: () => getNotification({token}),
-    enabled: !!token
+    queryFn: () => getNotification(),
+    enabled: !!useAuthStore.getState().token
   });
 };
