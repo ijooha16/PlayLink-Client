@@ -28,9 +28,9 @@ export const useSignUpNavigation = ({
       const redirectStep = findValidStep();
       if (redirectStep && redirectStep !== currentStep) {
         const stepConfig = getStepConfig(redirectStep);
-        // if (stepConfig) {
-        //   router.push(stepConfig.path);
-        // }
+        if (stepConfig) {
+          router.push(stepConfig.path);
+        }
       }
     }
   }, [currentStep, skipValidation]);

@@ -24,10 +24,11 @@ export async function POST(request: Request) {
         data: null
       });
     } else if (data.errCode === 6001) {
-      // 인증되지 않은 번호 - 가입 가능한 번호로 처리
+      // 인증되지 않은 번호 - 인증 필요 상태로 처리
       return NextResponse.json({
         status: 'success',
         errCode: data.errCode,
+        // message: '인증되지 않은 휴대폰 번호입니다.',
         message: '인증 처리 됐습니다.',
         data: null
       });
@@ -61,6 +62,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
           status: 'success',
           errCode: errCode,
+          // message: '인증되지 않은 휴대폰 번호입니다.',
           message: '인증 처리 됐습니다.',
           data: null
         });

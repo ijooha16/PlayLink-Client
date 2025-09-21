@@ -1,11 +1,11 @@
 import { PATHS } from '@/constant';
-import { findAccountByPhone } from '@/libs/api/auth/find-account';
+import { findAccountByPhone, findAccountByPhoneEmail } from '@/libs/api/auth/find-account';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-type FindAccountByPhoneEmailType = {
+type FindAccountRequestType = {
   phoneNumber: string;
-  email: string;
+  email?: string;
 };
 
 type ErrorCode = 0 | 1008 | 4006 | 6001 | 99999;
@@ -74,6 +74,7 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
     switch (errCode) {
       case 6001:
         onNeedVerification?.();
+        // onInvalidInput?.('인증되지 않은 휴대폰 번호입니다.');
         break;
       case 1008:
         onInvalidInput?.('입력 정보에 오류가 있습니다.');
@@ -107,8 +108,15 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
     processAccountData(errCode, errorData);
   };
 
-  return useMutation<any, AuthError, FindAccountByPhoneEmailType>({
-    mutationFn: findAccountByPhone,
+  return useMutation<any, AuthError, FindAccountRequestType>({
+    mutationFn: async (params) => {
+      // email이 있으면 findAccountByPhoneEmail 호출
+      if (params.email) {
+        return findAccountByPhoneEmail({ phoneNumber: params.phoneNumber, email: params.email });
+      }
+      // email이 없으면 findAccountByPhone만 호출
+      return findAccountByPhone({ phoneNumber: params.phoneNumber });
+    },
     onSuccess: handleResponse,
     onError: handleError,
   });

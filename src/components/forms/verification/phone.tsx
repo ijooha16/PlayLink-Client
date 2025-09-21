@@ -8,7 +8,7 @@ import { useFindAccount } from '@/hooks/react-query/auth/use-find-account';
 import { useVerification } from '@/hooks/react-query/auth/use-verification';
 import { normalizePhone, validatePhone, validateVerificationCode } from '@/libs/valid/auth';
 import { formatPhoneNumber } from '@/utills/format/phone-formats';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
 type VerificationContext = 'sign-up' | 'find-id';
 
@@ -57,7 +57,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         onSuccess?.(normalizePhone(values.phone));
       } else if (context === 'find-id') {
         // find-id에서 인증 성공 시 계정 조회 후 결과 페이지로 이동
-        findAccountAfterVerify({ phoneNumber: normalizePhone(values.phone), email: '' });
+        findAccountAfterVerify({ phoneNumber: normalizePhone(values.phone) });
       }
     },
   });
@@ -70,7 +70,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     onNeedVerification: () => send(normalizePhone(values.phone)),
     onInvalidInput: (message) => setErrors({ phone: message }),
     onError: (message) => setErrors({ phone: message }),
-    onAccountNotFound: () => send(normalizePhone(values.phone)),
+    onAccountNotFound: () => context === 'sign-up' && send(normalizePhone(values.phone)),
   });
 
   // 인증 후 계정 조회 hook (결과 페이지 이동용)
@@ -91,7 +91,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
       return;
     }
 
-    findAccount({ phoneNumber: sanitized, email: '' });
+    findAccount({ phoneNumber: sanitized });
   };
 
   const handleVerifyCode = () => {
