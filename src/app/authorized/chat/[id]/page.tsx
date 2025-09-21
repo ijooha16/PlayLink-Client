@@ -101,7 +101,7 @@ export default function ChatRoom() {
   }, [env_api, roomId, token]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: 'instant' });
   }, [messages]);
 
   const handleSend = () => {
@@ -135,7 +135,7 @@ export default function ChatRoom() {
   };
 
   if (isLoading) return <Loading variant='white' />;
-  if (error) return <div className='p-4 text-red-500'>채팅 내역 로드 에러</div>;
+  if (error) return <div className='text-red-500 p-4'>채팅 내역 로드 에러</div>;
 
   return (
     <div>
