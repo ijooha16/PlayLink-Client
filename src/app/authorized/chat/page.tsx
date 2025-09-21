@@ -12,7 +12,7 @@ const Chat = () => {
   const { data, isLoading, error } = useChatList();
 
   const handleChatClick = (roomId: string) => {
-    router.push(`/chat/${roomId}`);
+    router.push(`/authorized/chat/${roomId}`);
   };
 
   if (isLoading)
@@ -26,7 +26,7 @@ const Chat = () => {
     return (
       <>
         <Header title='채팅' />
-        <div className='p-4 text-red-500'>에러가 발생했어요.</div>
+        <div className='text-red-500 p-4'>에러가 발생했어요.</div>
       </>
     );
 
@@ -38,7 +38,7 @@ const Chat = () => {
           <div
             key={item.room_id as string}
             onClick={() => handleChatClick(item.room_id as string)}
-            className="cursor-pointer"
+            className='cursor-pointer'
           >
             <ChatCard
               roomId={item.room_id as string}
