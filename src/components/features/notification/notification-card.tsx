@@ -13,6 +13,7 @@ import {
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { NotificationDataType } from '@/types/notification/notification';
+import { PATHS } from '@/constant';
 
 const NotificationCard = ({
   data,
@@ -37,15 +38,20 @@ const NotificationCard = ({
     return Math.floor(diffMs / (1000 * 60 * 60 * 24));
   }
 
+  const date =
+    daysAgo(data.created_at) === 0
+      ? '오늘'
+      : `${daysAgo(data.created_at)}일 전`;
+
   return (
     <div className='flex gap-4 py-4'>
-      <div className='text-primary'>{cardIcon[data.type]}</div>
+      <div className='text-primary-700'>{cardIcon[data.type]}</div>
       <div className='flex flex-1 flex-col gap-1'>
         <div>
           <div className='flex items-center justify-between'>
             <strong>{cardTitle[data.type]}</strong>
             <div className='flex items-center gap-3 text-xs text-gray-400'>
-              <div>{daysAgo(data.created_at)}일 전</div>
+              <div>{date}</div>
               <LucideEllipsisVertical
                 size={14}
                 onClick={() => setOpenOptions(!openOptions)}
@@ -89,7 +95,9 @@ const NotificationCard = ({
           )}
           <MatchButton
             type='상세'
-            onClick={() => router.push(`/match/${data.match_id}`)}
+            onClick={() =>
+              router.push(`${PATHS.MATCH.MATCH_DETAIL}/${data.match_id}`)
+            }
           />
           {data.type === 'approved' && <MatchButton type='취소' />}
         </div>

@@ -13,10 +13,12 @@ import { PATHS } from '@/constant/paths';
 const TabNavigation = () => {
   const pathname = usePathname();
 
-  // anonymous 경로에서는 탭 네비게이션 숨김
-  const shouldHideNavigation = pathname.startsWith('/anonymous');
+  const mainPaths = [PATHS.HOME, PATHS.MY_NEAR, PATHS.CHAT, PATHS.MY_PAGE];
 
-  if (shouldHideNavigation) {
+  // main paths 외의 경로에서 네비게이션 숨기기
+  const shouldHideNavigation = mainPaths.includes(pathname);
+
+  if (!shouldHideNavigation) {
     return null;
   }
 

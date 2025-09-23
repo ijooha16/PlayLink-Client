@@ -25,17 +25,18 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang='ko-KR' className='mx-auto h-full w-full max-w-screen-sm'>
-      <body className={`${pretendard.variable} antialiased`} suppressHydrationWarning>
-            <Providers>
-        <LayoutClientSide />
-        <div className='flex h-full flex-col'>
-          <div className='flex-1 px-5 pb-16 pt-s-24'>
-              {children}
+      <body
+        className={`${pretendard.variable} antialiased`}
+        suppressHydrationWarning
+      >
+        <Providers>
+          <LayoutClientSide />
+          <div className='flex h-full flex-col'>
+            <div className='flex-1 px-5 pb-16 pt-s-24'>{children}</div>
+            <TabNavigation />
           </div>
-          <TabNavigation />
-        </div>
-        <ToastContainer />
-            </Providers>
+          <ToastContainer />
+        </Providers>
       </body>
     </html>
   );

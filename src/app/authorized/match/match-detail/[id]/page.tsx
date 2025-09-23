@@ -1,12 +1,11 @@
 'use client';
 
-import Link from 'next/link';
 import { Heart, MapPin, Share2 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
-import Image from 'next/image';
 import DynamicNaverMapForDetail from '@/components/maps/dynamic-naver-map-for-detail';
+import { PATHS } from '@/constant';
 
 export default function MatchDetailPage() {
   const params = useParams();
@@ -22,7 +21,7 @@ export default function MatchDetailPage() {
 
   const handleApplyClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    router.push(`/apply/${id}`);
+    router.push(`${PATHS.MATCH.APPLY_MATCH}/${id}`);
   };
   const {
     title,
@@ -38,7 +37,7 @@ export default function MatchDetailPage() {
     member_count,
     placeAddress,
     comment,
-  } = data?.data?.data || {};
+  } = data?.data || {};
 
   const sportTypes = (sports && sports?.data?.data?.sports) || [];
   const sportTypeForThisMatch = sportTypes.filter(
@@ -51,7 +50,7 @@ export default function MatchDetailPage() {
 
   return (
     <div className='flex flex-col'>
-      <div className='absolute left-1/2 top-16 z-40 mx-auto h-[40dvh] w-full max-w-[640px] -translate-x-1/2'>
+      <div className='absolute left-1/2 top-14 z-40 mx-auto h-[40dvh] w-full max-w-[640px] -translate-x-1/2'>
         <img
           src={`/images/sport-images/${sports_type}.png`}
           alt={title}
@@ -59,7 +58,7 @@ export default function MatchDetailPage() {
         />
       </div>
 
-      <div className='mt-[40dvh] flex h-24 items-center justify-between rounded-lg'>
+      <div className='mt-[38dvh] flex h-24 items-center justify-between rounded-lg'>
         <div className='flex items-center gap-4'>
           <div className='h-14 w-14 overflow-hidden rounded-full border border-gray-200 bg-gray-300'>
             <img

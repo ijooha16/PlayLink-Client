@@ -1,6 +1,5 @@
 'use client';
 
-
 import MatchCards from '@/components/features/match/match-cards';
 import MainHeader from '@/components/features/navigation/main-header';
 import MainNewButton from '@/components/features/navigation/main-new-button';
@@ -22,10 +21,11 @@ export default function Home() {
   const router = useRouter();
   // const {data: notificationData} = useGetNotificationQuery(token);
   const token = useAuthStore((state) => state.token);
+
   //검색 페이지 이동
   useEffect(() => {
     if (keyword || type)
-      router.replace(`/query?keyword=${keyword}&type=${type}`);
+      router.replace(`/authorized/query?keyword=${keyword}&type=${type}`);
   }, [keyword, type, router]);
 
   //알림 수신
