@@ -27,7 +27,6 @@ const ChatCard = ({
             fill
             className="rounded-full object-cover"
             sizes="48px"
-            quality={85}
           />
         </div>
       ) : (
