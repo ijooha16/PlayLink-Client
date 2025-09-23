@@ -34,7 +34,7 @@ const NotificationView = ({
           {tabs.map((t) => (
             <div
               key={t}
-              className={`flex-1 border-b-[2px] py-3 text-center font-semibold ${tab === t ? 'border-primary text-primary' : 'text-gray-400'}`}
+              className={`flex-1 border-b-[2px] py-3 text-center font-semibold ${tab === t ? 'border-primary-700 text-primary-700' : 'text-gray-400'}`}
               onClick={() => setTab(t)}
             >
               {t === 'activity' ? '활동' : '매칭'}
