@@ -1,7 +1,7 @@
 'use client';
 
 import AuthLayoutContainer from '@/components/layout/auth-layout';
-import { Location, Search, SearchNone } from '@/components/shared/icons';
+import { Location, Search } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
 import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
@@ -51,11 +51,11 @@ const Address = () => {
       </div>
       <div className="h-[8px] bg-bg-normal"></div>
       {/* 검색 결과 */}
-      <div className="flex flex-col mt-s-40 gap-s-16 items-center">
+      {/* <div className="flex flex-col mt-s-40 gap-s-16 items-center">
         <SearchNone size={120} />
         <span className="text-body-01 font-semibold text-text-strong text-center">검색 결과가 없어요 <br />다시 입력해 주세요</span>
-      </div>
-      {/* <div className="">
+      </div> */}
+      <div className="">
         {[1, 2, 3, 4, 5].map((item, index) => (
           <div
             key={index}
@@ -64,7 +64,7 @@ const Address = () => {
             <span className="text-body-01 font-regular text-text-strong">서울 서포초구 서초{index +1}동</span>
           </div>
         ))}
-      </div> */}
+      </div>
 
       <Button
         variant="default"

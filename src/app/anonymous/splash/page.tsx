@@ -109,9 +109,9 @@ const SignIn = () => {
                   {[...sportIcons, ...sportIcons].map((icon, index) => (
                     <div
                       key={`${rowIndex}-${index}`}
-                      className="w-16 h-16 rounded-12 mr-4 border border-line-netural bg-white flex items-center justify-center flex-shrink-0 shadow-level-1"
+                      className="w-[72px] h-[72px] rounded-12 mr-4 border border-line-netural bg-white flex items-center justify-center flex-shrink-0 shadow-level-1"
                     >
-                      <Image src={icon.src} alt={icon.alt} width={32} height={32} />
+                      <Image src={icon.src} alt={icon.alt} width={40} height={40} />
                     </div>
                   ))}
                 </motion.div>
