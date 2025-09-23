@@ -83,7 +83,7 @@ const Header: HeaderComponent = (({
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') handleBack();
         }}
-        className='text-icon-strong inline-flex h-9 w-9 items-center justify-center'
+        className='inline-flex h-9 w-9 items-center justify-center text-icon-strong'
       >
         <ChevronLeft />
       </button>
@@ -108,10 +108,12 @@ const Header: HeaderComponent = (({
         aria-label={ariaLabel}
         className={twMerge(
           'fixed left-1/2 top-0 z-50 w-full max-w-[640px] -translate-x-1/2',
-          transparent ? 'bg-transparent text-white' : 'bg-white text-gray-900',
+          transparent
+            ? 'bg-white/60 text-white backdrop-blur-lg'
+            : 'bg-white text-gray-900',
           blur && 'backdrop-blur',
           (border && !transparent) || elevated
-            ? 'border-black/10 border-b'
+            ? 'border-b border-black/10'
             : 'border-b border-transparent',
           (shadow || elevated) && !transparent ? 'shadow-sm' : '',
           safeAreaTop ? 'pt-[env(safe-area-inset-top)]' : '',
@@ -140,7 +142,7 @@ const Header: HeaderComponent = (({
           {/* 타이틀 */}
           {hasTitle && (
             <div className='pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
-              <h1 className='text-title-03 max-w-[70vw] truncate font-semibold'>
+              <h1 className='max-w-[70vw] truncate text-title-03 font-semibold'>
                 {title}
               </h1>
             </div>

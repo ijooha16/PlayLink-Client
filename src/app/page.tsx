@@ -1,6 +1,5 @@
 'use client';
 
-
 import MatchCards from '@/components/features/match/match-cards';
 import MainHeader from '@/components/features/navigation/main-header';
 import MainNewButton from '@/components/features/navigation/main-new-button';
