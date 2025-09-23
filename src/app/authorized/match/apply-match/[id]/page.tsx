@@ -25,14 +25,14 @@ export default function ApplyPage() {
     title,
     start_time,
     sports_type,
-    // user_nickname,
+    user_nickname,
     // end_time,
     // date,
     // createdAt,
     // likeCount,
     placeAddress,
     match_id,
-  } = data?.data?.data || {};
+  } = data?.data || {};
 
   const sportTypes = (sports && sports?.data?.data?.sports) || [];
   const sportTypeForThisMatch = sportTypes.filter(
@@ -85,7 +85,9 @@ export default function ApplyPage() {
         <h2 className='mb-4 text-2xl font-bold'>신청 상세 정보</h2>
         <div>
           <p className='font-bold'>신청자</p>
-          <span className='mt-6 font-semibold text-blue-500'>내 이름</span>
+          <span className='mt-6 font-semibold text-blue-500'>
+            {user_nickname}
+          </span>
         </div>
         <div>
           <p className='font-bold'>종목</p>

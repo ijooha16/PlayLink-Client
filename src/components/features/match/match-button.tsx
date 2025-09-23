@@ -6,7 +6,7 @@ const MatchButton = ({
   onClick?: () => void;
 }) => {
   const buttonStyle = {
-    수락: 'bg-primary text-white border-primary',
+    수락: 'bg-primary-700 text-white border-primary-700',
     거절: 'bg-gray-50 text-gray-400 border-gray-300',
     취소: 'bg-white text-gray-400 border-gray-300',
     상세: 'bg-white border-gray-300',

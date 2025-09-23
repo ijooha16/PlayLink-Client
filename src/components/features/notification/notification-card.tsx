@@ -13,6 +13,7 @@ import {
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { NotificationDataType } from '@/types/notification/notification';
+import { PATHS } from '@/constant';
 
 const NotificationCard = ({
   data,
@@ -89,7 +90,7 @@ const NotificationCard = ({
           )}
           <MatchButton
             type='상세'
-            onClick={() => router.push(`/match/${data.match_id}`)}
+            onClick={() => router.push(`${PATHS.MATCH.MATCH_DETAIL}/${data.match_id}`)}
           />
           {data.type === 'approved' && <MatchButton type='취소' />}
         </div>

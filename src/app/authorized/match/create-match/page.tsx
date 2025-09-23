@@ -7,6 +7,7 @@ import Input from '@/components/ui/input';
 import { DUMMY_PLACE, PATHS } from '@/constant';
 import { useAddMatchMutation } from '@/hooks/react-query/match/use-add-match-mutation';
 import { useAlertStore } from '@/store/alert-store';
+import { toast } from '@/utills/toast';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
@@ -53,10 +54,7 @@ const CreateMatch = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    openAlert(
-      '매치 생성 완료!',
-      `${formData.title} 매칭이 생성 되었습니다! 즐거운 운동되세요!`
-    );
+    toast.success('매치가 생성되었어요!');
 
     const data = new FormData();
 
