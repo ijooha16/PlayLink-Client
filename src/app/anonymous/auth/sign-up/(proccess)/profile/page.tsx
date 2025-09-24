@@ -84,7 +84,10 @@ const ProfileSetup = () => {
   };
 
   return (
-    <AuthLayoutContainer title={currentStepTitle} content="나중에 변경할 수 있어요.">
+    <AuthLayoutContainer
+      title={currentStepTitle}
+      content='나중에 변경할 수 있어요.'
+    >
       <div className='flex flex-col items-center'>
         <div className='relative my-s-24'>
           <div
@@ -104,7 +107,7 @@ const ProfileSetup = () => {
           <button
             type='button'
             onClick={() => fileInputRef.current?.click()}
-            className='absolute bottom-0 right-0 h-[32px] w-[32px] items-center justify-center flex bg-bg-netural border-white border-2 rounded-full'
+            className='absolute bottom-0 right-0 flex h-[32px] w-[32px] items-center justify-center rounded-full border-2 border-white bg-bg-netural'
           >
             <Edit size={24} />
           </button>
@@ -128,8 +131,11 @@ const ProfileSetup = () => {
           value={nickname}
           onChange={handleNicknameChange}
           showCancelToggle={!!nickname}
-
-          helperText={nickname.length === 0 ? '닉네임은 2자 이상 15자 이하로 입력해주세요' : ''}
+          helperText={
+            nickname.length === 0
+              ? '닉네임은 2자 이상 15자 이하로 입력해주세요'
+              : ''
+          }
           hasError={!!errors.nickname}
           errorMessage={errors.nickname || ''}
           // TODO SUCCESS 및 디바운싱 db호출 구현
