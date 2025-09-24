@@ -59,7 +59,6 @@ const MatchCards = (data: { data: MatchType }) => {
               height={150}
               className="object-contain rounded"
               sizes="150px"
-              quality={85}
               onError={() => {
                 setImageError(true);
               }}

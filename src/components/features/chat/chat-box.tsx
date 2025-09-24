@@ -25,7 +25,7 @@ const ChatBox = ({
         <div className={`${isMyChat ? 'flex-col' : 'items-end'} flex gap-1`}>
           <div
             className={`${
-              isMyChat ? 'bg-primary text-white' : 'bg-gray-200'
+              isMyChat ? 'bg-brand-primary text-white' : 'bg-gray-200'
             } mt-1 break-words rounded-xl px-3 py-2 text-sm`}
           >
             {text}
