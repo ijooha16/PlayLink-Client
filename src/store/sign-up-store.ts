@@ -63,14 +63,16 @@ export const useSignUpStepStore = create<SignUpStepStore>()(
 
         if (!stepConfig) return false;
 
-        return stepConfig.requiredData.every(field => {
+        return stepConfig.requiredData.every((field) => {
           const value = data[field as keyof SignUpData];
           if (field === 'terms') return value === true;
           if (field === 'phoneVerified') return value === true;
-          if (field === 'favoriteSports') return Array.isArray(value) && value.length > 0;
+          if (field === 'favoriteSports')
+            return Array.isArray(value) && value.length > 0;
           return !!value;
         });
       },
     }),
-  ),
+    { name: 'sign-up-store' }
+  )
 );

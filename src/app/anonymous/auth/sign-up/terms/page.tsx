@@ -67,11 +67,7 @@ const TermsScreen = () => {
     <AuthLayoutContainer title={currentStepTitle}>
       <button className='flex justify-between pt-s-40' onClick={handleAllCheck}>
         <div className='flex select-none items-center gap-s-16'>
-          <input
-            type='checkbox'
-            checked={isAllChecked}
-            readOnly
-          />
+          <input type='checkbox' checked={isAllChecked} readOnly />
           <h4 className='text-title-04 font-semibold'>전체 동의하기</h4>
         </div>
       </button>

@@ -22,7 +22,7 @@ export const SIGN_UP_FLOW: FlowStepConfig[] = [
   {
     key: 'terms',
     path: '/anonymous/auth/sign-up/terms',
-    title: '서비스 이용을 위해 \n 약관 동의가 필요해요!.',
+    title: '서비스 이용을 위해 \n 약관 동의가 필요해요!',
     requiredData: ['terms'],
   },
   {
