@@ -110,8 +110,8 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
     <>
       <div className='flex flex-col gap-s-16 pb-[24px]'>
         <Input
-          label='이메일 주소'
-          placeholder='playlink@example.com'
+          label='이메일'
+          placeholder='이메일을 입력해주세요.'
           value={values.email}
           onChange={handlers.email}
           hasError={!!displayErrors.email}

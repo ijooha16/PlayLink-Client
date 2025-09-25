@@ -4,6 +4,7 @@ export const API_URLS = {
     SIGNUP: '/api/auth/signup',
     LOGOUT: '/api/auth/logout',
     FIND_ACCOUNT: '/api/auth/find-account',
+    RESET_PASSWORD: '/api/auth/reset-password',
     EMAIL: {
       SEND: '/api/auth/email/send',
       VERIFY: '/api/auth/email/verify',
