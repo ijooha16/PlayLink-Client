@@ -1,5 +1,8 @@
 import { PATHS } from '@/constant';
-import { findAccountByPhone, findAccountByPhoneEmail } from '@/libs/api/auth/find-account';
+import {
+  findAccountByPhone,
+  findAccountByPhoneEmail,
+} from '@/libs/api/auth/find-account';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
@@ -28,17 +31,29 @@ type UseFindAccountOptions = {
   isAfterVerification?: boolean;
   onAccountExists?: (accountData: any) => void;
   onAccountNotFound?: () => void;
-  onNeedVerification?: () => void;
+  onNeedVerification?: (accountData?: any) => void;
   onInvalidInput?: (message: string) => void;
   onError?: (message: string) => void;
 };
 
 export const useFindAccount = (options: UseFindAccountOptions) => {
   const router = useRouter();
-  const { type, context = 'sign-up', isAfterVerification = false, onAccountExists, onAccountNotFound, onNeedVerification, onInvalidInput, onError } = options;
+  const {
+    type,
+    context = 'sign-up',
+    isAfterVerification = false,
+    onAccountExists,
+    onAccountNotFound,
+    onNeedVerification,
+    onInvalidInput,
+    onError,
+  } = options;
 
   // 공통 처리 로직
-  const processAccountData = (errCode: ErrorCode | undefined, accountData: any) => {
+  const processAccountData = (
+    errCode: ErrorCode | undefined,
+    accountData: any
+  ) => {
     // errCode 0이면 기존 계정이 있음
     if (errCode === 0 && accountData) {
       if (context === 'find-id' && isAfterVerification) {
@@ -48,7 +63,7 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
           nickname: accountData.nickname || '',
           createdAt: accountData.created_at || '',
           accountType: accountData.account_type?.toString() || '0',
-          source: 'find-id'
+          source: 'find-id',
         });
 
         router.push(`${PATHS.AUTH.FOUND}?${params.toString()}`);
@@ -112,7 +127,10 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
     mutationFn: async (params) => {
       // email이 있으면 findAccountByPhoneEmail 호출
       if (params.email) {
-        return findAccountByPhoneEmail({ phoneNumber: params.phoneNumber, email: params.email });
+        return findAccountByPhoneEmail({
+          phoneNumber: params.phoneNumber,
+          email: params.email,
+        });
       }
       // email이 없으면 findAccountByPhone만 호출
       return findAccountByPhone({ phoneNumber: params.phoneNumber });
@@ -127,9 +145,10 @@ export const handleVerificationError = (
   error: Error,
   type: 'phone' | 'email'
 ): string => {
-  const defaultMessage = type === 'phone'
-    ? '인증 문자 전송에 실패했습니다.'
-    : '인증 메일 전송에 실패했습니다.';
+  const defaultMessage =
+    type === 'phone'
+      ? '인증 문자 전송에 실패했습니다.'
+      : '인증 메일 전송에 실패했습니다.';
 
   return error.message || defaultMessage;
 };

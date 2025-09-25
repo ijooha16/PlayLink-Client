@@ -1,11 +1,14 @@
 'use client';
 
 import Loading from '@/components/ui/loading';
-import { PATHS } from '@/constant';
+import { PATHS, PLAYLINK_AUTH } from '@/constant';
 import { useAlertStore } from '@/store/alert-store';
+import { toast } from '@/utills/toast';
 import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
+import { TOAST_ALERT_MESSAGES } from '@/constant/toast-alert';
+import { NextResponse } from 'next/server';
 
 function KakaoCallbackPage() {
   const router = useRouter();
@@ -58,7 +61,7 @@ function KakaoCallbackPage() {
             localStorage.setItem('accessToken', response.data.token);
           }
 
-          openAlert('로그인 성공', '카카오 로그인이 완료되었습니다.');
+          toast.success(TOAST_ALERT_MESSAGES.KAKAO_LOGIN_SUCCESS);
           router.replace(PATHS.HOME);
         } else {
           throw new Error(response.data.error || '로그인 처리 실패');
