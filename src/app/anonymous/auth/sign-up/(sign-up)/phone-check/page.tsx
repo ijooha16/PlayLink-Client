@@ -1,27 +1,24 @@
 'use client';
 
 import PhoneVerification from '@/components/forms/verification/phone';
-import AuthLayoutContainer from '@/components/layout/auth-layout';
-import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
-import { useSignUpStepStore } from '@/store/sign-up-store';
+import useSignUpStore from '@/store/use-sign-up-store';
+import { useRouter } from 'next/navigation';
 
 const PhoneCheck = () => {
-  const { data, updateStep } = useSignUpStepStore();
-  const { goToNext, currentStepTitle } = useSignUpNavigation({
-    currentStep: 'phone-check',
-  });
+  const { signUp, updateSignUp } = useSignUpStore();
+  const router = useRouter();
 
   return (
-    <AuthLayoutContainer title={currentStepTitle}>
+    <>
       <PhoneVerification
         context="sign-up"
-        initialPhone={data.phone}
+        initialPhone={signUp.phoneNumber}
         onSuccess={(phoneNumber) => {
-          updateStep({ phone: phoneNumber, phoneVerified: true });
-          goToNext();
+          updateSignUp('phoneNumber', phoneNumber)
+          router.replace('/anonymous/auth/sign-up/email-check');
         }}
       />
-    </AuthLayoutContainer>
+    </>
   );
 };
 

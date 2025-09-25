@@ -1,22 +1,20 @@
 'use client';
 
-import AuthLayoutContainer from '@/components/layout/auth-layout';
 import { Edit } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
-import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
-import { useSignUpStepStore } from '@/store/sign-up-store';
+import useSignUpStore from '@/store/use-sign-up-store';
 import randomProfileImage, { ProfileImg } from '@/utills/random-profile-image';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 
 const ProfileSetup = () => {
-  const { data, updateStep } = useSignUpStepStore();
-  const { goToNext, currentStepTitle } = useSignUpNavigation({
-    currentStep: 'profile',
-  });
-  const [nickname, setNickname] = useState(data.nickname || '');
-  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const { profile, updateProfile } = useSignUpStore();
+  const router = useRouter();
+
+  const [nickname, setNickname] = useState(profile.nickname || '');
+  const [profileImage, setProfileImage] = useState<File | null>(profile.img || null);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const randomImgRef = useRef<ProfileImg>(randomProfileImage());
@@ -76,18 +74,15 @@ const ProfileSetup = () => {
       return;
     }
 
-    updateStep({
-      nickname,
-      profileImage,
-    });
-    goToNext();
+    updateProfile('nickname', nickname);
+    if (profileImage) {
+      updateProfile('img', profileImage);
+    }
+    router.push('/anonymous/auth/sign-up/address');
   };
 
   return (
-    <AuthLayoutContainer
-      title={currentStepTitle}
-      content='나중에 변경할 수 있어요.'
-    >
+    <>
       <div className='flex flex-col items-center'>
         <div className='relative my-s-24'>
           <div
@@ -150,7 +145,7 @@ const ProfileSetup = () => {
       >
         다음
       </Button>
-    </AuthLayoutContainer>
+    </>
   );
 };
 

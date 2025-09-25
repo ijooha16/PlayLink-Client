@@ -1,6 +1,5 @@
 'use client';
 
-import AuthLayoutContainer from '@/components/layout/auth-layout';
 import {
   Circle1,
   Circle2,
@@ -9,13 +8,11 @@ import {
   Welcome,
 } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
-import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 const WelcomePage = () => {
-  const { goToNext, currentStepTitle } = useSignUpNavigation({
-    currentStep: 'welcome',
-  });
+  const router = useRouter();
 
   const floatingItems = [
     { Component: Sparkle1, y: -10, duration: 3, ease: 'linear' },
@@ -25,9 +22,7 @@ const WelcomePage = () => {
   ];
 
   return (
-    <AuthLayoutContainer
-      title={currentStepTitle}
-      content='운동메이트를 찾기 위해 프로필을 완성해 주세요.'
+    <
     >
       <div className="fixed inset-0 flex items-center justify-center">
         <div className="w-[335px] h-[146px] relative flex items-center justify-center">
@@ -50,10 +45,10 @@ const WelcomePage = () => {
           </div>
         </div>
       </div>
-      <Button variant='default' onClick={goToNext} isFloat>
+      <Button variant='default' onClick={() => router.replace('/anonymous/auth/sign-up/profile')} isFloat>
         프로필 완성하기
       </Button>
-    </AuthLayoutContainer>
+    </>
   );
 };
 

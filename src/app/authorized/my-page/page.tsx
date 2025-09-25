@@ -2,16 +2,15 @@
 
 import Header from '@/components/layout/header';
 import { PATHS } from '@/constant/paths';
-import { useGetProfileQuery } from '@/hooks/react-query/profile/use-get-profile-query';
-import { useUpdateProfileMutation } from '@/hooks/react-query/profile/use-update-profile-mutation';
-import { fetchLogout } from '@/libs/api/auth/auth';
+import { useGetProfileQuery, useUpdateProfile } from '@/hooks/react-query/profile/use-profile-query';
+import { Auth } from '@/libs/api/auth/auth';
 import { useAuthStore } from '@/store/auth-store';
 import {
-    Camera,
-    Check,
-    ChevronRight,
-    Edit3,
-    X
+  Camera,
+  Check,
+  ChevronRight,
+  Edit3,
+  X
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useRef, useState } from 'react';
@@ -23,12 +22,25 @@ export default function MyPage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { mutate: updatProfile, isPending: isUpdating } =
-    useUpdateProfileMutation();
+  const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile({
+    onSuccess: () => {
+      // 성공 시 상태 초기화
+      setSelectedImage(null);
+      setPreviewImage(null);
+      setIsImageEditing(false);
+      setIsEditing(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    },
+    onError: (error) => {
+      console.error('프로필 업데이트 실패:', error);
+    }
+  });
 
   const router = useRouter();
   const handleLogout = async () => {
-    await fetchLogout();
+    await Auth.Logout();
     router.push(PATHS.SPLASH);
   };
 
@@ -82,22 +94,7 @@ export default function MyPage() {
       data.append('nickname', nicknameInput.trim());
     }
 
-    updatProfile(data, {
-      onSuccess: () => {
-        // 성공 시 상태 초기화
-        setSelectedImage(null);
-        setPreviewImage(null);
-        setIsImageEditing(false);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-        alert('프로필이 성공적으로 업데이트되었습니다.');
-      },
-      onError: (error) => {
-        console.error('이미지 업로드 실패:', error);
-        alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
-      },
-    });
+    updateProfile(data);
   };
 
   // 이미지 편집 취소
@@ -119,16 +116,7 @@ export default function MyPage() {
     const data = new FormData();
     data.append('nickname', nicknameInput.trim());
 
-    updatProfile(data, {
-      onSuccess: () => {
-        setIsEditing(false);
-        alert('닉네임이 성공적으로 업데이트되었습니다.');
-      },
-      onError: (error) => {
-        console.error('닉네임 업데이트 실패:', error);
-        alert('닉네임 업데이트에 실패했습니다. 다시 시도해주세요.');
-      },
-    });
+    updateProfile(data);
   };
 
   return (

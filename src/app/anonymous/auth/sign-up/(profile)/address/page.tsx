@@ -1,12 +1,11 @@
 'use client';
 
-import AuthLayoutContainer from '@/components/layout/auth-layout';
 import { Location, Search, SearchNone } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
 import { useKakaoSdk } from '@/hooks/map/use-kakao-sdk';
-import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
-import { useSignUpStepStore } from '@/store/sign-up-store';
+import useSignUpStore from '@/store/use-sign-up-store';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 const APP_KEY = process.env.NEXT_PUBLIC_KAKAO_APP_KEY!;
@@ -21,13 +20,10 @@ type SearchItem = {
 const Address = () => {
   const sdkReady = useKakaoSdk(APP_KEY);
   const geocoderRef = useRef<any>(null);
-  const { data, updateStep } = useSignUpStepStore();
-  const { goToNext, currentStepTitle } = useSignUpNavigation({
-    currentStep: 'address',
-    skipValidation: true,
-  });
+  const { profile, updateProfile } = useSignUpStore();
+  const router = useRouter();
 
-  const [address, setAddress] = useState(data.address || '');
+  const [address, setAddress] = useState(profile.address || '');
   const [error, setError] = useState('');
   const [results, setResults] = useState<SearchItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -71,7 +67,7 @@ const Address = () => {
             setResults([]); // 리스트 비움
             setError('');
 
-            updateStep({ address: full });
+            updateProfile('address', full);
           }
         );
       },
@@ -118,7 +114,7 @@ const Address = () => {
     setAddress(item.dong);
     setResults([]);
     setError('');
-    updateStep({ address: item.dong });
+    updateProfile('address', item.dong);
   };
 
   const handleNext = () => {
@@ -127,12 +123,12 @@ const Address = () => {
       return;
     }
 
-    updateStep({ address: address.trim() });
-    goToNext();
+    updateProfile('address', address.trim());
+    router.push('/anonymous/auth/sign-up/interest');
   };
 
   return (
-    <AuthLayoutContainer title={currentStepTitle}>
+    <>
       <div className='gap-s-10 flex flex-col'>
         <Input
           variant='gray'
@@ -194,7 +190,7 @@ const Address = () => {
       >
         다음
       </Button>
-    </AuthLayoutContainer>
+    </>
   );
 };
 

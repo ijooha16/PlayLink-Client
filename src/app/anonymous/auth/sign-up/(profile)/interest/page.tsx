@@ -1,52 +1,52 @@
 'use client';
 
-import AuthLayoutContainer from '@/components/layout/auth-layout';
 import Button from '@/components/ui/button';
-import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
-import { useSignUpStepStore } from '@/store/sign-up-store';
+import useSignUpStore from '@/store/use-sign-up-store';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const Interest = () => {
-  const { data, updateStep } = useSignUpStepStore();
-  const { goToNext, currentStepTitle } = useSignUpNavigation({
-    currentStep: 'interest',
-  });
+  const { profile, updateProfile } = useSignUpStore();
+  const router = useRouter();
 
-  const [selectedType, setSelectedType] = useState<'participate' | 'watch' | 'both' | null>(
-    data.participationType || null
+  const [selectedType, setSelectedType] = useState<string | null>(
+    profile.favor || null
   );
 
   const handleNext = () => {
-    if (!selectedType) return;
+    if (selectedType === null) return;
 
-    updateStep({ participationType: selectedType });
-    goToNext();
+    updateProfile('favor', selectedType);
+    router.push('/anonymous/auth/sign-up/sports');
   };
 
   const options = [
     {
-      id: 'participate',
+      index: 0,
+      id: '1',
       title: '운동 경기 참여',
       icon: '🏃‍♂️',
     },
     {
-      id: 'watch',
+      index: 1,
+      id: '2',
       title: '운동 경기 관람',
       icon: '👀',
     },
     {
-      id: 'both',
+      index: 2,
+      id: '0',
       title: '운동 경기 참여와 관람 모두 선호',
       icon: '🏃‍♂️',
     },
   ] as const;
 
   return (
-    <AuthLayoutContainer title={currentStepTitle}>
+    <>
       <div className="flex flex-col gap-s-16 pb-[24px]">
         {options.map((option) => (
           <div
-            key={option.id}
+            key={option.index}
             onClick={() => setSelectedType(option.id)}
             className={`flex items-center gap-s-16 p-s-20 rounded-lg transition-colors cursor-pointer ${
               selectedType === option.id
@@ -78,13 +78,13 @@ const Interest = () => {
 
       <Button
         variant="default"
-        disabled={!selectedType}
+        disabled={selectedType === null}
         onClick={handleNext}
         isFloat
       >
         다음
       </Button>
-    </AuthLayoutContainer>
+    </>
   );
 };
 

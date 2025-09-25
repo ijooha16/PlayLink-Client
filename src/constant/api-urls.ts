@@ -32,10 +32,7 @@ export const API_URLS = {
     GET_NOTIFICATION_LIST: '/api/notification/get-notification-list',
     SEND_NOTIFICATION_TOKEN: '/api/notification/send-notification-token',
   },
-  PROFILE: {
-    GET_PROFILE: '/api/profile/get-profile',
-    UPDATE_PROFILE: '/api/profile/update-profile',
-  },
+  PROFILE: '/api/auth/profile',
   SPORT: {
     GET_SPORTS: '/api/sport/get-sports',
   },

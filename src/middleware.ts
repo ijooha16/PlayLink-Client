@@ -33,13 +33,16 @@ export function middleware(request: NextRequest) {
 
   // 이미 로그인한 사용자가 auth 페이지 접근 시
   if (authPaths.some(path => pathname.startsWith(path))) {
+    if(pathname.startsWith('/anonymous/auth/sign-up')) {
+      return NextResponse.next();
+    }
     if (token) {
       const url = request.nextUrl.clone();
       url.pathname = PATHS.MY_PAGE;
       return NextResponse.redirect(url);
     }
   }
-
+  
   return NextResponse.next();
 }
 

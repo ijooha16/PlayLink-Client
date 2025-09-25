@@ -1,3 +1,4 @@
+import AuthLayoutContainer from '@/components/layout/auth-layout';
 import Header from '@/components/layout/header';
 
 const SignUpLayout = ({
@@ -8,7 +9,9 @@ const SignUpLayout = ({
   return (
     <>
       <Header title={'회원가입'} backbtn />
-      {children}
+      <AuthLayoutContainer flowType="signup">
+        {children}
+      </AuthLayoutContainer>
     </>
   );
 };
