@@ -1,7 +1,34 @@
 import { backendClient } from '@/libs/api/axios';
 import { NextResponse } from 'next/server';
 
-export async function PUT(request: Request) {
+// 프로필 조회 (GET)
+export async function GET(request: Request) {
+  try {
+    const token = request.headers.get('Authorization');
+    
+    if (!token) {
+      return NextResponse.json(
+        { status: 'error', message: 'Authorization token is required' },
+        { status: 401 }
+      );
+    }
+
+    const { data } = await backendClient.get('/playlink/profile', {
+      headers: { Authorization: token }
+    });
+    
+    return NextResponse.json({ status: 'success', data });
+  } catch (err: any) {
+    console.error('Get profile Route Handler error:', err);
+    return NextResponse.json({
+      status: 'error',
+      message: err.response?.data?.message || err.message || 'Unknown error',
+    }, { status: err.response?.status || 500 });
+  }
+}
+
+// 프로필 업데이트 (POST)
+export async function POST(request: Request) {
   try {
     const body = await request.formData();
     const token = request.headers.get('Authorization');
@@ -23,6 +50,8 @@ export async function PUT(request: Request) {
     const data = response.data;
     return NextResponse.json({ status: 'success', data }, { status: 200 });
   } catch (error: any) {
+    console.error('Update profile Route Handler error:', error);
+    
     if (error.response?.data) {
       return NextResponse.json(
         {

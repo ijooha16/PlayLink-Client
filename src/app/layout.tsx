@@ -1,10 +1,10 @@
 import TabNavigation from '@/components/features/navigation/tab-navigation';
 import { ToastContainer } from '@/components/feedback/toast-alert';
 import LayoutClientSide from '@/components/shared/layout-client-side';
+import Providers from '@/providers/provider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import '../styles/globals.css';
-import Providers from './provider';
 
 const pretendard = localFont({
   src: '../../public/fonts/pretendard-variable.woff2',

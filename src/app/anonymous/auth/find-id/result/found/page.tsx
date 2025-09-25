@@ -4,7 +4,6 @@ import AuthLayoutContainer from '@/components/layout/auth-layout';
 import { EmailRound } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import { PATHS } from '@/constant';
-import { useSignUpStepStore } from '@/store/sign-up-store';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { Apple } from 'lucide-react';
@@ -15,7 +14,6 @@ import { Suspense } from 'react';
 const AccountExistsContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { clearStep } = useSignUpStepStore();
 
   const nickname = searchParams.get('nickname') || '익명의 플링커';
   const email = searchParams.get('email') || '';
@@ -23,11 +21,10 @@ const AccountExistsContent = () => {
   const source = searchParams.get('source');
 
   const handleGoToLogin = () => {
-    clearStep(); // zustand store 초기화
     router.push(PATHS.AUTH.SIGN_IN);
   };
   return (
-    <AuthLayoutContainer title={"해당 정보 \n 이미 가입된 계정이 있어요!"} content="해당 계정으로 로그인 해주세요">
+    <AuthLayoutContainer title={`해당 정보로 \n 이미 가입된 계정이 있어요!`} content={`해당 계정으로 로그인해 주세요.`}>
       <div className='flex items-center rounded-[8px] border border-brand-primary p-s-16 mt-s-24'>
         {/* 좌측 아이콘 */}
         <div className='mr-[16px] flex h-[48px] w-[48px] items-center justify-center rounded-full bg-grey04'>

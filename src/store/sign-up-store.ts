@@ -4,7 +4,7 @@ import { devtools } from 'zustand/middleware';
 
 interface SignUpData {
   terms: boolean;
-  phone: string;
+  phoneNumber: string;
   phoneVerified: boolean;
   email: string;
   password: string;

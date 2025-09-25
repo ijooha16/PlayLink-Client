@@ -3,20 +3,19 @@
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const ProgressBar = () => {
+const SignUpProgressBar = () => {
   const pathname = usePathname();
   const [animatedProgress, setAnimatedProgress] = useState(0);
 
-  const steps = [
+  const profileSteps = [
     { key: 'profile', path: '/anonymous/auth/sign-up/profile' },
     { key: 'address', path: '/anonymous/auth/sign-up/address' },
     { key: 'interest', path: '/anonymous/auth/sign-up/interest' },
     { key: 'sports', path: '/anonymous/auth/sign-up/sports' },
-    { key: 'complete', path: '/anonymous/auth/sign-up/complete' },
   ];
 
-  const currentStepIndex = steps.findIndex(step => pathname.includes(step.key));
-  const targetProgress = currentStepIndex >= 0 ? ((currentStepIndex + 1) / steps.length) * 100 : 0;
+  const currentStepIndex = profileSteps.findIndex(step => pathname.includes(step.key));
+  const targetProgress = currentStepIndex >= 0 ? ((currentStepIndex + 1) / profileSteps.length) * 100 : 0;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -39,15 +38,4 @@ const ProgressBar = () => {
   );
 };
 
-export default function ProcessLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <ProgressBar />
-        {children}
-    </div>
-  );
-}
+export default SignUpProgressBar;

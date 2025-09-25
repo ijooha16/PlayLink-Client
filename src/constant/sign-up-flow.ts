@@ -42,7 +42,7 @@ export const SIGN_UP_FLOW: FlowStepConfig[] = [
   {
     key: 'welcome',
     path: '/anonymous/auth/sign-up/welcome',
-    title: '님, \n 플레이링크에 오신 것을 환영해요!',
+    title: '플레이링크에 오신 것을 환영해요!',
     requiredData: [],
     previousStep: 'email-check',
   },

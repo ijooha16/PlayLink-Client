@@ -7,14 +7,21 @@ import { useTimer } from '@/hooks/common/use-timer';
 import { useFindAccount } from '@/hooks/react-query/auth/use-find-account';
 import { useVerification } from '@/hooks/react-query/auth/use-verification';
 import { validateEmail, validateVerificationCode } from '@/libs/valid/auth';
-import React, { useState } from 'react';
 import { useSignUpStepStore } from '@/store/sign-up-store';
+import React, { useState } from 'react';
+
+interface EmailVerificationData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 interface EmailVerificationProps {
   initialEmail?: string;
   phoneNumber?: string;
-  onSuccess?: (data: { email: string; password: string; confirmPassword: string }) => void;
+  onSuccess?: (data: EmailVerificationData) => void;
 }
+
 
 const EmailVerification: React.FC<EmailVerificationProps> = ({
   initialEmail = '',
@@ -24,7 +31,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
   const { data: storeData } = useSignUpStepStore();
 
   // phoneNumber prop이 없으면 store에서 가져오기
-  const actualPhoneNumber = phoneNumber || storeData.phone;
+  const actualPhoneNumber = phoneNumber || storeData.phoneNumber;
 
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
@@ -96,7 +103,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
       email: values.email,
       password: values.password,
       confirmPassword: values.confirmPassword,
-    });
+    } as EmailVerificationData);
   };
 
   const displayErrors = {

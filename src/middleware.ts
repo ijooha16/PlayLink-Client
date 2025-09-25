@@ -14,12 +14,12 @@ export function middleware(request: NextRequest) {
   // 쿠키에서 토큰 확인 (PLAYLINK_AUTH)
   const token = request.cookies.get(PLAYLINK_AUTH)?.value;
 
-  console.log('Middleware Debug:', {
-    pathname,
-    hasToken: !!token,
-    tokenValue: token ? `${token.substring(0, 20)}...` : 'none',
-    isProtectedPath: protectedPaths.some(path => pathname.startsWith(path))
-  });
+  // console.log('Middleware Debug:', {
+  //   pathname,
+  //   hasToken: !!token,
+  //   tokenValue: token ? `${token.substring(0, 20)}...` : 'none',
+  //   isProtectedPath: protectedPaths.some(path => pathname.startsWith(path))
+  // });
 
   // 보호된 경로 접근 시 인증 확인
   if (protectedPaths.some(path => pathname.startsWith(path))) {
@@ -33,13 +33,16 @@ export function middleware(request: NextRequest) {
 
   // 이미 로그인한 사용자가 auth 페이지 접근 시
   if (authPaths.some(path => pathname.startsWith(path))) {
+    if(pathname.startsWith('/anonymous/auth/sign-up')) {
+      return NextResponse.next();
+    }
     if (token) {
       const url = request.nextUrl.clone();
       url.pathname = PATHS.MY_PAGE;
       return NextResponse.redirect(url);
     }
   }
-
+  
   return NextResponse.next();
 }
 
