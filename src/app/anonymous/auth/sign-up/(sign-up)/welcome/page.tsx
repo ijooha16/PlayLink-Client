@@ -10,7 +10,7 @@ import {
 } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import { useSignUpNavigation } from '@/hooks/use-sign-up-navigation';
-import { Easing, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const WelcomePage = () => {
   const { goToNext, currentStepTitle } = useSignUpNavigation({
@@ -29,27 +29,27 @@ const WelcomePage = () => {
       title={currentStepTitle}
       content='운동메이트를 찾기 위해 프로필을 완성해 주세요.'
     >
-      <div className='fixed top-1/2 -translate-y-10'>
-        {floatingItems.map((item, i) => (
-          <motion.div
-            key={i}
-            className='absolute'
-            animate={{ y: [0, item.y, 0] }}
-            transition={{
-              duration: item.duration,
-              repeat: Infinity,
-              ease: item.ease as Easing,
-              repeatType: 'loop',
-            }}
-          >
-            <item.Component size={335} />
-          </motion.div>
-        ))}
-        <div className='absolute'>
-          <Welcome width={335} height={146} />
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="w-[335px] h-[146px] relative flex items-center justify-center">
+          {floatingItems.map((item, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-[335px] h-[146px]"
+              animate={{ y: [0, item.y, 0] }}
+              transition={{
+                duration: item.duration,
+                repeat: Infinity,
+                repeatType: 'loop',
+              }}
+            >
+              <item.Component size={335} />
+            </motion.div>
+          ))}
+          <div className="absolute">
+            <Welcome width={335} height={146} />
+          </div>
         </div>
       </div>
-
       <Button variant='default' onClick={goToNext} isFloat>
         프로필 완성하기
       </Button>
