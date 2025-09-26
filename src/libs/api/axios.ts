@@ -17,12 +17,14 @@ const ERROR_MESSAGES: Record<number, string> = {
 // 내부 API 라우트용 (/api/...)
 export const apiClient = axios.create({
   timeout: 10000,
+  withCredentials: true,
 });
 
 // 외부 백엔드용 (NEXT_PUBLIC_DB_URL/...)
 export const backendClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_DB_URL,
   timeout: 10000,
+  withCredentials: true,
 });
 
 const addInterceptors = (instance: any) => {
