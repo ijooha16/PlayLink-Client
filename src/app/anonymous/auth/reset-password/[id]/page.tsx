@@ -2,23 +2,34 @@
 
 import { Input } from '@/components/forms/input';
 import Button from '@/components/ui/button';
+import { PATHS } from '@/constant';
 import { useResetPassword } from '@/hooks/react-query/auth/use-reset-password';
-import { useParams } from 'next/navigation';
-import { useState, useRef } from 'react';
+import { useSessionToken } from '@/hooks/auth/use-reset-token';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
 const ResetPassword = () => {
   const params = useParams();
+  const router = useRouter();
   const { id } = params;
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const confirmPasswordInputRef = useRef<HTMLInputElement>(null);
 
   const { mutate: resetPassword } = useResetPassword();
+  const { useAuth } = useSessionToken();
+
+  useAuth(id as string);
+
+  useEffect(() => {
+    setIsAuthorized(true);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +65,11 @@ const ResetPassword = () => {
   const handleConfirmPasswordChange = (value: string) => {
     setConfirmPassword(value);
   };
+
+  // 인증되지 않은 접근이면 아무것도 렌더링하지 않음
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <form onSubmit={handleSubmit}>

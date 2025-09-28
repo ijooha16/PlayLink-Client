@@ -24,6 +24,7 @@ const PhoneCheck: React.FC = function() {
   const [isCodeSent, setIsCodeSent] = useState<boolean>(false);
   const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
   const [isCodeValid, setIsCodeValid] = useState<boolean>(false);
+  const [existingAccountData, setExistingAccountData] = useState<any>(null);
 
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const codeInputRef = useRef<HTMLInputElement>(null);
@@ -57,20 +58,39 @@ const PhoneCheck: React.FC = function() {
       }, 100);
     },
     onVerifySuccess: function() {
-      updateSignUp('phoneNumber', normalizedPhone);
       stop(); // 인증 성공 시 타이머 중지
-      router.replace(PATHS.AUTH.EMAIL_CHECK);
+
+      if (existingAccountData) {
+        // 기존 계정이 있으면 found 페이지로 이동
+        const params = new URLSearchParams({
+          email: existingAccountData.email || '',
+          nickname: existingAccountData.nickname || '',
+          createdAt: existingAccountData.created_at || '',
+          accountType: existingAccountData.account_type?.toString() || '0',
+        });
+        router.replace(`${PATHS.AUTH.FOUND}?${params.toString()}`);
+      } else {
+        // 새 계정이면 회원가입 계속 진행
+        updateSignUp('phoneNumber', normalizedPhone);
+        router.replace(PATHS.AUTH.EMAIL_CHECK);
+      }
     }
   });
 
   const { mutate: findAccount, isPending: isFindingAccount } = useFindAccount({
     type: 'phone',
-    context: 'sign-up',
-    onAccountExists: function() { send(normalizedPhone); },
+    context: 'find-id',
+    onAccountExists: function(accountData) {
+      setExistingAccountData(accountData);
+      send(normalizedPhone);
+    },
     onNeedVerification: function() { send(normalizedPhone); },
     onInvalidInput: function(message) { setErrors({ phone: message }); },
     onError: function(message) { setErrors({ phone: message }); },
-    onAccountNotFound: function() { send(normalizedPhone); }
+    onAccountNotFound: function() {
+      setExistingAccountData(null);
+      send(normalizedPhone);
+    }
   });
 
   const handleCode = {

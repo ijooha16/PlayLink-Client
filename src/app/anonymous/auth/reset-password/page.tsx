@@ -6,9 +6,10 @@ import { PATHS } from '@/constant/paths';
 import { useTimer } from '@/hooks/common/use-timer';
 import { useFindAccount } from '@/hooks/react-query/auth/use-find-account';
 import { useVerification } from '@/hooks/react-query/auth/use-verification';
+import { useSessionToken } from '@/hooks/auth/use-reset-token';
 import { normalizePhone } from '@/libs/valid/auth';
 import { useRouter } from 'next/navigation';
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 
 const ResetPassword = () => {
   const router = useRouter();
@@ -26,6 +27,7 @@ const ResetPassword = () => {
   const codeInputRef = useRef<HTMLInputElement>(null);
 
   const { start, stop, formattedTime, isTimeout } = useTimer(300);
+  const { setToken } = useSessionToken();
 
   // 초기 사용자 찾기 (인증 전)
   const { mutate: findAccount, isPending: isFindingAccount } = useFindAccount({
@@ -56,6 +58,7 @@ const ResetPassword = () => {
     onAccountExists: function(accountData) {
       // 인증 후 사용자 확인되면 ID로 이동
       if (accountData?.user_id) {
+        setToken(accountData.user_id);
         router.push(PATHS.AUTH.RESET_PASSWORD_ID(accountData.user_id.toString()));
       }
     },
