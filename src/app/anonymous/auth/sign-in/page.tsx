@@ -2,66 +2,35 @@
 
 import Header from '@/components/layout/header';
 import Button from '@/components/ui/button';
-import Input from '@/components/ui/input';
+import { Input } from '@/components/forms/input';
 import Loading from '@/components/ui/loading';
 import { PATHS } from '@/constant/paths';
 import { useSignin } from '@/hooks/react-query/auth/use-signin';
 import { getDeviceInfo } from '@/utills/get-device-info';
-import { toast } from '@/utills/toast';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useState } from 'react';
 
 const SignIn = () => {
-  const [emailID, setEmailID] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const emailRef = useRef<HTMLInputElement>(null);
-  const [emailError, setEmailError] = useState<string>('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
-  const router = useRouter();
+  const trimmedEmail = email.trim();
+  const trimmedPassword = password.trim();
 
-  const validateEmail = () => {
-    const el = emailRef.current;
-    if (!el) return false;
-
-    if (el.checkValidity()) {
-      setEmailError('');
-      return true;
-    }
-
-    const v = el.validity;
-    if (v.valueMissing || v.typeMismatch)
-      setEmailError('올바른 형식의 이메일 주소를 입력해 주세요.');
-    else setEmailError('올바른 형식의 이메일 주소를 입력해 주세요.');
-
-    return false;
-  };
-
-  const { mutate: signIn, isPending } = useSignin({
-    onSuccess: () => {
-      router.replace(PATHS.HOME);
-      toast.success('로그인 성공!');
-    },
-    onError: (err) => {
-      console.error('로그인 실패:', (err as any)?.message ?? err);
-      toast.error('이메일 또는 비밀번호가 일치하지 않아요!');
-    },
-  });
+  const { mutate: signIn, isPending } = useSignin();
 
   const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // 제출 전에 이메일 검증 (비밀번호는 길이만 간단 체크)
-    const emailOk = validateEmail();
-    const pwOk = password.length > 0;
-
-    if (!emailOk || !pwOk) return;
+    if (!isEmailValid || !isPasswordValid) return;
 
     const infos = await getDeviceInfo();
 
     signIn({
-      email: emailID,
-      password,
+      email: trimmedEmail,
+      password: trimmedPassword,
       device_id: infos.deviceId,
     });
   };
@@ -78,43 +47,26 @@ const SignIn = () => {
             onSubmit={handleLoginSubmit}
             className='gap-y-s-16 flex flex-col'
           >
-            <Input
-              label='이메일'
-              type='email'
-              variant='default'
-              sizes='md'
-              placeholder='이메일 입력'
-              ref={emailRef}
-              value={emailID}
-              errorMessage={emailError}
-              hasError={!!emailError}
-              onChange={(e) => {
-                setEmailID(e.target.value);
-                if (emailError) setEmailError('');
-              }}
-              onBlur={validateEmail} // 포커스 아웃 시 검사
+            <Input.Email
+              value={email}
+              onChange={setEmail}
+              onValidate={(isValid) => setIsEmailValid(isValid)}
+              validateOnChange
             />
 
-            <Input
-              label='비밀번호'
-              type='password'
-              variant='default'
-              sizes='md'
-              autoComplete='current-password'
-              showPasswordToggle
-              showCancelToggle={!!password}
-              placeholder='비밀번호 입력'
+            <Input.Password
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              onChange={setPassword}
+              onValidate={(isValid) => setIsPasswordValid(isValid)}
+              placeholder='비밀번호를 입력해주세요.'
+              validateOnChange
             />
 
             <Button
               className='mt-s-8'
               fontSize='lg'
               type='submit'
-              disabled={!emailID || !password}
+              disabled={!trimmedEmail || !trimmedPassword || !isEmailValid || !isPasswordValid}
             >
               로그인
             </Button>
@@ -130,7 +82,7 @@ const SignIn = () => {
             </Link>
             <span className='text-line-netural'>|</span>
             <Link prefetch={true} href={PATHS.AUTH.SIGN_UP}>
-              <p className='text-primary-800'>회원가입</p>
+              <p className='text-brand-primary'>회원가입</p>
             </Link>
           </div>
         </div>

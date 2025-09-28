@@ -40,7 +40,7 @@ export default function SportsSelectionPage() {
 
   const { mutate: updateProfileMutation } = useUpdateProfile({
     onSuccess: () => {
-      router.push('/');
+      router.replace('/');
     },
   });
 

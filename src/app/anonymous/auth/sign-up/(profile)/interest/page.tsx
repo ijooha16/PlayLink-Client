@@ -17,7 +17,7 @@ const Interest = () => {
     if (selectedType === null) return;
 
     updateProfile('favor', selectedType);
-    router.push('/anonymous/auth/sign-up/sports');
+    router.replace('/anonymous/auth/sign-up/sports');
   };
 
   const options = [

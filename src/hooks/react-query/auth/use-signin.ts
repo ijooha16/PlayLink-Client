@@ -1,6 +1,11 @@
+"use client";
+
+import { PATHS } from '@/constant/paths';
+import { toast } from '@/utills/toast';
 import { Auth } from '@/libs/api/auth/auth';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
 
 // API 응답 타입 정의
 interface ApiResponse<T = unknown> {
@@ -24,11 +29,33 @@ interface AuthOptions {
   onError?: (error: AxiosError<ApiResponse>) => void;
 }
 
-export const useSignin = (options: AuthOptions) => {
-  return useMutation<ApiResponse<UserData>, AxiosError<ApiResponse>, Parameters<typeof Auth.SignIn>[0]>({
+export const useSignin = (options: AuthOptions = {}) => {
+  const router = useRouter();
+
+  return useMutation<
+    ApiResponse<UserData>,
+    AxiosError<ApiResponse>,
+    Parameters<typeof Auth.SignIn>[0]
+  >({
     mutationFn: Auth.SignIn,
-    onSuccess: (data) => options.onSuccess?.(data),
-    onError: (error) => options.onError?.(error),
+    onSuccess: (data) => {
+      if (options.onSuccess) {
+        options.onSuccess(data);
+        return;
+      }
+
+      router.replace(PATHS.HOME);
+      toast.success('로그인 성공!');
+    },
+    onError: (error) => {
+      if (options.onError) {
+        options.onError(error);
+        return;
+      }
+
+      console.error('로그인 실패:', error?.message ?? error);
+      toast.error('이메일 또는 비밀번호가 일치하지 않아요!');
+    },
   });
 };
 

@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
  *   isActive: boolean;          // 타이머 활성화 여부
  *   isTimeout: boolean;         // 타이머 만료 여부
  *   start: () => void;          // 타이머 시작 함수
+ *   stop: () => void;           // 타이머 중지 함수
  *   formattedTime: string;      // "MM:SS" 형식의 남은 시간 문자열 (만료 시 "만료")
  * }}
  */
@@ -40,6 +41,10 @@ export const useTimer = (initialTime: number) => {
     setIsTimeout(false);
   };
 
+  const stop = () => {
+    setIsActive(false);
+  };
+
   const formatTime = (seconds: number) => {
     const displaySeconds = Math.max(0, seconds); // 음수가 되지 않도록
     const minutes = Math.floor(displaySeconds / 60);
@@ -52,6 +57,7 @@ export const useTimer = (initialTime: number) => {
     isActive,
     isTimeout,
     start,
+    stop,
     formattedTime: formatTime(timeLeft)
   };
 };

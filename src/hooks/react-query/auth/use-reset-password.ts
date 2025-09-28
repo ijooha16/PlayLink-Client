@@ -11,7 +11,7 @@ export const useResetPassword = () => {
   return useMutation({
     mutationFn: resetPassword,
     onSuccess: () => {
-      router.push(PATHS.AUTH.SIGN_IN);
+        router.push(PATHS.AUTH.RESET_PASSWORD + '/result');
       toast.success(TOAST_ALERT_MESSAGES.RESET_PASSWORD_SUCCESS);
     },
     onError: () => {

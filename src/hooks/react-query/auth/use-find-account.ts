@@ -27,7 +27,7 @@ type AuthError = {
 
 type UseFindAccountOptions = {
   type: 'phone' | 'email';
-  context?: 'sign-up' | 'find-id';
+  context?: 'sign-up' | 'find-id' | 'reset-password';
   isAfterVerification?: boolean;
   onAccountExists?: (accountData: any) => void;
   onAccountNotFound?: () => void;
@@ -67,6 +67,9 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
         });
 
         router.push(`${PATHS.AUTH.FOUND}?${params.toString()}`);
+      } else if (context === 'reset-password') {
+        // reset-password에서는 callback으로 처리
+        onAccountExists?.(accountData);
       } else if (context === 'find-id') {
         // find-id에서 인증 전에는 인증번호 전송
         onAccountExists?.(accountData);
@@ -88,17 +91,28 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
     // 다른 에러 코드 처리
     switch (errCode) {
       case 6001:
-        onNeedVerification?.();
-        // onInvalidInput?.('인증되지 않은 휴대폰 번호입니다.');
+          onNeedVerification?.();
+        // 인증이 필요한 경우
+        // if (context === 'sign-up') {
+        //   onNeedVerification?.();
+        // } else {
+        //   onInvalidInput?.('인증이 필요한 계정입니다. 인증번호를 요청해주세요.');
+        // }
         break;
       case 1008:
         onInvalidInput?.('입력 정보에 오류가 있습니다.');
         break;
       case 4006:
+        // 계정을 찾을 수 없는 경우
         if (context === 'find-id' && isAfterVerification) {
           router.push(PATHS.AUTH.NOT_FOUND);
+        } else if (context === 'reset-password') {
+          onInvalidInput?.('등록되지 않은 계정입니다. 회원가입을 진행해주세요.');
         } else if (context === 'find-id') {
           // find-id에서 계정이 없어도 일단 인증번호 전송
+          onAccountNotFound?.();
+        } else if (context === 'sign-up') {
+          // 회원가입 시 계정이 없으면 정상 플로우
           onAccountNotFound?.();
         } else {
           onAccountNotFound?.();
