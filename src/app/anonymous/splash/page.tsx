@@ -1,8 +1,8 @@
 'use client'
 
 import SocialIconButton from '@/components/shared/social-icon-button'
+import { SPORT_ICONS } from '@/constant/images'
 import { PATHS } from '@/constant/paths'
-import { SPORT_ICONS } from '@/constants/images'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -89,7 +89,7 @@ export default function SignIn() {
 
   return (
     <div
-      className='h-[100vh] flex flex-col justify-between relative'
+      className='h-[calc(100vh-24px)] flex flex-col justify-between relative pt-s-24'
       style={{ transform: 'translateZ(0)', willChange: 'auto' }}
     >
       <div className='flex-1 flex flex-col justify-center items-center'>
@@ -107,7 +107,7 @@ export default function SignIn() {
             />
           </div>
 
-          <div className='relative flex flex-col justify-center gap-6 w-screen -mx-5 px-5 overflow-hidden'>
+          <div className='relative flex flex-col justify-center gap-6 w-screen -mx-5 overflow-hidden'>
             <ScrollingIcons items={sportIcons} dir='left' speed={30} repeatCount={2} />
             <ScrollingIcons items={sportIcons} dir='right' speed={30} repeatCount={2} />
           </div>
@@ -115,7 +115,7 @@ export default function SignIn() {
       </div>
       <div className="flex-1"/>
 
-      <div className='w-full flex px-s-20 items-center flex-col gap-s-12 fixed bottom-3 left-0 right-0 z-50'>
+      <div className='w-full flex items-center flex-col gap-s-12 fixed bottom-3 left-0 right-0 z-50'>
         <SocialIconButton type='kakao' onClick={handleKakaoLogin} />
         <SocialIconButton type='email' onClick={() => router.push(PATHS.AUTH.SIGN_IN)} />
       </div>

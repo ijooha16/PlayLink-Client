@@ -1,5 +1,5 @@
-import { SPORT_ICONS } from '@/constants/images';
-import { Check } from 'lucide-react';
+import { Check } from '@/components/shared/icons';
+import { SPORT_ICONS } from '@/constant/images';
 import Image from 'next/image';
 
 const SportCard = ({

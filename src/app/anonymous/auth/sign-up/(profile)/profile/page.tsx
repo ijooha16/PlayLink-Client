@@ -1,26 +1,34 @@
 'use client';
 
+import { Input } from '@/components/forms/input';
 import { Edit } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
-import Input from '@/components/ui/input';
+import { PATHS } from '@/constant';
 import useSignUpStore from '@/store/use-sign-up-store';
 import randomProfileImage, { ProfileImg } from '@/utills/random-profile-image';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 const ProfileSetup = () => {
-  const { profile, updateProfile } = useSignUpStore();
+  const { updateProfile } = useSignUpStore();
   const router = useRouter();
 
-  const [nickname, setNickname] = useState(profile.nickname || '');
-  const [profileImage, setProfileImage] = useState<File | null>(profile.img || null);
+  const [nickname, setNickname] = useState('');
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [randomImg, setRandomImg] = useState<ProfileImg | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const randomImgRef = useRef<ProfileImg>(randomProfileImage());
-  const [errors, setErrors] = useState<{
-    nickname?: string;
-  }>({});
+  const [isNicknameValid, setIsNicknameValid] = useState(false);
+
+  const normalizedNickname = useMemo(() => {
+    return nickname.trim();
+  }, [nickname]);
+
+  // 클라이언트에서만 랜덤 이미지 설정
+  useEffect(() => {
+    setRandomImg(randomProfileImage());
+  }, []);
 
   useEffect(() => {
     if (profileImage) {
@@ -32,20 +40,6 @@ const ProfileSetup = () => {
     }
   }, [profileImage]);
 
-  const validateNickname = (name: string) => {
-    if (!name.trim()) return '닉네임을 입력해주세요';
-    if (name.length < 2) return '닉네임은 2자 이상이어야 합니다';
-    if (name.length > 15) return '닉네임은 15자 이하여야 합니다';
-    return '';
-  };
-
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setNickname(value);
-
-    const error = validateNickname(value);
-    setErrors({ nickname: error || undefined });
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -67,18 +61,20 @@ const ProfileSetup = () => {
     }
   };
 
-  const handleNext = () => {
-    const nicknameError = validateNickname(nickname);
-    if (nicknameError) {
-      setErrors({ nickname: nicknameError });
+  const handleNext = (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+
+    if (!isNicknameValid || !normalizedNickname.length) {
       return;
     }
 
-    updateProfile('nickname', nickname);
+    updateProfile('nickname', normalizedNickname);
     if (profileImage) {
       updateProfile('img', profileImage);
     }
-    router.push('/anonymous/auth/sign-up/address');
+    router.replace(PATHS.AUTH.ADDRESS);
   };
 
   return (
@@ -89,14 +85,16 @@ const ProfileSetup = () => {
             className='flex h-[100px] w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-full bg-gray-200'
             onClick={() => fileInputRef.current?.click()}
           >
-            <Image
-              src={preview || randomImgRef.current}
-              alt='profile_img'
-              width={150}
-              height={150}
-              className='object-cover'
-              priority={true}
-            />
+            {(preview || randomImg) && (
+              <Image
+                src={preview || randomImg!}
+                alt='profile_img'
+                width={150}
+                height={150}
+                className='object-cover'
+                priority={true}
+              />
+            )}
           </div>
 
           <button
@@ -117,34 +115,26 @@ const ProfileSetup = () => {
         </div>
       </div>
 
+<form onSubmit={handleNext}>
       <div className='flex flex-col pb-[24px]'>
-        <Input
-          label='닉네임'
-          variant='default'
-          sizes='lg'
-          placeholder='닉네임을 입력해주세요'
+        <Input.Nickname
           value={nickname}
-          onChange={handleNicknameChange}
-          showCancelToggle={!!nickname}
-          helperText={
-            nickname.length === 0
-              ? '닉네임은 2자 이상 15자 이하로 입력해주세요'
-              : ''
-          }
-          hasError={!!errors.nickname}
-          errorMessage={errors.nickname || ''}
+          onChange={setNickname}
+          onValidate={(isValid) => setIsNicknameValid(isValid)}
+          autoFocus
           // TODO SUCCESS 및 디바운싱 db호출 구현
         />
       </div>
 
       <Button
         variant='default'
-        onClick={handleNext}
-        disabled={!nickname.trim() || !!errors.nickname}
+        type='submit'
+        disabled={!nickname.trim() || !isNicknameValid}
         isFloat
       >
         다음
       </Button>
+</form>
     </>
   );
 };

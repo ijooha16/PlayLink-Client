@@ -1,45 +1,43 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 
+import { Input } from '@/components/forms/input';
 import Button from '@/components/ui/button';
-import Input from '@/components/ui/input';
 
 import useSignUpStore from '@/store/use-sign-up-store';
 
-import { useInputHandlers } from '@/hooks/common/use-input-handlers';
 import { useTimer } from '@/hooks/common/use-timer';
-
 import { useFindAccount } from '@/hooks/react-query/auth/use-find-account';
 import { useVerification } from '@/hooks/react-query/auth/use-verification';
 
-import { normalizePhone, validatePhone, validateVerificationCode } from '@/libs/valid/auth';
-import { formatPhoneNumber } from '@/utills/format/phone-formats';
+import { PATHS } from '@/constant';
+import { normalizePhone } from '@/libs/valid/auth';
 
-const PhoneCheck = () => {
+const PhoneCheck: React.FC = function() {
   const router = useRouter();
   const { signUp, updateSignUp } = useSignUpStore();
 
-  const [isCodeSent, setIsCodeSent] = useState(false);
+  const [phone, setPhone] = useState<string>('');
+  const [code, setCode] = useState<string>('');
+  const [isCodeSent, setIsCodeSent] = useState<boolean>(false);
+  const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
+  const [isCodeValid, setIsCodeValid] = useState<boolean>(false);
 
-  const { start, formattedTime, isTimeout } = useTimer(300);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+  const codeInputRef = useRef<HTMLInputElement>(null);
 
-  const {
-    values,
-    errors: localErrors,
-    handlers,
-    setError,
-  } = useInputHandlers(
-    {
-      phone: signUp.phoneNumber ? formatPhoneNumber(signUp.phoneNumber) : '',
-      code: '',
-    },
-    {
-      phone: { type: 'phone' },
-      code: { type: 'text' },
-    }
-  );
+  const { start, stop, formattedTime, isTimeout } = useTimer(300);
+
+  const normalizedPhone = useMemo(function() {
+    return normalizePhone(phone);
+  }, [phone]);
+
+
+  const trimmedCode = useMemo(function() {
+    return code.trim();
+  }, [code]);
 
   const {
     send,
@@ -47,124 +45,97 @@ const PhoneCheck = () => {
     resend,
     errors,
     setErrors,
-    isLoading,
+    isLoading
   } = useVerification({
     type: 'phone',
-    onSendSuccess: () => {
+    onSendSuccess: function() {
       setIsCodeSent(true);
       start();
+      // 코드 입력 필드로 포커스 이동
+      setTimeout(() => {
+        codeInputRef.current?.focus();
+      }, 100);
     },
-    onVerifySuccess: () => {
-      const normalized = normalizePhone(values.phone);
-      updateSignUp('phoneNumber', normalized);
-      router.replace('/anonymous/auth/sign-up/email-check');
-    },
+    onVerifySuccess: function() {
+      updateSignUp('phoneNumber', normalizedPhone);
+      stop(); // 인증 성공 시 타이머 중지
+      router.replace(PATHS.AUTH.EMAIL_CHECK);
+    }
   });
 
-  const {
-    mutate: findAccount,
-    isPending: isFindingAccount,
-  } = useFindAccount({
+  const { mutate: findAccount, isPending: isFindingAccount } = useFindAccount({
     type: 'phone',
     context: 'sign-up',
-    onAccountExists: () => send(normalizePhone(values.phone)),
-    onNeedVerification: () => send(normalizePhone(values.phone)),
-    onInvalidInput: (message) => setErrors({ phone: message }),
-    onError: (message) => setErrors({ phone: message }),
-    onAccountNotFound: () => send(normalizePhone(values.phone)),
+    onAccountExists: function() { send(normalizedPhone); },
+    onNeedVerification: function() { send(normalizedPhone); },
+    onInvalidInput: function(message) { setErrors({ phone: message }); },
+    onError: function(message) { setErrors({ phone: message }); },
+    onAccountNotFound: function() { send(normalizedPhone); }
   });
 
-  const { mutate: findAccountAfterVerify } = useFindAccount({
-    type: 'phone',
-    context: 'sign-up',
-    isAfterVerification: true,
-    onInvalidInput: (message) => setErrors({ phone: message }),
-    onError: (message) => setErrors({ phone: message }),
-  });
-
-  const handleSendCode = () => {
-    const sanitized = normalizePhone(values.phone);
-    const validation = validatePhone(sanitized);
-
-    if (!validation.isValid) {
-      setError('phone', validation.error || '');
-      return;
+  const handleCode = {
+    Send: function() {
+      if (!isPhoneValid) return;
+      findAccount({ phoneNumber: normalizedPhone });
+    },
+    Verify: function() {
+      if (!isCodeValid) return;
+      verify(normalizedPhone, trimmedCode);
     }
-
-    findAccount({ phoneNumber: sanitized });
   };
 
-  const handleVerifyCode = () => {
-    const validation = validateVerificationCode(values.code);
+  const handleSubmit = function(e: React.FormEvent) {
+    e.preventDefault();
 
-    if (!validation.isValid) {
-      setError('code', validation.error || '');
-      return;
+    if (!isCodeSent) {
+      handleCode.Send();
+    } else if (isCodeSent && isCodeValid && !isTimeout) {
+      handleCode.Verify();
     }
-
-    verify(normalizePhone(values.phone), values.code.trim());
-  };
-
-  const displayErrors = {
-    phone: errors.phone || localErrors.phone,
-    code: errors.code || localErrors.code,
   };
 
   return (
-    <>
+    <form onSubmit={handleSubmit}>
       <div className="gap-s-24 flex flex-col">
-        <Input
-          label="휴대폰 번호"
-          type="tel"
-          inputMode="numeric"
-          placeholder="010-0000-0000"
-          value={values.phone}
-          onChange={handlers.phone}
-          showCancelToggle={Boolean(values.phone)}
-          hasError={Boolean(displayErrors.phone)}
-          errorMessage={displayErrors.phone || ''}
+        <Input.Phone
+          ref={phoneInputRef}
+          value={phone}
+          onChange={setPhone}
+          onValidate={function(isValid: boolean) { setIsPhoneValid(isValid); }}
+          errorMessage={errors.phone}
+          validateOnComplete
+          disabled={isCodeSent}
+          autoFocus
         />
 
         {isCodeSent && (
-          <Input
-            label="인증번호"
-            type="text"
-            inputMode="numeric"
-            timer={formattedTime}
-            splitedRightElement={
-              <button
-                onClick={() => resend(normalizePhone(values.phone))}
-                className="text-primary-800 text-label-l font-semibold"
-                disabled={isLoading.sending}
-              >
-                재전송
-              </button>
-            }
-            variant="splited"
-            maxLength={6}
-            placeholder="인증번호 6자리를 입력해 주세요."
-            value={values.code}
-            onChange={handlers.code}
-            hasError={Boolean(displayErrors.code) || isTimeout}
-            errorMessage={displayErrors.code || (isTimeout ? '인증번호를 다시 보내주세요.' : '')}
-            onBeforeInput={(e) => {
-              const be = e;
-              if (be.data && /[^\d]/.test(be.data)) {
-                e.preventDefault();
-              }
+          <Input.Code
+            ref={codeInputRef}
+            value={code}
+            onChange={setCode}
+            onValidate={function(isValid: boolean) { setIsCodeValid(isValid); }}
+            onResend={function() {
+              start();
+              resend(normalizedPhone);
             }}
+            timer={formattedTime}
+            isTimeout={isTimeout}
+            isResending={isLoading.sending}
+            errorMessage={errors.code}
+            placeholder="인증번호 6자리를 입력해 주세요."
+            validateOnComplete
           />
         )}
       </div>
 
       <Button
+        type="submit"
         disabled={
           !isCodeSent
-            ? normalizePhone(values.phone).length !== 11 || isLoading.sending || isFindingAccount
-            : values.code.length !== 6 || isLoading.verifying
+            ? normalizedPhone.length !== 11 || !isPhoneValid || isLoading.sending || isFindingAccount
+            : trimmedCode.length !== 6 || !isCodeValid || isLoading.verifying || isTimeout
         }
         isFloat
-        onClick={!isCodeSent ? handleSendCode : handleVerifyCode}
       >
         {!isCodeSent
           ? isFindingAccount
@@ -176,7 +147,7 @@ const PhoneCheck = () => {
           ? '확인 중...'
           : '다음'}
       </Button>
-    </>
+    </form>
   );
 };
 

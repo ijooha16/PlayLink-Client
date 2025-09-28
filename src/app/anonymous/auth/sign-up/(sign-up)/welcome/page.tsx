@@ -37,11 +37,11 @@ const WelcomePage = () => {
                 repeatType: 'loop',
               }}
             >
-              <item.Component size={335} />
+              <item.Component size={24} />
             </motion.div>
           ))}
-          <div className="absolute">
-            <Welcome width={335} height={146} />
+          <div className="absolute w-[335px] h-[146px]">
+            <Welcome size={335} />
           </div>
         </div>
       </div>

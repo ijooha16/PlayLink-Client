@@ -8,9 +8,9 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: 'rounded-[8px]',
-        splited: 'bg-transparent rounded-l-[8px]',
-        gray: 'rounded-[8px] bg-bg-normal',
+        default: 'rounded-12',
+        splited: 'bg-transparent rounded-l-12',
+        gray: 'rounded-12 bg-bg-normal',
       },
       state: {
         default: 'border border-border-netural',
@@ -232,7 +232,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
           {/* 오른쪽 분리 요소 (예: 인증요청 버튼) */}
           {splitedRightElement && (
-              <div className='border-border-netural flex items-center justify-center rounded-r-[8px] border-y border-r px-[19px]'>
+              <div className='border-border-netural flex items-center justify-center rounded-r-12 border-y border-r px-[19px]'>
               {splitedRightElement}
             </div>
           )}
