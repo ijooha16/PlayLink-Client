@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-
     const tokenParams = new URLSearchParams({
       grant_type: 'authorization_code',
       client_id: KAKAO_CLIENT_ID,
@@ -81,14 +80,11 @@ export async function POST(request: NextRequest) {
 
     console.log('백엔드 요청 데이터:', backendPayload);
 
-
     const mockUser = {
       email: kakaoUserInfo.kakao_account?.email,
       nickname: kakaoUserInfo.properties?.nickname,
       profileImage: kakaoUserInfo.properties?.profile_image,
     };
-
-
 
     const response = NextResponse.json({
       success: true,
@@ -99,11 +95,14 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error: any) {
-    console.error('카카오 로그인 처리 에러:', error.response?.data || error.message);
+    console.error(
+      '카카오 로그인 처리 에러:',
+      error.response?.data || error.message
+    );
     return NextResponse.json(
       {
         error: '카카오 로그인 처리에 실패했습니다.',
-        details: error.response?.data || error.message
+        details: error.response?.data || error.message,
       },
       { status: 500 }
     );

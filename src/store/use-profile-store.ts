@@ -22,14 +22,11 @@ const initialData: ProfileData = {
   img: undefined,
 };
 
-export const useProfileStepStore = create<ProfileStepStore>()(
-    (set) => ({
-      data: initialData,
-      updateStep: (newData) =>
-        set((state) => ({
-          data: { ...state.data, ...newData }
-        })),
-      reset: () => set({ data: initialData }),
-    }),
-
-  )
+export const useProfileStepStore = create<ProfileStepStore>()((set) => ({
+  data: initialData,
+  updateStep: (newData) =>
+    set((state) => ({
+      data: { ...state.data, ...newData },
+    })),
+  reset: () => set({ data: initialData }),
+}));

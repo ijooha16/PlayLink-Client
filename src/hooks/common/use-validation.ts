@@ -1,7 +1,10 @@
 import type { Dispatch, RefObject, SetStateAction } from 'react';
 import { useCallback } from 'react';
 
-import { AuthValidatorKey, runAuthValidator } from '@/libs/valid/auth/validators';
+import {
+  AuthValidatorKey,
+  runAuthValidator,
+} from '@/libs/valid/auth/validators';
 
 type ExternalErrorsOption<T extends Record<string, string | undefined>> = {
   key: keyof T & string;
@@ -17,12 +20,21 @@ type UseValidationParams<T extends Record<string, string | undefined>> = {
 };
 /**
  * 인증 검증 훅
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
-export const useValidation = <T extends Record<string, string | undefined> = Record<string, string | undefined>>(
-  { type, value, inputRef, setFieldError, externalErrors }: UseValidationParams<T>
-) => {
+export const useValidation = <
+  T extends Record<string, string | undefined> = Record<
+    string,
+    string | undefined
+  >,
+>({
+  type,
+  value,
+  inputRef,
+  setFieldError,
+  externalErrors,
+}: UseValidationParams<T>) => {
   const validate = useCallback(
     (shouldFocus = false) => {
       const message = runAuthValidator(type, value);
@@ -31,7 +43,7 @@ export const useValidation = <T extends Record<string, string | undefined> = Rec
 
       if (externalErrors) {
         const { key, setErrors } = externalErrors;
-        setErrors(prev => {
+        setErrors((prev) => {
           const base = (prev ?? {}) as Record<string, string | undefined>;
           const next = { ...base };
 

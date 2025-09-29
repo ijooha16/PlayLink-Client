@@ -1,9 +1,9 @@
-import { backendClient } from '@/libs/api/axios'
-import { NextResponse } from 'next/server'
+import { backendClient } from '@/libs/api/axios';
+import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
+    const body = await request.json();
 
     const res = await backendClient.request({
       method: 'GET',
@@ -11,26 +11,32 @@ export async function POST(request: Request) {
       data: body,
       withCredentials: true,
       headers: {
-      //   Cookie: request.headers.get('cookie') || '',
-        'Content-Type': 'application/json'
+        //   Cookie: request.headers.get('cookie') || '',
+        'Content-Type': 'application/json',
       },
-      validateStatus: function () { return true },
+      validateStatus: function () {
+        return true;
+      },
       transformRequest: [
         function (data) {
-          try { return JSON.stringify(data) } catch (e) { return data }
-        }
-      ]
-    })
+          try {
+            return JSON.stringify(data);
+          } catch (e) {
+            return data;
+          }
+        },
+      ],
+    });
 
-    const payload = res.data || {}
-    const code = payload.errCode
+    const payload = res.data || {};
+    const code = payload.errCode;
 
     if (code === 0) {
       return NextResponse.json({
         status: 'success',
         errCode: 0,
-        data: payload.data
-      })
+        data: payload.data,
+      });
     }
 
     if (code === 4006) {
@@ -38,8 +44,8 @@ export async function POST(request: Request) {
         status: 'success',
         errCode: 4006,
         message: '가입된 계정이 없습니다',
-        data: null
-      })
+        data: null,
+      });
     }
 
     if (code === 6001) {
@@ -47,20 +53,23 @@ export async function POST(request: Request) {
         status: 'success',
         errCode: 6001,
         message: '인증 처리 됐습니다.',
-        data: null
-      })
+        data: null,
+      });
     }
 
     return NextResponse.json({
       status: 'success',
       errCode: code,
-      message: (payload.data && payload.data.message) ? payload.data.message : '응답 수신',
-      data: payload.data || null
-    })
+      message:
+        payload.data && payload.data.message
+          ? payload.data.message
+          : '응답 수신',
+      data: payload.data || null,
+    });
   } catch (err) {
     return NextResponse.json(
       { status: 'error', message: 'Find account error' },
       { status: 500 }
-    )
+    );
   }
 }

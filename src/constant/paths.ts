@@ -9,7 +9,7 @@ export const PATHS = {
     RESET_PASSWORD_ID: (id: string) => `/anonymous/auth/reset-password/${id}`,
     KAKAO: '/anonymous/auth/oauth/kakao',
     KAKAO_CALLBACK: '/anonymous/auth/oauth/kakao/callback',
-    NOT_FOUND: '/anonymous/auth/find-id/result/not-found',    
+    NOT_FOUND: '/anonymous/auth/find-id/result/not-found',
     FOUND: '/anonymous/auth/find-id/result/found',
     PHONE_CHECK: '/anonymous/auth/sign-up/phone-check',
     EMAIL_CHECK: '/anonymous/auth/sign-up/email-check',
@@ -28,6 +28,3 @@ export const PATHS = {
   MY_NEAR: '/authorized/my-near',
   MY_PAGE: '/authorized/my-page',
 };
-
-
-

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { PATHS } from '@/constant/paths';
 import { toast } from '@/utills/toast';
@@ -60,7 +60,11 @@ export const useSignin = (options: AuthOptions = {}) => {
 };
 
 export const useSignUp = (options: AuthOptions) => {
-  return useMutation<ApiResponse<UserData>, AxiosError<ApiResponse>, Parameters<typeof Auth.SignUp>[0]>({
+  return useMutation<
+    ApiResponse<UserData>,
+    AxiosError<ApiResponse>,
+    Parameters<typeof Auth.SignUp>[0]
+  >({
     mutationFn: Auth.SignUp,
     onSuccess: (data) => options.onSuccess?.(data),
     onError: (error) => options.onError?.(error),

@@ -12,7 +12,6 @@ export const useGetProfileQuery = () => {
   });
 };
 
-
 interface useUpdateProfileOptions {
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
@@ -27,7 +26,9 @@ export const useUpdateProfile = (options?: useUpdateProfileOptions) => {
     },
     onError: (error: any) => {
       console.error('Profile update error:', error);
-      toast.error(error.response?.data?.message || '프로필 설정에 실패했습니다.');
+      toast.error(
+        error.response?.data?.message || '프로필 설정에 실패했습니다.'
+      );
       options?.onError?.(error);
     },
   });

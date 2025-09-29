@@ -1,14 +1,13 @@
 'use client';
 
 import Loading from '@/components/ui/loading';
-import { PATHS, PLAYLINK_AUTH } from '@/constant';
+import { PATHS } from '@/constant';
 import { useAlertStore } from '@/store/alert-store';
 import { toast } from '@/utills/toast';
 import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { TOAST_ALERT_MESSAGES } from '@/constant/toast-alert';
-import { NextResponse } from 'next/server';
 
 function KakaoCallbackPage() {
   const router = useRouter();

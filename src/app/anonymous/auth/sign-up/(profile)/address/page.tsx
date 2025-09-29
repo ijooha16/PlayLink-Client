@@ -71,7 +71,11 @@ const Address = () => {
         }
       );
     } catch (error) {
-      setError(error instanceof Error ? error.message : '현재 위치를 가져오지 못했어요.');
+      setError(
+        error instanceof Error
+          ? error.message
+          : '현재 위치를 가져오지 못했어요.'
+      );
     }
   };
 
@@ -159,4 +163,3 @@ const Address = () => {
 };
 
 export default Address;
-
