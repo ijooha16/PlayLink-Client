@@ -1,37 +1,24 @@
+import { backendClient } from '@/libs/api/axios';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
     const body = await request.formData();
+    const token = request.headers.get('Authorization');
 
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-
-    const backendApiUrl = `${fetchURL}/playlink/match`;
-
-    const response = await fetch(backendApiUrl, {
-      method: 'POST',
+    const { data } = await backendClient.post('/playlink/match', body, {
       headers: {
-        Authorization: 'Bearer Token..',
-      },
-      body,
+        'Content-Type': 'multipart/form-data',
+        Authorization: token || ''
+      }
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Backend API error:', errorData);
-      return NextResponse.json(
-        { status: 'error', message: errorData.message || 'Backend API error' },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-    return NextResponse.json({ status: 'success', data }, { status: 200 });
-  } catch (error: any) {
-    console.error('Get post Route Handler error:', error);
-    return NextResponse.json(
-      { status: 'error', message: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ status: 'success', data });
+  } catch (err: any) {
+    console.error('Add match Route Handler error:', err);
+    return NextResponse.json({
+      status: 'error',
+      message: err.response?.data?.message || err.message || 'Unknown error',
+    }, { status: err.response?.status || 500 });
   }
 }

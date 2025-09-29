@@ -36,3 +36,11 @@ yarn-error.log*
 next-env.d.ts
 
 .env
+
+.vscode
+.claude
+
+# license files
+src/constant/licenses.json
+licenses.csv
+licenses-detailed.json

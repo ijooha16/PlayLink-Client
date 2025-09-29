@@ -2,20 +2,176 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  input[type="checkbox"] {
+    @apply relative h-[18px] w-[18px] cursor-pointer appearance-none rounded border border-gray-400 bg-gray-50 after:absolute after:inset-0 after:flex after:items-center after:justify-center after:content-[''];
+  }
+
+  input[type="checkbox"]::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 3.5L3.5 6L9 1' stroke='transparent' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    content: '';
+  }
+
+  input[type="checkbox"]:checked {
+    @apply border-4 border-primary-800 bg-primary-800;
+  }
+
+  input[type="checkbox"]:checked::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 3.5L3.5 6L9 1' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
+
 /* react-datepicker styles */
 @import 'react-datepicker/dist/react-datepicker.css';
 
 :root {
+  /* color */
   --background: #ffffff;
   --foreground: #171717;
 
-  --color-primary: #0C54DA;
-  --color-sub-01: #B5D3FF;
+  /* primary color */
+  --color-primary-50: #e3f3ff;
+  --color-primary-100: #badfff;
+  --color-primary-200: #8dccff;
+  --color-primary-300: #5ab8ff;
+  --color-primary-400: #2ca8ff;
+  --color-primary-500: #0099ff;
+  --color-primary-600: #008aff;
+  --color-primary-700: #0277ec;
+  --color-primary-800: #0c65da;
+  --color-primary-900: #1345bb;
+
+  /* secondary color */
+  --color-secondary-50: #fff8e2;
+  --color-secondary-100: #ffebb6;
+  --color-secondary-200: #ffde87;
+  --color-secondary-300: #ffd359;
+  --color-secondary-400: #ffc83a;
+  --color-secondary-500: #febe27;
+  --color-secondary-600: #fdb123;
+  --color-secondary-700: #fc9e21;
+  --color-secondary-800: #fc8e1f;
+
+  /* gray color */
+  --color-gray-0: #ffffff;
+  --color-gray-50: #f7f7f7;
+  --color-gray-100: #eeeeee;
+  --color-gray-200: #e2e2e2;
+  --color-gray-300: #d0d0d0;
+  --color-gray-400: #ababab;
+  --color-gray-500: #8a8a8a;
+  --color-gray-600: #636363;
+  --color-gray-700: #505050;
+  --color-gray-800: #323232;
+  --color-gray-900: #121212;
+  --color-gray-1000: #000000;
+
+  /* line color */
+  --color-line-normal: #eeeeee;
+  --color-line-netural: #e2e2e2;
+  --color-line-alternative: #D0D0D0;
+  --color-line-strong: #121212;
+
+  /* system color */
+  --color-system-error: #eb003b;
+  --color-system-warning: #ffb724;
+  --color-system-success: #008a1e;
+  --color-system-information: #2768ff;
+
+  /* 40% opacity (#121212 + 66) */
+  --color-toast: #12121266;
+
+  /* spacing */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-28: 28px;
+  --space-32: 32px;
+  --space-36: 36px;
+  --space-40: 40px;
+  --space-44: 44px;
+  --space-48: 48px;
+  --space-56: 56px;
+  --space-60: 60px;
+  --space-64: 64px;
+  --space-68: 68px;
+  --space-72: 72px;
+  --space-76: 76px;
+  --space-80: 80px;
+
+  /* radius */
+  --radius-4: 4px;
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-20: 20px;
+  --radius-24: 24px;
+
+  /* shadow */
+  --shadow-level-1: 0px 2px 8px rgba(23, 23, 26, 0.08);
+  --shadow-level-2: 2px 4px 24px rgba(23, 23, 26, 0.08);
+  --shadow-level-3: 4px 4px 32px rgba(23, 23, 26, 0.08);
+  --shadow-level-4: 4px 6px 40px rgba(23, 23, 26, 0.08);
+
+  /* text-size */
+  --text-24: 24px;
+  --text-20: 20px;
+  --text-18: 18px;
+  --text-16: 16px;
+  --text-14: 14px;
+  --text-13: 13px;
+  --text-12: 12px;
+
+  /* font-weight */
+  --font-bold: 700;
+  --font-semibold: 600;
+  --font-medium: 500;
+  --font-regular: 400;
+
+  /* 폰트 */
+  --font-heading-01: 36px;
+  --font-heading-01-lh: 1.46;
+  --font-heading-02: 32px;
+  --font-heading-02-lh: 1.46;
+  --font-heading-03: 28px;
+  --font-heading-03-lh: 1.46;
+
+  --font-title-01: 24px;
+  --font-title-01-lh: 1.46;
+  --font-title-02: 20px;
+  --font-title-02-lh: 1.46;
+  --font-title-03: 18px;
+  --font-title-03-lh: 1.46;
+
+  --font-label-l: 16px;
+  --font-label-l-lh: 1.46;
+  --font-label-m: 14px;
+  --font-label-m-lh: 1.46;
+  --font-label-s: 12px;
+  --font-label-s-lh: 1.4;
+
+  --font-body-01: 16px;
+  --font-body-01-lh: 1.46;
+  --font-body-02: 14px;
+  --font-body-02-lh: 1.46;
+
+  --font-caption-01: 12px;
+  --font-caption-01-lh: 1.4;
+  --font-caption-02: 11px;
+  --font-caption-02-lh: 1.4;
 }
 
 * {
   @apply box-border;
 }
+
 
 body {
   color: var(--foreground);

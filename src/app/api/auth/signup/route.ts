@@ -1,34 +1,34 @@
+import { backendClient } from '@/libs/api/axios';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-
-    const fetchURL = process.env.NEXT_PUBLIC_DB_URL;
-
-    const backendApiUrl = `${fetchURL}/playlink/signup`;
-
-    const response = await fetch(backendApiUrl, {
-      method: 'POST',
-      body: formData,
+    // FormData 필드값들 상세 로깅
+    console.log('=== Signup Request FormData Fields ===');
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}: File {`);
+        console.log(`  size: ${value.size},`);
+        console.log(`  type: '${value.type}',`);
+        console.log(`  name: '${value.name}',`);
+        console.log(`  lastModified: ${value.lastModified}`);
+        console.log('}');
+      } else {
+        console.log(`${key}: ${value}`);
+      }
+    }
+    console.log('=====================================');
+    const { data } = await backendClient.post('/playlink/signup', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Backend API error:', errorData);
-      return NextResponse.json(
-        { status: 'error', message: errorData.message || 'Backend API error' },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-    return NextResponse.json({ status: 'success', data }, { status: 200 });
-  } catch (error: any) {
-    console.error('Signup Route Handler error:', error);
-    return NextResponse.json(
-      { status: 'error', message: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ status: 'success', data });
+  } catch (err: any) {
+    console.error('Signup Route Handler error:', err);
+    return NextResponse.json({
+      status: 'error',
+      message: err.response?.data?.message || err.message || 'Unknown error',
+    }, { status: err.response?.status || 500 });
   }
 }
