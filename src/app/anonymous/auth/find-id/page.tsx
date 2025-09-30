@@ -40,15 +40,6 @@ export default function FindId() {
     }
   });
 
-  const { mutate: findAccount, isPending: isFinding } = useFindAccount({
-    type: 'phone',
-    context: 'find-id',
-    onAccountExists: function() { send(normalizePhone(phone)); },
-    onNeedVerification: function() { send(normalizePhone(phone)); },
-    onInvalidInput: function(message) { setErrors({ phone: message }); },
-    onError: function(message) { setErrors({ phone: message }); },
-    onAccountNotFound: function() { send(normalizePhone(phone)); }
-  });
 
   const { mutate: findAccountAfterVerify } = useFindAccount({
     type: 'phone',
@@ -63,7 +54,7 @@ export default function FindId() {
     Send: function(e?: React.FormEvent<HTMLFormElement> | React.MouseEvent) {
       e?.preventDefault();
       if (!isPhoneValid) return;
-      findAccount({ phoneNumber: normalizePhone(phone) });
+      send(normalizePhone(phone));
     },
     Verify: function(e?: React.FormEvent<HTMLFormElement> | React.MouseEvent) {
       e?.preventDefault();
@@ -110,13 +101,13 @@ export default function FindId() {
         isFloat
         disabled={
           !isCodeSent
-            ? normalizePhone(phone).length !== 11 || !isPhoneValid || isLoading.sending || isFinding
+            ? normalizePhone(phone).length !== 11 || !isPhoneValid || isLoading.sending
             : String(code).length !== 6 || !isCodeValid || isLoading.verifying || isTimeout
         }
         onClick={!isCodeSent ? handleCode.Send : handleCode.Verify}
       >
         {!isCodeSent
-          ? (isFinding ? '가입 여부 확인 중' : isLoading.sending ? '전송 중' : '인증번호 받기')
+          ? (isLoading.sending ? '전송 중' : '인증번호 받기')
           : (isLoading.verifying ? '확인 중' : '확인')}
       </Button>
     </AuthLayoutContainer>

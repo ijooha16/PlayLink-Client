@@ -8,10 +8,10 @@ const SignUpLayout = ({
 }>) => {
   return (
     <>
-      <Header title={'회원가입'} backbtn />
-      <AuthLayoutContainer flowType="signup">
-        {children}
-      </AuthLayoutContainer>
+  <Header title={'회원가입'} backbtn />
+  <AuthLayoutContainer flowType="signup">
+    {children}
+  </AuthLayoutContainer>
     </>
   );
 };

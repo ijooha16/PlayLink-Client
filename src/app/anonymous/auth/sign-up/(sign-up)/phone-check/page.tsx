@@ -24,7 +24,6 @@ const PhoneCheck: React.FC = function() {
   const [isCodeSent, setIsCodeSent] = useState<boolean>(false);
   const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
   const [isCodeValid, setIsCodeValid] = useState<boolean>(false);
-  const [existingAccountData, setExistingAccountData] = useState<any>(null);
 
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const codeInputRef = useRef<HTMLInputElement>(null);
@@ -59,44 +58,42 @@ const PhoneCheck: React.FC = function() {
     },
     onVerifySuccess: function() {
       stop(); // 인증 성공 시 타이머 중지
-
-      if (existingAccountData) {
-        // 기존 계정이 있으면 found 페이지로 이동
-        const params = new URLSearchParams({
-          email: existingAccountData.email || '',
-          nickname: existingAccountData.nickname || '',
-          createdAt: existingAccountData.created_at || '',
-          accountType: existingAccountData.account_type?.toString() || '0',
-        });
-        router.replace(`${PATHS.AUTH.FOUND}?${params.toString()}`);
-      } else {
-        // 새 계정이면 회원가입 계속 진행
-        updateSignUp('phoneNumber', normalizedPhone);
-        router.replace(PATHS.AUTH.EMAIL_CHECK);
-      }
+      // 인증 성공 후 계정 정보를 다시 조회
+      findAccountAfterVerify({ phoneNumber: normalizedPhone });
     }
   });
 
-  const { mutate: findAccount, isPending: isFindingAccount } = useFindAccount({
+  const { mutate: findAccountAfterVerify } = useFindAccount({
     type: 'phone',
-    context: 'find-id',
+    context: 'sign-up',
+    isAfterVerification: true,
     onAccountExists: function(accountData) {
-      setExistingAccountData(accountData);
-      send(normalizedPhone);
+      // 인증 후 계정이 확인되면 found 페이지로 이동
+      const params = new URLSearchParams({
+        email: accountData.email || '',
+        nickname: accountData.nickname || '',
+        createdAt: accountData.created_at || '',
+        accountType: accountData.account_type?.toString() || '0',
+      });
+      router.replace(`${PATHS.AUTH.FOUND}?${params.toString()}`);
     },
-    onNeedVerification: function() { send(normalizedPhone); },
-    onInvalidInput: function(message) { setErrors({ phone: message }); },
-    onError: function(message) { setErrors({ phone: message }); },
     onAccountNotFound: function() {
-      setExistingAccountData(null);
-      send(normalizedPhone);
+      // 인증 후 계정이 없으면 회원가입 진행
+      updateSignUp('phoneNumber', normalizedPhone);
+      router.replace(PATHS.AUTH.EMAIL_CHECK);
+    },
+    onInvalidInput: function(message) {
+      setErrors({ phone: message });
+    },
+    onError: function(message) {
+      setErrors({ phone: message });
     }
   });
 
   const handleCode = {
     Send: function() {
       if (!isPhoneValid) return;
-      findAccount({ phoneNumber: normalizedPhone });
+      send(normalizedPhone);
     },
     Verify: function() {
       if (!isCodeValid) return;
@@ -152,15 +149,13 @@ const PhoneCheck: React.FC = function() {
         type="submit"
         disabled={
           !isCodeSent
-            ? normalizedPhone.length !== 11 || !isPhoneValid || isLoading.sending || isFindingAccount
+            ? normalizedPhone.length !== 11 || !isPhoneValid || isLoading.sending
             : trimmedCode.length !== 6 || !isCodeValid || isLoading.verifying || isTimeout
         }
         isFloat
       >
         {!isCodeSent
-          ? isFindingAccount
-            ? '가입 여부 확인 중...'
-            : isLoading.sending
+          ? isLoading.sending
             ? '전송 중...'
             : '인증번호 받기'
           : isLoading.verifying
