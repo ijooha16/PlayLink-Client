@@ -1,26 +1,13 @@
-import { backendClient } from '@/libs/api/axios';
-import { NextResponse } from 'next/server';
+import { backendClient } from '@/libs/http';
+import { withApiHandler } from '@/utills/api-handler';
 
-export async function PUT(request: Request) {
-  try {
-    const body = await request.json();
+export const PUT = withApiHandler(async (request) => {
+  const body = await request.json();
 
-    const response = await backendClient.put('/playlink/resetPassword', body);
+  const response = await backendClient.put('/playlink/resetPassword', body);
 
-    const finalResponse = NextResponse.json({
-      status: 'success',
-      data: response.data,
-    });
-
-    return finalResponse;
-  } catch (err: any) {
-    console.error('Reset password Route Handler error:', err);
-    return NextResponse.json(
-      {
-        status: 'error',
-        message: err.response?.data?.message || err.message || 'Unknown error',
-      },
-      { status: err.response?.status || 500 }
-    );
-  }
-}
+  return {
+    status: 'success',
+    data: response.data,
+  };
+});

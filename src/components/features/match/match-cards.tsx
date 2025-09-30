@@ -1,6 +1,7 @@
 'use client';
 
 // import { HeartIcon, MessagesSquareIcon } from 'lucide-react';
+import { PATHS } from '@/constant';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import { MatchType } from '@/types/match/match';
 import Image from 'next/image';
@@ -12,11 +13,6 @@ const MatchCards = (data: { data: MatchType }) => {
   const { data: sports } = useGetSportsQuery();
   const [imageError, setImageError] = useState(false);
 
-  const handleMatchClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    // 미들웨어가 인증을 처리하므로 바로 이동
-    router.push(`/authorized/match/match-detail/${matchId}`);
-  };
   const {
     matchId,
     title,
@@ -36,6 +32,11 @@ const MatchCards = (data: { data: MatchType }) => {
       (sport: { sports_id: number; sports_name: string }) =>
         sport.sports_id === sportsType
     )?.sports_name;
+
+  const handleMatchClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    router.push(PATHS.MATCH.MATCH_DETAIL_ID(matchId.toString()));
+  };
 
   return (
     <div
@@ -57,8 +58,8 @@ const MatchCards = (data: { data: MatchType }) => {
               alt={`${sportsName || '스포츠'} 이미지`}
               width={150}
               height={150}
-              className="object-contain rounded"
-              sizes="150px"
+              className='rounded object-contain'
+              sizes='150px'
               onError={() => {
                 setImageError(true);
               }}

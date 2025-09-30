@@ -1,14 +1,13 @@
 'use client';
 
 import Loading from '@/components/ui/loading';
-import { PATHS, PLAYLINK_AUTH } from '@/constant';
+import { PATHS } from '@/constant';
+import { TOAST_ALERT_MESSAGES } from '@/constant/toast-alert';
+import { apiClient } from '@/libs/http';
 import { useAlertStore } from '@/store/alert-store';
 import { toast } from '@/utills/toast';
-import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
-import { TOAST_ALERT_MESSAGES } from '@/constant/toast-alert';
-import { NextResponse } from 'next/server';
 
 function KakaoCallbackPage() {
   const router = useRouter();
@@ -49,7 +48,7 @@ function KakaoCallbackPage() {
 
       try {
         console.log('백엔드 API 호출:', '/api/auth/kakao/callback');
-        const response = await axios.post('/api/auth/kakao/callback', {
+        const response = await apiClient.post('/api/auth/kakao/callback', {
           code,
           state,
         });
@@ -66,8 +65,12 @@ function KakaoCallbackPage() {
         } else {
           throw new Error(response.data.error || '로그인 처리 실패');
         }
-      } catch (error: any) {
-        console.error('카카오 로그인 처리 에러:', error);
+      } catch (err: unknown) {
+        console.error('카카오 로그인 처리 에러:', err);
+        const error = err as {
+          response?: { data?: { error?: string } };
+          message?: string;
+        };
         openAlert(
           '로그인 실패',
           error.response?.data?.error ||

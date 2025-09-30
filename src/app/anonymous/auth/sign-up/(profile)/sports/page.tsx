@@ -2,6 +2,8 @@
 
 import SportCard from '@/components/features/match/sport-card';
 import Button from '@/components/ui/button';
+import { PATHS } from '@/constant';
+import { clearFlow, completeStep } from '@/hooks/auth/use-signup-flow';
 import { useUpdateProfile } from '@/hooks/react-query/profile/use-profile-query';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import useSignUpStore from '@/store/use-sign-up-store';
@@ -40,7 +42,9 @@ export default function SportsSelectionPage() {
 
   const { mutate: updateProfileMutation } = useUpdateProfile({
     onSuccess: () => {
-      router.replace('/');
+      completeStep('sports');
+      clearFlow();
+      router.replace(PATHS.HOME);
     },
   });
 
@@ -79,7 +83,7 @@ export default function SportsSelectionPage() {
       </div>
 
       {/* 그라데이션 배경 */}
-      <div className='fixed bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white/90 via-white/60 to-transparent pointer-events-none z-40' />
+      <div className='pointer-events-none fixed bottom-0 left-0 right-0 z-40 h-32 bg-gradient-to-t from-white/90 via-white/60 to-transparent' />
 
       {/* 하단 버튼 */}
       <Button

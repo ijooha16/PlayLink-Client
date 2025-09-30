@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { formatPhoneNumber } from '@/utills/format/phone-formats';
-import { validatePassword, validatePasswordConfirm } from '@/libs/valid/auth';
+import { formatPhoneNumber, validatePassword, validatePasswordConfirm } from '@/libs/valid/auth';
 
 type FieldType = 'text' | 'phone' | 'password' | 'confirmPassword';
 

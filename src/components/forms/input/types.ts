@@ -12,6 +12,8 @@ export interface BaseInputProps {
   label?: string;
   hasError?: boolean;
   errorMessage?: string;
+  hasSuccess?: boolean;
+  successMessage?: string;
   helperText?: string;
   autoFocus?: boolean;
 }
@@ -74,4 +76,7 @@ export interface AddressInputProps extends Omit<BaseInputProps, 'onChange'> {
     dong: string;
   }>;
   onResultSelect?: (item: { full: string; si: string; gu: string; dong: string }) => void;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
+  totalCount?: number;
 }

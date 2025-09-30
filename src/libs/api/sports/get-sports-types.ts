@@ -1,4 +1,4 @@
-import { apiClient } from '@/libs/api/axios';
+import { apiClient } from '@/libs/http';
 import { API_URLS } from '@/constant/api-urls';
 
 export const getSports = async () => {

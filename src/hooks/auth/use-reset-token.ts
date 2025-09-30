@@ -1,15 +1,16 @@
 'use client';
 
+import { PATHS } from '@/constant';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { PATHS } from '@/constant/paths';
 
 export const useSessionToken = () => {
   const router = useRouter();
 
   const setToken = (userId: number): void => {
     const token = `reset-${Date.now()}-${Math.random()}`;
-    sessionStorage.setItem(`r-pw-token-${userId}`, token);
+    const tokenKey = `r-pw-token-${userId}`;
+    sessionStorage.setItem(tokenKey, token);
   };
 
   const checkToken = (userId: string): boolean => {
@@ -22,14 +23,13 @@ export const useSessionToken = () => {
 
   const useAuth = (userId: string) => {
     useEffect(() => {
-      const token = sessionStorage.getItem(`r-pw-token-${userId}`);
+      const tokenKey = `r-pw-token-${userId}`;
+      const token = sessionStorage.getItem(tokenKey);
 
       if (!token) {
         router.replace(PATHS.AUTH.RESET_PASSWORD);
         return;
       }
-
-      sessionStorage.removeItem(`r-pw-token-${userId}`);
     }, [userId, router]);
   };
 

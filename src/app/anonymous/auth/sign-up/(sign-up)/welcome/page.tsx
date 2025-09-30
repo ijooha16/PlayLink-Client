@@ -8,6 +8,7 @@ import {
   Welcome,
 } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
+import { PATHS } from '@/constant';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
@@ -22,14 +23,13 @@ const WelcomePage = () => {
   ];
 
   return (
-    <
-    >
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-[335px] h-[146px] relative flex items-center justify-center">
+    <>
+      <div className='fixed inset-0 flex items-center justify-center'>
+        <div className='relative flex h-[146px] w-[335px] items-center justify-center'>
           {floatingItems.map((item, i) => (
             <motion.div
               key={i}
-              className="absolute w-[335px] h-[146px]"
+              className='absolute h-[146px] w-[335px]'
               animate={{ y: [0, item.y, 0] }}
               transition={{
                 duration: item.duration,
@@ -40,12 +40,16 @@ const WelcomePage = () => {
               <item.Component size={24} />
             </motion.div>
           ))}
-          <div className="absolute w-[335px] h-[146px]">
+          <div className='absolute h-[146px] w-[335px]'>
             <Welcome size={335} />
           </div>
         </div>
       </div>
-      <Button variant='default' onClick={() => router.replace('/anonymous/auth/sign-up/profile')} isFloat>
+      <Button
+        variant='default'
+        onClick={() => router.replace(PATHS.AUTH.PROFILE)}
+        isFloat
+      >
         프로필 완성하기
       </Button>
     </>

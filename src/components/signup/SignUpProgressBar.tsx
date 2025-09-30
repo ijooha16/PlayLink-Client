@@ -1,5 +1,6 @@
 'use client';
 
+import { PATHS } from '@/constant';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -8,14 +9,19 @@ const SignUpProgressBar = () => {
   const [animatedProgress, setAnimatedProgress] = useState(0);
 
   const profileSteps = [
-    { key: 'profile', path: '/anonymous/auth/sign-up/profile' },
-    { key: 'address', path: '/anonymous/auth/sign-up/address' },
-    { key: 'interest', path: '/anonymous/auth/sign-up/interest' },
-    { key: 'sports', path: '/anonymous/auth/sign-up/sports' },
+    { key: 'profile', path: PATHS.AUTH.PROFILE },
+    { key: 'address', path: PATHS.AUTH.ADDRESS },
+    { key: 'interest', path: PATHS.AUTH.INTEREST },
+    { key: 'sports', path: PATHS.AUTH.SPORTS },
   ];
 
-  const currentStepIndex = profileSteps.findIndex(step => pathname.includes(step.key));
-  const targetProgress = currentStepIndex >= 0 ? ((currentStepIndex + 1) / profileSteps.length) * 100 : 0;
+  const currentStepIndex = profileSteps.findIndex((step) =>
+    pathname.includes(step.key)
+  );
+  const targetProgress =
+    currentStepIndex >= 0
+      ? ((currentStepIndex + 1) / profileSteps.length) * 100
+      : 0;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -26,11 +32,11 @@ const SignUpProgressBar = () => {
   }, [targetProgress]);
 
   return (
-    <div className="fixed left-1/2 top-14 z-40 w-full max-w-[640px] -translate-x-1/2 bg-white">
+    <div className='fixed left-1/2 top-14 z-40 w-full max-w-[640px] -translate-x-1/2 bg-white'>
       {/* Progress Bar */}
-      <div className="relative w-full h-1 bg-line-netural">
+      <div className='relative h-1 w-full bg-line-netural'>
         <div
-          className="absolute top-0 left-0 h-full bg-brand-primary rounded-full transition-all duration-700 ease-out"
+          className='absolute left-0 top-0 h-full rounded-full bg-brand-primary transition-all duration-700 ease-out'
           style={{ width: `${animatedProgress}%` }}
         />
       </div>

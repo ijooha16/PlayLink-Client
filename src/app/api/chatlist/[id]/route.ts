@@ -1,33 +1,25 @@
-import { backendClient } from '@/libs/api/axios';
-import { NextRequest, NextResponse } from 'next/server';
+import { backendClient } from '@/libs/http';
+import { withApiHandler } from '@/utills/api-handler';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const incoming = req.headers.get('authorization'); // 클라가 준 토큰
-  const auth = incoming?.replace(/^(bearer\s+)+/i, 'Bearer '); // => 'Bearer xxx'
+export const GET = withApiHandler(async (req) => {
+  const incoming = req.headers.get('authorization');
+  const auth = incoming?.replace(/^(bearer\s+)+/i, 'Bearer ');
 
-  const { id } = await params; // '/api/chatlist/5' -> '5'
+  // URL에서 id 추출: /api/chatlist/5 -> '5'
+  const url = new URL(req.url);
+  const pathSegments = url.pathname.split('/');
+  const id = pathSegments[pathSegments.length - 1];
 
-  try {
-    const res = await backendClient.get(`/playlink/chattingLog?roomId=${encodeURIComponent(id)}`, {
+  const res = await backendClient.get(
+    `/playlink/chattingLog?roomId=${encodeURIComponent(id)}`,
+    {
       headers: {
         ...(auth ? { Authorization: auth } : {}),
       },
-    });
-    return NextResponse.json({
-      status: 'success',
-      data: res.data,
-    });
-  } catch (err: any) {
-    console.error('get chat-room detail router handler error', err);
-    return NextResponse.json(
-      {
-        status: 'error',
-        message: err.response?.data?.message || err.message || 'Unknown error',
-      },
-      { status: err.response?.status || 500 }
-    );
-  }
-}
+    }
+  );
+  return {
+    status: 'success',
+    data: res.data,
+  };
+});

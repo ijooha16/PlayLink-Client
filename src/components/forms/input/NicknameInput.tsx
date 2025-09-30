@@ -17,6 +17,8 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
       label = '닉네임',
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
+      hasSuccess: externalHasSuccess,
+      successMessage: externalSuccessMessage,
       helperText,
       showCancelToggle = true,
       validateOnChange = true,
@@ -90,6 +92,8 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
         onBlur={handleBlur}
         hasError={hasError}
         errorMessage={displayError}
+        hasSuccess={externalHasSuccess}
+        successMessage={externalSuccessMessage}
         helperText={helperText || defaultHelperText}
         showCancelToggle={showCancelToggle && Boolean(value)}
         disabled={disabled}

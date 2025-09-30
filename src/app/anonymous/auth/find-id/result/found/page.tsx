@@ -24,25 +24,27 @@ const AccountExistsContent = () => {
     router.push(PATHS.AUTH.SIGN_IN);
   };
   return (
-    <AuthLayoutContainer title={`해당 정보로 \n 이미 가입된 계정이 있어요!`} content={`해당 계정으로 로그인해 주세요.`}>
-      <div className='flex items-center rounded-[8px] border border-brand-primary p-s-16 mt-s-24'>
+    <AuthLayoutContainer
+      title={`해당 정보로 \n 이미 가입된 계정이 있어요!`}
+      content={`해당 계정으로 로그인해 주세요.`}
+    >
+      <div className='mt-s-24 flex items-center rounded-[8px] border border-brand-primary p-s-16'>
         {/* 좌측 아이콘 */}
-        <div className='mr-[16px] flex h-[48px] w-[48px] items-center justify-center rounded-full bg-grey04'>
-          {accountType === '0' && 
-          <div className="w-[40px] h-[40px] flex items-center justify-center bg-bg-alternative rounded-full">
-          <EmailRound />
-          </div>
-          }
+        <div className='bg-grey04 mr-[16px] flex h-[48px] w-[48px] items-center justify-center rounded-full'>
+          {accountType === '0' && (
+            <div className='flex h-[40px] w-[40px] items-center justify-center rounded-full bg-bg-alternative'>
+              <EmailRound />
+            </div>
+          )}
           {accountType === '1' && (
-            <div className="w-[40px] h-[40px] flex items-center justify-center bg-[#FEE500] rounded-full">
-
-            <Image
-              src='/images/social/kakao-talk.png'
-              alt='Kakao'
-              width={24}
-              height={24}
+            <div className='flex h-[40px] w-[40px] items-center justify-center rounded-full bg-[#FEE500]'>
+              <Image
+                src='/images/social/kakao-talk.png'
+                alt='Kakao'
+                width={24}
+                height={24}
               />
-              </div>
+            </div>
           )}
           {accountType === '2' && <Apple size={24} />}
           {accountType === '3' && (
@@ -56,22 +58,34 @@ const AccountExistsContent = () => {
         </div>
 
         {/* 우측 정보 */}
-        <div className='flex-1 text-sub'>
-          <p className='mb-s-2 text-body-1 font-semibold text-text-strong'>{email}</p>
+        <div className='text-sub flex-1'>
+          <p className='text-body-1 mb-s-2 font-semibold text-text-strong'>
+            {email}
+          </p>
           <div className='flex items-center gap-[4px]'>
-            <p className='text-text-netural font-medium text-caption-01'>가입일</p>
-            <p className='text-text-strong text-caption-01 font-medium'>
-              {format(new Date(searchParams.get('createdAt') || '2024-08-12'), 'yyyy. MM. dd', { locale: ko })}
+            <p className='text-caption-01 font-medium text-text-netural'>
+              가입일
+            </p>
+            <p className='text-caption-01 font-medium text-text-strong'>
+              {format(
+                new Date(searchParams.get('createdAt') || '2024-08-12'),
+                'yyyy. MM. dd',
+                { locale: ko }
+              )}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-s-12">
-        <Button variant='default' size='base' isFloat={true} onClick={handleGoToLogin}>
+      <div className='flex flex-col gap-s-12'>
+        <Button
+          variant='default'
+          size='base'
+          isFloat={true}
+          onClick={handleGoToLogin}
+        >
           로그인 하기
         </Button>
-
       </div>
     </AuthLayoutContainer>
   );

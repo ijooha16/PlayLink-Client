@@ -1,5 +1,5 @@
 import { API_URLS } from '@/constant/api-urls';
-import { apiClient } from '@/libs/api/axios';
+import { apiClient } from '@/libs/http';
 
 type SmsType = { phoneNumber: string };
 type SmsVerifyType = SmsType & { code: string };

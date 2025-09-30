@@ -2,7 +2,8 @@
 
 import { ChevronRight } from '@/components/shared/icons'
 import Button from '@/components/ui/button'
-import { POLICY } from '@/constant'
+import { POLICY, PATHS } from '@/constant'
+import { completeStep } from '@/hooks/auth/use-signup-flow'
 import { useModalStore } from '@/store/modal-store'
 import useSignUpStore from '@/store/use-sign-up-store'
 import { useRouter } from 'next/navigation'
@@ -101,7 +102,8 @@ const TermsScreen = () => {
         disabled={!isAllRequiredChecked}
         onClick={() => {
           updateSignUp('terms', isAllRequiredChecked)
-          router.replace('/anonymous/auth/sign-up/phone-check')
+          completeStep('terms')
+          router.replace(PATHS.AUTH.PHONE_CHECK)
         }}
         isFloat
       >

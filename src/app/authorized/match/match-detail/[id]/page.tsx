@@ -1,11 +1,11 @@
 'use client';
 
-import { Heart, MapPin, Share2 } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
-import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
-import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import DynamicNaverMapForDetail from '@/components/maps/dynamic-naver-map-for-detail';
 import { PATHS } from '@/constant';
+import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
+import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import { Heart, MapPin, Share2 } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
 
 export default function MatchDetailPage() {
   const params = useParams();
@@ -21,7 +21,7 @@ export default function MatchDetailPage() {
 
   const handleApplyClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    router.push(`${PATHS.MATCH.APPLY_MATCH}/${id}`);
+    router.push(PATHS.MATCH.APPLY_MATCH_ID(id as string));
   };
   const {
     title,

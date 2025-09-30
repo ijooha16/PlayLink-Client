@@ -1,8 +1,8 @@
 'use client';
 
+import { PATHS } from '@/constant';
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { PATHS } from '@/constant/paths';
 
 const MainNewButton = () => {
   const router = useRouter();
