@@ -1,10 +1,10 @@
 'use client';
 
+import { Input } from '@/components/forms/input';
 import Header from '@/components/layout/header';
 import Button from '@/components/ui/button';
-import { Input } from '@/components/forms/input';
 import Loading from '@/components/ui/loading';
-import { PATHS } from '@/constant/paths';
+import { PATHS } from '@/constant';
 import { useSignin } from '@/hooks/react-query/auth/use-signin';
 import { getDeviceInfo } from '@/utills/get-device-info';
 import Link from 'next/link';
@@ -45,7 +45,7 @@ const SignIn = () => {
           <form
             noValidate
             onSubmit={handleLoginSubmit}
-            className='gap-y-s-16 flex flex-col'
+            className='flex flex-col gap-y-s-16'
           >
             <Input.Email
               value={email}
@@ -66,13 +66,18 @@ const SignIn = () => {
               className='mt-s-8'
               fontSize='lg'
               type='submit'
-              disabled={!trimmedEmail || !trimmedPassword || !isEmailValid || !isPasswordValid}
+              disabled={
+                !trimmedEmail ||
+                !trimmedPassword ||
+                !isEmailValid ||
+                !isPasswordValid
+              }
             >
               로그인
             </Button>
           </form>
 
-          <div className='text-label-s text-text-netural mt-s-16 gap-s-8 mx-auto flex w-full justify-center font-semibold'>
+          <div className='mx-auto mt-s-16 flex w-full justify-center gap-s-8 text-label-s font-semibold text-text-netural'>
             <Link href={PATHS.AUTH.FIND_ID}>
               <p>아이디 찾기</p>
             </Link>

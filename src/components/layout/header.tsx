@@ -1,10 +1,10 @@
 'use client';
 
-import * as React from 'react';
-import { useRouter } from 'next/navigation';
-import { twMerge } from 'tailwind-merge';
 import { ChevronLeft } from '@/components/shared/icons';
-import { PATHS } from '@/constant/paths';
+import { PATHS } from '@/constant';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 type BackBtnMode = boolean | 'home';
 

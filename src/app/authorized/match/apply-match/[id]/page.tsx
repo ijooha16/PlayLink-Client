@@ -1,13 +1,13 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
-import { useAlertStore } from '@/store/alert-store';
-import { useApplyMatchMutation } from '@/hooks/react-query/match/use-apply-match-mutation';
 import Header from '@/components/layout/header';
+import { useApplyMatchMutation } from '@/hooks/react-query/match/use-apply-match-mutation';
+import { useAlertStore } from '@/store/alert-store';
+import { useParams, useRouter } from 'next/navigation';
 
-import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import { PATHS } from '@/constant';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
-import { PATHS } from '@/constant/paths';
+import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 
 export default function ApplyPage() {
   const params = useParams();

@@ -4,6 +4,7 @@ import { Input } from '@/components/forms/input';
 import { Edit } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import { PATHS } from '@/constant';
+import { completeStep } from '@/hooks/auth/use-signup-flow';
 import useSignUpStore from '@/store/use-sign-up-store';
 import randomProfileImage, { ProfileImg } from '@/utills/random-profile-image';
 import Image from 'next/image';
@@ -40,7 +41,6 @@ const ProfileSetup = () => {
     }
   }, [profileImage]);
 
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -74,6 +74,7 @@ const ProfileSetup = () => {
     if (profileImage) {
       updateProfile('img', profileImage);
     }
+    completeStep('profile');
     router.replace(PATHS.AUTH.ADDRESS);
   };
 
@@ -115,26 +116,28 @@ const ProfileSetup = () => {
         </div>
       </div>
 
-<form onSubmit={handleNext}>
-      <div className='flex flex-col pb-[24px]'>
-        <Input.Nickname
-          value={nickname}
-          onChange={setNickname}
-          onValidate={(isValid) => setIsNicknameValid(isValid)}
-          autoFocus
-          // TODO SUCCESS 및 디바운싱 db호출 구현
-        />
-      </div>
+      <form onSubmit={handleNext}>
+        <div className='flex flex-col pb-[24px]'>
+          <Input.Nickname
+            value={nickname}
+            onChange={setNickname}
+            onValidate={(isValid, error) => {
+              setIsNicknameValid(isValid);
+            }}
+            autoFocus
+            // TODO SUCCESS 및 디바운싱 db호출 구현
+          />
+        </div>
 
-      <Button
-        variant='default'
-        type='submit'
-        disabled={!nickname.trim() || !isNicknameValid}
-        isFloat
-      >
-        다음
-      </Button>
-</form>
+        <Button
+          variant='default'
+          type='submit'
+          disabled={!nickname.trim() || !isNicknameValid}
+          isFloat
+        >
+          다음
+        </Button>
+      </form>
     </>
   );
 };

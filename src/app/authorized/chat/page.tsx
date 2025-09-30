@@ -1,10 +1,9 @@
 'use client';
 
 import ChatCard from '@/components/features/chat/chat-card';
-import Link from 'next/link';
-import React from 'react';
-import { useChatList } from '@/hooks/react-query/chat/use-get-chat-list';
 import Header from '@/components/layout/header';
+import { PATHS } from '@/constant';
+import { useChatList } from '@/hooks/react-query/chat/use-get-chat-list';
 import { useRouter } from 'next/navigation';
 
 const Chat = () => {
@@ -12,7 +11,7 @@ const Chat = () => {
   const { data, isLoading, error } = useChatList();
 
   const handleChatClick = (roomId: string) => {
-    router.push(`/authorized/chat/${roomId}`);
+    router.push(`${PATHS.CHAT}/${roomId}`);
   };
 
   if (isLoading)
@@ -26,7 +25,7 @@ const Chat = () => {
     return (
       <>
         <Header title='채팅' />
-        <div className='text-red-500 p-4'>에러가 발생했어요.</div>
+        <div className='p-4 text-red-500'>에러가 발생했어요.</div>
       </>
     );
 

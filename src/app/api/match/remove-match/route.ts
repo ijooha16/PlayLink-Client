@@ -1,25 +1,17 @@
-import { backendClient } from '@/libs/api/axios';
-import { NextRequest, NextResponse } from 'next/server';
+import { backendClient } from '@/libs/http';
+import { withApiHandler } from '@/utills/api-handler';
 
-export async function DELETE(request: NextRequest) {
-  try {
-    const token = request.headers.get('Authorization');
-    const { searchParams } = new URL(request.url);
-    const matchId = searchParams.get('matchId');
+export const DELETE = withApiHandler(async (request) => {
+  const token = request.headers.get('Authorization');
+  const { searchParams } = new URL(request.url);
+  const matchId = searchParams.get('matchId');
 
-    const response = await backendClient.delete(`/playlink/match/${matchId}`, {
-      headers: {
-        Authorization: token!,
-      },
-    });
+  const response = await backendClient.delete(`/playlink/match/${matchId}`, {
+    headers: {
+      Authorization: token || '',
+    },
+  });
 
-    const data = response.data;
-    return NextResponse.json({ status: 'success', data }, { status: 200 });
-  } catch (error: unknown) {
-    console.error('Delete match Route Handler error:', error);
-    return NextResponse.json(
-      { status: 'error', message: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
-}
+  const data = response.data;
+  return { status: 'success', data };
+});

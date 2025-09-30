@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 const passwordSchema = z
-.string({ required_error: '비밀번호를 입력해 주세요.' })
-.min(8, '영문, 숫자, 특수문자 조합 8~16자')
-.max(16, '영문, 숫자, 특수문자 조합 8~16자')
-.regex(/[a-zA-Z]/, '영문, 숫자, 특수문자 조합 8~16자')
-.regex(/\d/, '영문, 숫자, 특수문자 조합 8~16자')
-.regex(/[!@#$%^&*(),.?":{}|<>]/, '영문, 숫자, 특수문자 조합 8~16자')
+  .string({ required_error: '비밀번호를 입력해 주세요.' })
+  .min(8, '영문, 숫자, 특수문자 조합 8~16자')
+  .max(16, '영문, 숫자, 특수문자 조합 8~16자')
+  .regex(/[a-zA-Z]/, '영문, 숫자, 특수문자 조합 8~16자')
+  .regex(/\d/, '영문, 숫자, 특수문자 조합 8~16자')
+  .regex(/[!@#$%^&*(),.?":{}|<>]/, '영문, 숫자, 특수문자 조합 8~16자');
 export const validatePassword = (password: string): { isValid: boolean; error?: string } => {
   if (!password) {
     return { isValid: false };

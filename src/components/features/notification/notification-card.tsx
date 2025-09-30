@@ -1,9 +1,11 @@
+import MatchButton from '@/components/features/match/match-button';
+import { PATHS } from '@/constant';
 import {
   useApproveMatchMutation,
   useRejectMatchMutation,
 } from '@/hooks/react-query/match/use-approve-match-mutation';
-import MatchButton from '@/components/features/match/match-button';
 import { useAlertStore } from '@/store/alert-store';
+import { NotificationDataType } from '@/types/notification/notification';
 import {
   Check,
   LucideEllipsisVertical,
@@ -11,9 +13,7 @@ import {
   UserPlus2Icon,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
-import { NotificationDataType } from '@/types/notification/notification';
-import { PATHS } from '@/constant';
+import { useState } from 'react';
 
 const NotificationCard = ({
   data,
@@ -96,7 +96,7 @@ const NotificationCard = ({
           <MatchButton
             type='상세'
             onClick={() =>
-              router.push(`${PATHS.MATCH.MATCH_DETAIL}/${data.match_id}`)
+              router.push(PATHS.MATCH.MATCH_DETAIL_ID(data.match_id.toString()))
             }
           />
           {data.type === 'approved' && <MatchButton type='취소' />}

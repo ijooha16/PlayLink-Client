@@ -7,9 +7,15 @@ import { handleVerificationError } from './use-find-account';
 
 type VerificationType = 'phone' | 'email';
 
+interface VerificationResponse {
+  status: string;
+  message?: string;
+  data?: unknown;
+}
+
 interface UseVerificationOptions {
   type: VerificationType;
-  onVerifySuccess?: (data: any) => void;
+  onVerifySuccess?: (data?: VerificationResponse) => void;
   onSendSuccess?: () => void;
 }
 

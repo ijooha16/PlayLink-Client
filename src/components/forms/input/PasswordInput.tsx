@@ -17,6 +17,8 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
       label,
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
+      hasSuccess: externalHasSuccess,
+      successMessage: externalSuccessMessage,
       helperText,
       showPasswordToggle = true,
       showCancelToggle = true,
@@ -108,6 +110,8 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         onBlur={handleBlur}
         hasError={hasError}
         errorMessage={displayError}
+        hasSuccess={externalHasSuccess}
+        successMessage={externalSuccessMessage}
         helperText={helperText || defaultHelperText}
         showPasswordToggle={showPasswordToggle}
         showCancelToggle={showCancelToggle && Boolean(value)}

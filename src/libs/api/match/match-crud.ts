@@ -1,4 +1,4 @@
-import { apiClient } from '@/libs/api/axios';
+import { apiClient } from '@/libs/http';
 import { API_URLS } from '@/constant/api-urls';
 
 export const addMatch = async (formData: FormData) => {
@@ -13,7 +13,7 @@ export const deleteMatch = async (matchId: string) => {
   return data;
 };
 
-export const updateMatch = async ({ matchId, formData }: { matchId: string; formData: any }) => {
+export const updateMatch = async ({ matchId, formData }: { matchId: string; formData: FormData | Record<string, unknown> }) => {
   const { data } = await apiClient.put(API_URLS.MATCH.UPDATE_MATCH(matchId), formData);
   return data;
 };

@@ -18,6 +18,8 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
       label = '이메일',
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
+      hasSuccess: externalHasSuccess,
+      successMessage: externalSuccessMessage,
       showCancelToggle = true,
       validateOnChange = false,
       showCheckIcon = false,
@@ -31,8 +33,7 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
 
     const validate = useCallback((email: string) => {
       const trimmed = email.trim();
-      const result = validateEmail(trimmed);
-      const error = result || '';
+      const error = validateEmail(trimmed);
 
       setLocalError(error);
       onValidate?.(!error, error);
@@ -101,6 +102,8 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
         onBlur={handleBlur}
         hasError={hasError}
         errorMessage={displayError}
+        hasSuccess={externalHasSuccess}
+        successMessage={externalSuccessMessage}
         showCancelToggle={!showCheckIcon && showCancelToggle && Boolean(value)}
         rightElement={checkIcon}
         disabled={disabled}

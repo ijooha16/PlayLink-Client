@@ -1,5 +1,5 @@
 import { API_URLS } from '@/constant/api-urls';
-import { apiClient } from '@/libs/api/axios';
+import { apiClient } from '@/libs/http';
 import { useAuthStore } from '@/store/auth-store';
 
 interface SignInType {

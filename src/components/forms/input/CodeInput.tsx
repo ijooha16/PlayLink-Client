@@ -18,6 +18,8 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
       label = '인증번호',
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
+      hasSuccess: externalHasSuccess,
+      successMessage: externalSuccessMessage,
       timer,
       isTimeout,
       isResending,
@@ -67,9 +69,9 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
       onBlur?.(e);
     }, [value, validate, onBlur]);
 
-    const handleBeforeInput = useCallback((e: any) => {
-      const be = e;
-      if (be.data && /[^\d]/.test(be.data)) {
+    const handleBeforeInput = useCallback((e: React.FormEvent<HTMLInputElement>) => {
+      const inputEvent = e.nativeEvent as InputEvent;
+      if (inputEvent.data && /[^\d]/.test(inputEvent.data)) {
         e.preventDefault();
       }
     }, []);
@@ -108,6 +110,8 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
         onBeforeInput={handleBeforeInput}
         hasError={hasError}
         errorMessage={displayError}
+        hasSuccess={externalHasSuccess}
+        successMessage={externalSuccessMessage}
         timer={timer}
         maxLength={maxLength}
         disabled={disabled}

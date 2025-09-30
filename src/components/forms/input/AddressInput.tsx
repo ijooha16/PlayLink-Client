@@ -18,11 +18,16 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       label,
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
+      hasSuccess: externalHasSuccess,
+      successMessage: externalSuccessMessage,
       showCancelToggle = true,
       onCurrentLocationClick,
       loading = false,
       results = [],
       onResultSelect,
+      hasMore = false,
+      onLoadMore,
+      totalCount = 0,
       autoFocus = false,
       ...props
     },
@@ -63,7 +68,8 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     }, [value, validate, onBlur]);
 
     const handleResultSelect = useCallback((item: { full: string; si: string; gu: string; dong: string }) => {
-      onChange?.(item.dong);
+      console.log('AddressInput handleResultSelect:', item);
+      onChange?.(item.full);
       onResultSelect?.(item);
       setLocalError('');
       onValidate?.(true, '');
@@ -92,6 +98,8 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             onBlur={handleBlur}
             hasError={hasError}
             errorMessage={displayError}
+            hasSuccess={externalHasSuccess}
+            successMessage={externalSuccessMessage}
             leftElement={<Search size={20} className="text-icon-netural" />}
             showCancelToggle={showCancelToggle && Boolean(value)}
             disabled={disabled}
@@ -127,6 +135,13 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
 
         {results.length > 0 && (
           <div className="mt-s-20">
+            {totalCount > 0 && (
+              <div className="mx-s-20 mb-s-12 flex items-center justify-between px-s-12">
+                <span className="text-caption-01 text-text-alternative">
+                  총 {totalCount}개의 결과
+                </span>
+              </div>
+            )}
             {results.map((item, idx) => (
               <div
                 key={`${item.full}-${idx}`}
@@ -138,6 +153,16 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
                 </span>
               </div>
             ))}
+            {hasMore && onLoadMore && (
+              <div
+                onClick={onLoadMore}
+                className="hover:bg-bg-weak mx-s-20 flex min-h-[48px] w-full cursor-pointer items-center justify-center px-s-12 py-s-16"
+              >
+                <span className="text-body-01 font-medium text-brand-primary">
+                  {loading ? '로딩 중...' : '더보기'}
+                </span>
+              </div>
+            )}
           </div>
         )}
       </div>

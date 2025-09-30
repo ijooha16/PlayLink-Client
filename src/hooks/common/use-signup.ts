@@ -1,7 +1,7 @@
 'use client';
 
-import { PATHS } from '@/constant/paths';
-import { apiClient } from '@/libs/api/axios';
+import { PATHS } from '@/constant';
+import { apiClient } from '@/libs/http';
 import { useAlertStore } from '@/store/alert-store';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';

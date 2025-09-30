@@ -22,9 +22,12 @@ export function middleware(request: NextRequest) {
   // });
 
   // 보호된 경로 접근 시 인증 확인
-  if (protectedPaths.some(path => pathname.startsWith(path))) {
+  if (protectedPaths.some((path) => pathname.startsWith(path))) {
     if (!token) {
-      console.log('Redirecting to splash - no token for protected path:', pathname);
+      console.log(
+        'Redirecting to splash - no token for protected path:',
+        pathname
+      );
       const url = request.nextUrl.clone();
       url.pathname = PATHS.SPLASH;
       return NextResponse.redirect(url);
@@ -32,8 +35,8 @@ export function middleware(request: NextRequest) {
   }
 
   // 이미 로그인한 사용자가 auth 페이지 접근 시
-  if (authPaths.some(path => pathname.startsWith(path))) {
-    if(pathname.startsWith('/anonymous/auth/sign-up')) {
+  if (authPaths.some((path) => pathname.startsWith(path))) {
+    if (pathname.startsWith('/anonymous/auth/sign-up')) {
       return NextResponse.next();
     }
     if (token) {
@@ -42,7 +45,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
   }
-  
+
   return NextResponse.next();
 }
 
