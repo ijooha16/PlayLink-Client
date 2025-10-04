@@ -3,6 +3,7 @@
 import SocialIconButton from '@/components/shared/social-icon-button';
 import { PATHS } from '@/constant';
 import { SPORT_ICONS } from '@/constant/images';
+import { toast } from '@/utills/toast';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';

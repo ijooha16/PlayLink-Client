@@ -70,14 +70,14 @@ const AuthLayoutContainer = ({
   const pathname = usePathname();
   const router = useRouter();
 
-  useEffect(() => {
-    if (flowType === 'signup') {
-      const hasAccess = checkSignUpAccess(pathname);
-      if (!hasAccess) {
-        router.replace(PATHS.AUTH.TERMS);
-      }
-    }
-  }, [pathname, flowType, router]);
+  // useEffect(() => {
+  //   if (flowType === 'signup') {
+  //     const hasAccess = checkSignUpAccess(pathname);
+  //     if (!hasAccess) {
+  //       router.replace(PATHS.AUTH.TERMS);
+  //     }
+  //   }
+  // }, [pathname, flowType, router]);
 
   let title = propTitle || '';
   let content = propContent || '';

@@ -164,13 +164,7 @@ const PhoneCheck: React.FC = function () {
         }
         isFloat
       >
-        {!isCodeSent
-          ? isLoading.sending
-            ? '전송 중...'
-            : '인증번호 받기'
-          : isLoading.verifying
-            ? '확인 중...'
-            : '다음'}
+        {!isCodeSent ? '인증번호 받기' : '다음'}
       </Button>
     </form>
   );

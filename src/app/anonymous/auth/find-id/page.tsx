@@ -18,54 +18,54 @@ export default function FindId() {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isPhoneValid, setIsPhoneValid] = useState(false);
   const [isCodeValid, setIsCodeValid] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
 
   const { start, stop, formattedTime, isTimeout } = useTimer(300);
 
-  const {
-    send,
-    verify,
-    resend,
-    errors,
-    setErrors,
-    isLoading
-  } = useVerification({
-    type: 'phone',
-    onSendSuccess: function() {
-      setIsCodeSent(true);
-      start();
-    },
-    onVerifySuccess: function() {
-      stop(); // 인증 성공 시 타이머 중지
-      findAccountAfterVerify({ phoneNumber: normalizePhone(phone) });
-    }
-  });
-
+  const { send, verify, resend, errors, setErrors, isLoading } =
+    useVerification({
+      type: 'phone',
+      onSendSuccess: function () {
+        setIsCodeSent(true);
+        start();
+      },
+      onVerifySuccess: function () {
+        stop(); // 인증 성공 시 타이머 중지
+        findAccountAfterVerify({ phoneNumber: normalizePhone(phone) });
+      },
+    });
 
   const { mutate: findAccountAfterVerify } = useFindAccount({
     type: 'phone',
     context: 'find-id',
     isAfterVerification: true,
-    onInvalidInput: function(message) { setErrors({ phone: message }); },
-    onError: function(message) { setErrors({ phone: message }); }
+    onInvalidInput: function (message) {
+      setErrors({ phone: message });
+    },
+    onError: function (message) {
+      setErrors({ phone: message });
+    },
   });
 
-
   const handleCode = {
-    Send: function(e?: React.FormEvent<HTMLFormElement> | React.MouseEvent) {
+    Send: function (e?: React.FormEvent<HTMLFormElement> | React.MouseEvent) {
       e?.preventDefault();
       if (!isPhoneValid) return;
       send(normalizePhone(phone));
     },
-    Verify: function(e?: React.FormEvent<HTMLFormElement> | React.MouseEvent) {
+    Verify: function (e?: React.FormEvent<HTMLFormElement> | React.MouseEvent) {
+      setIsLocked(true);
       e?.preventDefault();
       if (!isCodeValid) return;
       verify(normalizePhone(phone), String(code).trim());
-    }
+    },
   };
 
   return (
-    <AuthLayoutContainer title={'가입하신 계정의 \n 휴대폰 번호를 입력해 주세요'}>
-      <div className="flex flex-col gap-s-24">
+    <AuthLayoutContainer
+      title={'가입하신 계정의 \n 휴대폰 번호를 입력해 주세요'}
+    >
+      <div className='flex flex-col gap-s-24'>
         <form onSubmit={handleCode.Send}>
           <Input.Phone
             value={phone}
@@ -89,7 +89,7 @@ export default function FindId() {
               isTimeout={isTimeout}
               isResending={isLoading.sending}
               errorMessage={errors.code}
-              placeholder="인증번호 6자리를 입력해 주세요"
+              placeholder='인증번호 6자리를 입력해 주세요'
               validateOnComplete
               autoFocus
             />
@@ -100,15 +100,19 @@ export default function FindId() {
       <Button
         isFloat
         disabled={
-          !isCodeSent
-            ? normalizePhone(phone).length !== 11 || !isPhoneValid || isLoading.sending
-            : String(code).length !== 6 || !isCodeValid || isLoading.verifying || isTimeout
+          isLocked ||
+          (!isCodeSent
+            ? normalizePhone(phone).length !== 11 ||
+              !isPhoneValid ||
+              isLoading.sending
+            : String(code).length !== 6 ||
+              !isCodeValid ||
+              isLoading.verifying ||
+              isTimeout)
         }
         onClick={!isCodeSent ? handleCode.Send : handleCode.Verify}
       >
-        {!isCodeSent
-          ? (isLoading.sending ? '전송 중' : '인증번호 받기')
-          : (isLoading.verifying ? '확인 중' : '확인')}
+        {!isCodeSent ? '인증번호 받기' : '확인'}
       </Button>
     </AuthLayoutContainer>
   );

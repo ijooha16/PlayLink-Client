@@ -5,6 +5,7 @@ import { PATHS } from '@/constant';
 import { TOAST_ALERT_MESSAGES } from '@/constant/toast-alert';
 import { apiClient } from '@/libs/http';
 import { useAlertStore } from '@/store/alert-store';
+import useSignUpStore from '@/store/use-sign-up-store';
 import { toast } from '@/utills/toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
@@ -14,6 +15,7 @@ function KakaoCallbackPage() {
   const searchParams = useSearchParams();
   const openAlert = useAlertStore((state) => state.openAlert);
   const [isProcessing, setIsProcessing] = useState(true);
+  const { updateProfile, updateSignUp } = useSignUpStore();
 
   useEffect(() => {
     const handleKakaoCallback = async () => {
@@ -55,13 +57,18 @@ function KakaoCallbackPage() {
 
         console.log('백엔드 API 응답:', response.data);
 
+        updateProfile('nickname', response.data.user.nickname || '');
+        updateProfile('img', response.data.user.profileImage || null);
+        updateSignUp('emailCheck',{email: response.data.user.email, password: '', passwordCheck: ''});
+        
+
         if (response.data.success) {
           if (response.data.token) {
             localStorage.setItem('accessToken', response.data.token);
           }
 
           toast.success(TOAST_ALERT_MESSAGES.KAKAO_LOGIN_SUCCESS);
-          router.replace(PATHS.HOME);
+          router.replace(PATHS.AUTH.WELCOME);
         } else {
           throw new Error(response.data.error || '로그인 처리 실패');
         }

@@ -210,25 +210,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               {/* 포커스 중일 때만 보이는 요소들 */}
               {focused && (
                 <>
-                  {/* 비밀번호 토글 */}
-                  {type === 'password' && showPasswordToggle && (
-                    <button
-                      type='button'
-                      onClick={() => setShowPassword((s) => !s)}
-                      className='p-1 transition-opacity hover:opacity-80'
-                      aria-label={
-                        showPassword ? '비밀번호 숨기기' : '비밀번호 보기'
-                      }
-                      tabIndex={-1}
-                    >
-                      {showPassword ? (
-                        <Eye size={24} className='text-icon-netural' />
-                      ) : (
-                        <EyeOff size={24} className='text-icon-netural' />
-                      )}
-                    </button>
-                  )}
-
                   {/* 캔슬 요소 */}
                   {showCancelToggle && (
                     <button
@@ -250,23 +231,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                         className='cursor-pointer text-icon-netural'
                       />
                     </button>
-                  )}
-                </>
-              )}
-
-              {/* 포커스 해제 후 보이는 상태 아이콘들 */}
-              {!focused && (
-                <>
-                  {/* 에러 상태 아이콘 */}
-                  {hasError && !rightElement && (
-                    <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-system-error' />
-                  )}
-
-                  {/* 성공 상태 아이콘 - disabled 상태에서는 표시 안 함 */}
-                  {!disabled && finalSuccess && !hasError && !rightElement && (
-                    <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-primary-800'>
-                      <Check size={12} className='text-white' />
-                    </div>
                   )}
                 </>
               )}
@@ -303,13 +267,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             className='w-full text-left text-caption-01 text-system-error'
           >
             {typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage)}
-          </p>
-        )}
-
-        {/* 성공 메시지 - 포커스 해제 시에만 표시 */}
-        {!focused && !hasError && finalSuccess && (
-          <p className='w-full text-left text-caption-01 text-system-information'>
-            {typeof successMessage === 'string' && successMessage ? successMessage : '메시지의 마침표를 찍으세요.'}
           </p>
         )}
 

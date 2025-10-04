@@ -62,7 +62,7 @@ export default function SportsSelectionPage() {
     if (profile.img) {
       formData.append('img', profile.img);
     }
-
+    
     // API 호출
     updateProfileMutation(formData);
   };

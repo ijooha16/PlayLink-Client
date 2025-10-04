@@ -12,68 +12,89 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 const ProfileSetup = () => {
-  const { updateProfile } = useSignUpStore();
+  const { updateProfile, profile } = useSignUpStore();
   const router = useRouter();
 
-  const [nickname, setNickname] = useState('');
-  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [nickname, setNickname] = useState(profile.nickname || '');
+  const isFile = (v: unknown): v is File => v instanceof File;
+  const [profileImage, setProfileImage] = useState<File | null>(
+    profile.img || null
+  );
   const [preview, setPreview] = useState<string | null>(null);
   const [randomImg, setRandomImg] = useState<ProfileImg | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isNicknameValid, setIsNicknameValid] = useState(false);
 
-  const normalizedNickname = useMemo(() => {
-    return nickname.trim();
-  }, [nickname]);
+  const normalizedNickname = useMemo(() => nickname.trim(), [nickname]);
 
   // 클라이언트에서만 랜덤 이미지 설정
   useEffect(() => {
     setRandomImg(randomProfileImage());
   }, []);
 
+  // 미리보기: File이면 objectURL, string이면 그대로 URL
   useEffect(() => {
-    if (profileImage) {
+    if (!profileImage) {
+      setPreview(null);
+      return;
+    }
+
+    if (isFile(profileImage)) {
       const url = URL.createObjectURL(profileImage);
       setPreview(url);
       return () => URL.revokeObjectURL(url);
     } else {
-      setPreview(null);
+      // string URL
+      setPreview(profileImage);
     }
   }, [profileImage]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // 파일 크기 체크 (5MB 제한)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('파일 크기는 5MB 이하여야 합니다');
-        return;
-      }
+    if (!file) return;
 
-      // 파일 타입 체크
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-      if (!allowedTypes.includes(file.type)) {
-        alert('JPG, JPEG, PNG 파일만 업로드 가능합니다');
-        return;
-      }
-
-      setProfileImage(file);
-    }
-  };
-
-  const handleNext = (e?: React.FormEvent) => {
-    if (e) {
-      e.preventDefault();
-    }
-
-    if (!isNicknameValid || !normalizedNickname.length) {
+    // 파일 크기 5MB 제한
+    if (file.size > 5 * 1024 * 1024) {
+      alert('파일 크기는 5MB 이하여야 합니다');
       return;
     }
 
-    updateProfile('nickname', normalizedNickname);
-    if (profileImage) {
-      updateProfile('img', profileImage);
+    // 파일 타입 체크
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('JPG, JPEG, PNG 파일만 업로드 가능합니다');
+      return;
     }
+
+    setProfileImage(file);
+  };
+
+  async function urlToFile(
+    url: string,
+    fileName = 'profile.jpg',
+    mimeType?: string
+  ) {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return new File([blob], fileName, { type: mimeType ?? blob.type });
+  }
+
+  // 서버가 File만 받는다면: 문자열이면 File로 변환
+  const handleNext = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+
+    if (!isNicknameValid || !normalizedNickname.length) return;
+
+    updateProfile('nickname', normalizedNickname);
+
+    if (profileImage) {
+      const imgToSave = isFile(profileImage)
+        ? profileImage
+        : await urlToFile(profileImage, 'profile-from-url.jpg');
+
+      updateProfile('img', imgToSave);
+    }
+
     completeStep('profile');
     router.replace(PATHS.AUTH.ADDRESS);
   };
@@ -92,7 +113,7 @@ const ProfileSetup = () => {
                 alt='profile_img'
                 width={150}
                 height={150}
-                className='object-cover'
+                className='block h-full w-full scale-[1.05] object-cover'
                 priority={true}
               />
             )}

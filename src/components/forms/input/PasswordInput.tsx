@@ -20,7 +20,6 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
       hasSuccess: externalHasSuccess,
       successMessage: externalSuccessMessage,
       helperText,
-      showPasswordToggle = true,
       showCancelToggle = true,
       isConfirm = false,
       confirmValue,
@@ -113,7 +112,6 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         hasSuccess={externalHasSuccess}
         successMessage={externalSuccessMessage}
         helperText={helperText || defaultHelperText}
-        showPasswordToggle={showPasswordToggle}
         showCancelToggle={showCancelToggle && Boolean(value)}
         disabled={disabled}
         autoComplete={isConfirm ? 'new-password' : 'current-password'}
