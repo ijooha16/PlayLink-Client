@@ -1,6 +1,7 @@
 import { setTempCookie } from '@/libs/cookie-utils';
 import { withApiHandlerRaw } from '@/utills/api-handler';
 import { NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 
 const KAKAO_CLIENT_ID = process.env.KAKAO_OAUTH_REST_API_KEY!;
 const KAKAO_REDIRECT_URI = process.env.KAKAO_REDIRECT_URI!;
@@ -8,8 +9,7 @@ const KAKAO_REDIRECT_URI = process.env.KAKAO_REDIRECT_URI!;
 export const GET = withApiHandlerRaw(async (request) => {
   console.log('=== 카카오 로그인 시작 ===');
 
-  const state = Math.random().toString(36).slice(2);
-  // TODO uuid를 사용할 예정
+  const state = randomUUID();
   console.log('생성된 state:', state);
 
   const params = new URLSearchParams({

@@ -6,6 +6,7 @@ import { PATHS } from '@/constant';
 import { clearFlow, completeStep } from '@/hooks/auth/use-signup-flow';
 import { useUpdateProfile } from '@/hooks/react-query/profile/use-profile-query';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import { validateSports } from '@/libs/valid/auth';
 import useSignUpStore from '@/store/use-sign-up-store';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -49,6 +50,14 @@ export default function SportsSelectionPage() {
   });
 
   const handleNext = () => {
+    // 검증
+    const errorMessage = validateSports(selectedSports);
+
+    if (errorMessage) {
+      alert(errorMessage);
+      return;
+    }
+
     // Store 업데이트
     updateProfile('prefer_sports', JSON.stringify(selectedSports));
 
@@ -62,7 +71,7 @@ export default function SportsSelectionPage() {
     if (profile.img) {
       formData.append('img', profile.img);
     }
-    
+
     // API 호출
     updateProfileMutation(formData);
   };

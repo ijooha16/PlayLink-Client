@@ -1,4 +1,4 @@
-import { backendClient } from '@/libs/http';
+import { BackendAuthAPI } from '@/libs/api/backend';
 import { withApiHandler } from '@/utills/api-handler';
 
 export const POST = withApiHandler(async (request) => {
@@ -20,9 +20,7 @@ export const POST = withApiHandler(async (request) => {
   console.log('=====================================');
 
   try {
-    const { data } = await backendClient.post('/playlink/signup', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const { data } = await BackendAuthAPI.signup(formData);
     return { status: 'success', data };
   } catch (error) {
     console.error('=== Backend Error Response ===');

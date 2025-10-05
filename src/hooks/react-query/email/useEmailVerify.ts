@@ -1,4 +1,4 @@
-import { fetchEmailVeriify } from '@/libs/api/auth/email';
+import { fetchEmailVeriify } from '@/libs/api/frontend/auth/email';
 import { useMutation } from '@tanstack/react-query';
 
 type VerifyType = {

@@ -1,7 +1,7 @@
 'use client';
 
 import { PATHS } from '@/constant';
-import { Auth } from '@/libs/api/auth/auth';
+import { Auth } from '@/libs/api/frontend/auth/auth';
 import { toast } from '@/utills/toast';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';

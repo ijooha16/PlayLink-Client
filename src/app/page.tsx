@@ -6,7 +6,7 @@ import MainNewButton from '@/components/features/navigation/main-new-button';
 import { PATHS } from '@/constant';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-matches-query';
 // import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
-import { sendNotificationToken } from '@/libs/api/notification/send-notification-token';
+import { sendNotificationToken } from '@/libs/api/frontend/notification/send-notification-token';
 import {
   onForegroundMessage,
   requestPermissionAndGetToken,

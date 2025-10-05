@@ -12,11 +12,11 @@ interface CookieOptions {
 /**
  * NextResponse에 인증 토큰 쿠키를 설정합니다
  */
-export function setAuthCookie(
-  response: NextResponse,
+export function setAuthCookie<T>(
+  response: NextResponse<T>,
   token: string,
   options?: Partial<CookieOptions>
-): NextResponse {
+): NextResponse<T> {
   const defaultOptions: CookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -36,7 +36,7 @@ export function setAuthCookie(
 /**
  * NextResponse에서 인증 토큰 쿠키를 삭제합니다
  */
-export function clearAuthCookie(response: NextResponse): NextResponse {
+export function clearAuthCookie<T>(response: NextResponse<T>): NextResponse<T> {
   response.cookies.set(PLAYLINK_AUTH, '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -48,16 +48,15 @@ export function clearAuthCookie(response: NextResponse): NextResponse {
   return response;
 }
 
-// TODO 카카오 쿠키는 삭제해줄거임.
 /**
  * NextResponse에 임시 쿠키를 설정합니다 (OAuth state 등)
  */
-export function setTempCookie(
-  response: NextResponse,
+export function setTempCookie<T>(
+  response: NextResponse<T>,
   name: string,
   value: string,
   maxAge: number = 60 * 10 // 기본 10분
-): NextResponse {
+): NextResponse<T> {
   response.cookies.set(name, value, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -71,10 +70,10 @@ export function setTempCookie(
 /**
  * NextResponse에서 쿠키를 삭제합니다
  */
-export function deleteCookie(
-  response: NextResponse,
+export function deleteCookie<T>(
+  response: NextResponse<T>,
   name: string
-): NextResponse {
+): NextResponse<T> {
   response.cookies.delete(name);
   return response;
 }

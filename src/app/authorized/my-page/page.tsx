@@ -6,7 +6,7 @@ import {
   useGetProfileQuery,
   useUpdateProfile,
 } from '@/hooks/react-query/profile/use-profile-query';
-import { Auth } from '@/libs/api/auth/auth';
+import { Auth } from '@/libs/api/frontend/auth/auth';
 import { useAuthStore } from '@/store/auth-store';
 import { Camera, Check, ChevronRight, Edit3, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';

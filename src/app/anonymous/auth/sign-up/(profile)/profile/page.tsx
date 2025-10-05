@@ -1,12 +1,12 @@
 'use client';
 
 import { Input } from '@/components/forms/input';
-import { Edit } from '@/components/shared/icons';
+import { Edit, Profile } from '@/components/shared/icons';
+
 import Button from '@/components/ui/button';
 import { PATHS } from '@/constant';
 import { completeStep } from '@/hooks/auth/use-signup-flow';
 import useSignUpStore from '@/store/use-sign-up-store';
-import randomProfileImage, { ProfileImg } from '@/utills/random-profile-image';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -21,16 +21,10 @@ const ProfileSetup = () => {
     profile.img || null
   );
   const [preview, setPreview] = useState<string | null>(null);
-  const [randomImg, setRandomImg] = useState<ProfileImg | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isNicknameValid, setIsNicknameValid] = useState(false);
 
   const normalizedNickname = useMemo(() => nickname.trim(), [nickname]);
-
-  // 클라이언트에서만 랜덤 이미지 설정
-  useEffect(() => {
-    setRandomImg(randomProfileImage());
-  }, []);
 
   // 미리보기: File이면 objectURL, string이면 그대로 URL
   useEffect(() => {
@@ -102,20 +96,22 @@ const ProfileSetup = () => {
   return (
     <>
       <div className='flex flex-col items-center'>
-        <div className='relative my-s-24'>
+        <div className='relative my-s-24 h-[100px] w-[100px]'>
           <div
-            className='flex h-[100px] w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-full bg-gray-200'
+            className='flex h-full w-full cursor-pointer items-center justify-center overflow-hidden rounded-full'
             onClick={() => fileInputRef.current?.click()}
           >
-            {(preview || randomImg) && (
+            {preview ? (
               <Image
-                src={preview || randomImg!}
+                src={preview}
                 alt='profile_img'
-                width={150}
-                height={150}
-                className='block h-full w-full scale-[1.05] object-cover'
+                width={100}
+                height={100}
+                className='block h-full w-full object-cover'
                 priority={true}
               />
+            ) : (
+              <Profile size={100} className='text-gray-400' />
             )}
           </div>
 

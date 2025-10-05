@@ -12,16 +12,16 @@ import LocationIcon from '../../../public/images/play-icons/ic_sm_location.svg';
 import KakaoIcon from '../../../public/images/social/Ic_kakao.svg';
 import EmailIcon from '../../../public/images/social/Ic_mail.svg';
 
+import ProfileIcon from '../../../public/images/play-icons/ic_profile.svg';
+
+import AddUser from '../../../public/images/play-icons/ic_add_user.svg';
+import Error from '../../../public/images/play-icons/ic_error.svg';
+import Success from '../../../public/images/play-icons/ic_info.svg';
 import CircleIcon1 from '../../../public/images/play-icons/welcome/ic_circle_01.svg';
 import CircleIcon2 from '../../../public/images/play-icons/welcome/ic_circle_02.svg';
 import SparklesIcon1 from '../../../public/images/play-icons/welcome/ic_spark_01.svg';
 import SparklesIcon2 from '../../../public/images/play-icons/welcome/ic_spark_02.svg';
 import WelcomeIcon from '../../../public/images/play-icons/welcome/ic_welcome.svg';
-import AddUser from '../../../public/images/play-icons/ic_add-user.svg'
-import Error from '../../../public/images/play-icons/icon=Error.svg';
-import Success from '../../../public/images/play-icons/icon=Information.svg';
-
-
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   size?: number;
@@ -83,10 +83,10 @@ export const Email = createIcon(EmailIcon, 24, 24);
 export const Cancel = createIcon(CancelIcon, 25, 24);
 
 export const Welcome = createIcon(WelcomeIcon, 335, 146);
-export const Sparkle1 = createIcon(SparklesIcon1, 24, 24);
-export const Sparkle2 = createIcon(SparklesIcon2, 24, 24);
-export const Circle1 = createIcon(CircleIcon1, 24, 24);
-export const Circle2 = createIcon(CircleIcon2, 24, 24);
+export const Sparkle1 = createIcon(SparklesIcon1, 335, 146);
+export const Sparkle2 = createIcon(SparklesIcon2, 335, 146);
+export const Circle1 = createIcon(CircleIcon1, 335, 146);
+export const Circle2 = createIcon(CircleIcon2, 335, 146);
 
 export const Edit = createIcon(EditIcon, 24, 24);
 export const Location = createIcon(LocationIcon, 17, 16);
@@ -98,3 +98,4 @@ export const Check = createIcon(CheckIcon, 24, 24);
 export const AddUserIcon = createIcon(AddUser, 152, 152);
 export const ErrorIcon = createIcon(Error, 24, 24);
 export const SuccessIcon = createIcon(Success, 24, 24);
+export const Profile = createIcon(ProfileIcon, 100, 100);

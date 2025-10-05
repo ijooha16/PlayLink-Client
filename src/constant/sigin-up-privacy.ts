@@ -1,6 +1,8 @@
-
-// 이용약관
-const TERMS_OF_SERVICE = `
+/**
+ * 약관 내용 (lazy loading)
+ */
+export const POLICY_CONTENT: Record<string, () => string> = {
+  agreeTerms: () => `
 ## 플레이링크 서비스 이용약관
 
 ### 제1조 목적
@@ -29,10 +31,8 @@ const TERMS_OF_SERVICE = `
 ### 제6조 면책 조항
 - 불가항력적 사유로 인한 서비스 중단 책임 면제
 - 회원 게시물의 정확성·신뢰성에 대한 책임 없음
-`;
-
-// 개인정보 처리방침
-const PRIVACY_POLICY = `
+`,
+  agreePrivacy: () => `
 ## 개인정보 처리방침 동의
 
 ### 수집 항목
@@ -48,10 +48,8 @@ const PRIVACY_POLICY = `
 ### 보유 및 이용 기간
 - 회원 탈퇴 시 즉시 삭제
 - 법령에 따라 보관 의무가 있는 경우 해당 기간까지 보관
-`;
-
-// 위치정보 이용 동의
-const LOCATION_POLICY = `
+`,
+  agreeLocation: () => `
 ## 위치정보 이용 동의
 
 ### 수집하는 위치 정보
@@ -65,10 +63,8 @@ const LOCATION_POLICY = `
 ### 보유 및 이용 기간
 - 실시간 서비스 제공 후 즉시 파기
 - 분쟁 해결·법적 요청 시 일정 기간 보관 가능
-`;
-
-// 제3자 정보 제공 동의
-const THIRD_PARTY_POLICY = `
+`,
+  agreeThirdParty: () => `
 ## 개인정보 제3자 제공 동의
 
 ### 1. 제공받는 자
@@ -84,10 +80,8 @@ const THIRD_PARTY_POLICY = `
 - 운동 매칭 진행 및 모임 운영
 - 서비스 관련 공지 및 약속 일정 안내
 - 이벤트·프로모션 참여 안내(마케팅 동의 시)
-`;
-
-// 마케팅 정보 수신 동의
-const MARKETING_POLICY = `
+`,
+  agreeMarketing: () => `
 ## 마케팅 정보 수신 동의
 
 ### 수집·이용 항목
@@ -100,21 +94,21 @@ const MARKETING_POLICY = `
 
 ### 보유 및 이용 기간
 - 회원 탈퇴 또는 마케팅 동의 철회 시까지
-`;
-
+`,
+  isOver14: () => '만 14세 이상만 서비스를 이용할 수 있습니다.'
+};
 
 /**
- * 약관
+ * 약관 (content 제외, lazy loading을 위함)
  * @id 약관 id
  * @title 약관 제목
- * @content 약관 내용
  * @required 필수 여부
  */
 export const POLICY = [
-    { id: 'agreeTerms', title: '이용약관', content: TERMS_OF_SERVICE, required: true },
-    { id: 'agreePrivacy', title: '개인정보 처리방침', content: PRIVACY_POLICY, required: true },
-    { id: 'agreeLocation', title: '위치정보 이용 동의', content: LOCATION_POLICY, required: true },
-    { id: 'isOver14', title: '만 14세 이상 확인', content: '만 14세 이상만 서비스를 이용할 수 있습니다.', required: true },
-    { id: 'agreeThirdParty', title: '제3자 정보 제공 동의', content: THIRD_PARTY_POLICY, required: true },
-    { id: 'agreeMarketing', title: '마케팅 정보 수신 동의', content: MARKETING_POLICY, required: false },
+    { id: 'agreeTerms', title: '이용약관', required: true },
+    { id: 'agreePrivacy', title: '개인정보 처리방침', required: true },
+    { id: 'agreeLocation', title: '위치정보 이용 동의', required: true },
+    { id: 'isOver14', title: '만 14세 이상 확인', required: true },
+    { id: 'agreeThirdParty', title: '제3자 정보 제공 동의', required: true },
+    { id: 'agreeMarketing', title: '마케팅 정보 수신 동의', required: false },
 ];

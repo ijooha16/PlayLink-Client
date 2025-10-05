@@ -2,18 +2,24 @@
 
 import { ChevronRight } from '@/components/shared/icons'
 import Button from '@/components/ui/button'
-import { POLICY, PATHS } from '@/constant'
+import { POLICY, POLICY_CONTENT, PATHS } from '@/constant'
 import { completeStep } from '@/hooks/auth/use-signup-flow'
 import { useModalStore } from '@/store/modal-store'
 import useSignUpStore from '@/store/use-sign-up-store'
 import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 const TermsScreen = () => {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
   const { openModal } = useModalStore()
   const router = useRouter()
-  const { updateSignUp } = useSignUpStore()
+  const { updateSignUp, resetSignUp, resetProfile } = useSignUpStore()
+
+  // 회원가입 플로우 진입 시 store 초기화
+  useEffect(() => {
+    resetSignUp()
+    resetProfile()
+  }, [])
 
   // 체크박스 토글
   const handleCheckboxChange = (id: string) => {
@@ -37,9 +43,12 @@ const TermsScreen = () => {
     const policy = POLICY.find(p => p.id === policyId)
     if (!policy) return
 
+    // 모달을 열 때만 약관 내용을 불러옴
+    const content = POLICY_CONTENT[policyId]?.() || ''
+
     openModal({
       title: policy.title,
-      content: policy.content,
+      content,
       isMarkdown: true,
       showCancelButton: false,
       confirmText: '확인',
