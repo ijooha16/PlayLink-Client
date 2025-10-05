@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from '@/constant/query-key';
-import { approveMatch, rejectMatch } from '@/libs/api/match/join-match';
+import { approveMatch, rejectMatch } from '@/libs/api/frontend/match/join-match';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useApproveMatchMutation = () => {

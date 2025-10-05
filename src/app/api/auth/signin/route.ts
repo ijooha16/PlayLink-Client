@@ -1,12 +1,12 @@
 import { setAuthCookie } from '@/libs/cookie-utils';
-import { backendClient } from '@/libs/http';
+import { BackendAuthAPI } from '@/libs/api/backend';
 import { withApiHandlerRaw } from '@/utills/api-handler';
 import { NextResponse } from 'next/server';
 
 export const POST = withApiHandlerRaw(async (request) => {
   const body = await request.json();
 
-  const response = await backendClient.post('/playlink/login', body);
+  const response = await BackendAuthAPI.login(body);
   const accessToken = response.headers.authorization;
 
   const finalResponse = NextResponse.json({

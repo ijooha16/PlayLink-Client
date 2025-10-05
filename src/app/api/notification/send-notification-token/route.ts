@@ -1,16 +1,10 @@
-import { backendClient } from '@/libs/http';
+import { BackendNotificationAPI } from '@/libs/api/backend';
 import { withApiHandler } from '@/utills/api-handler';
 
 export const PUT = withApiHandler(async (request) => {
-  const token = request.headers.get('Authorization');
   const body = await request.text();
 
-  const response = await backendClient.put('/playlink/fcm', body, {
-    headers: {
-      Authorization: token || '',
-      'Content-Type': 'application/json',
-    },
-  });
+  const response = await BackendNotificationAPI.sendFCMToken(body);
 
   const data = response.data;
   return { status: 'success', data };

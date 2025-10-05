@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from '@/constant/query-key';
-import { Profile } from '@/libs/api/profile/profile';
+import { Profile } from '@/libs/api/frontend/profile/profile';
 import { useAuthStore } from '@/store/auth-store';
 import { toast } from '@/utills/toast';
 import { useMutation, useQuery } from '@tanstack/react-query';

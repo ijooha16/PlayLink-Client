@@ -1,24 +1,14 @@
-import { backendClient } from '@/libs/http';
+import { BackendMatchAPI } from '@/libs/api/backend';
 import { withApiHandler } from '@/utills/api-handler';
 
 export const dynamic = 'force-dynamic';
 
 export const PUT = withApiHandler(async (request) => {
-  const token = request.headers.get('Authorization');
   const body = await request.text();
   const { searchParams } = new URL(request.url);
-  const matchId = searchParams.get('matchId');
+  const matchId = searchParams.get('matchId') || '';
 
-  const response = await backendClient.put(
-    `/playlink/match/participants/${matchId}`,
-    body,
-    {
-      headers: {
-        Authorization: token || '',
-        'Content-Type': 'application/json',
-      },
-    }
-  );
+  const response = await BackendMatchAPI.updateMatchParticipants(matchId, body);
 
   const data = response.data;
   return { status: 'success', data };

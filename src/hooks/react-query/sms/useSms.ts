@@ -1,4 +1,4 @@
-import { fetchSms } from '@/libs/api/auth/sms';
+import { fetchSms } from '@/libs/api/frontend/auth/sms';
 import { useMutation } from '@tanstack/react-query';
 
 interface authType {

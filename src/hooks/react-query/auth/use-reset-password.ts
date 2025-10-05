@@ -1,6 +1,6 @@
 import { PATHS } from '@/constant';
 import { TOAST_ALERT_MESSAGES } from '@/constant/toast-alert';
-import { resetPassword } from '@/libs/api/auth/reset-password';
+import { resetPassword } from '@/libs/api/frontend/auth/reset-password';
 import { toast } from '@/utills/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';

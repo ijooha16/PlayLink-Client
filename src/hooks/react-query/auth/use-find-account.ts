@@ -2,7 +2,7 @@ import { PATHS } from '@/constant';
 import {
   findAccountByPhone,
   findAccountByPhoneEmail,
-} from '@/libs/api/auth/find-account';
+} from '@/libs/api/frontend/auth/find-account';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 

@@ -16,20 +16,20 @@ const WelcomePage = () => {
   const router = useRouter();
 
   const floatingItems = [
-    { Component: Sparkle1, y: -10, duration: 3, ease: 'linear' },
-    { Component: Circle1, y: 8, duration: 3, ease: 'linear' },
-    { Component: Sparkle2, y: -8, duration: 3, ease: 'easeInOut' },
-    { Component: Circle2, y: 10, duration: 3, ease: 'easeInOut' },
+    { Component: Sparkle1, y: -10, duration: 3 },
+    { Component: Circle1, y: 8, duration: 3 },
+    { Component: Sparkle2, y: -8, duration: 3 },
+    { Component: Circle2, y: 10, duration: 3 },
   ];
 
   return (
     <>
       <div className='fixed inset-0 flex items-center justify-center'>
-        <div className='relative flex h-[146px] w-[335px] items-center justify-center'>
+        <div className='relative h-[146px] w-[335px]'>
           {floatingItems.map((item, i) => (
             <motion.div
               key={i}
-              className='absolute h-[146px] w-[335px]'
+              className='absolute inset-0'
               animate={{ y: [0, item.y, 0] }}
               transition={{
                 duration: item.duration,
@@ -37,10 +37,10 @@ const WelcomePage = () => {
                 repeatType: 'loop',
               }}
             >
-              <item.Component size={24} />
+              <item.Component width={335} height={146} />
             </motion.div>
           ))}
-          <div className='absolute h-[146px] w-[335px]'>
+          <div className='absolute inset-0'>
             <Welcome size={335} />
           </div>
         </div>

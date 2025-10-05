@@ -1,4 +1,4 @@
-import { fetchEmail } from '@/libs/api/auth/email';
+import { fetchEmail } from '@/libs/api/frontend/auth/email';
 import { useMutation } from '@tanstack/react-query';
 
 interface authType {

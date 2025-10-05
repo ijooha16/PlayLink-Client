@@ -1,4 +1,5 @@
 import { PATHS } from '@/constant';
+import { PLAYLINK_AUTH } from '@/constant/cookie';
 import { useAuthStore } from '@/store/auth-store';
 import { logger } from '@/utills/logger';
 import axios, {
@@ -30,8 +31,25 @@ export const backendClient = axios.create({
 
 // Request interceptor
 backendClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const token = useAuthStore.getState().token;
+  async (config: InternalAxiosRequestConfig) => {
+    let token: string | undefined;
+
+    // 서버사이드(API routes)에서는 쿠키에서, 클라이언트사이드에서는 store에서 토큰 가져오기
+    if (typeof window === 'undefined') {
+      // 서버사이드 - 쿠키에서 토큰 읽기 (동적 import로 클라이언트 번들에서 제외)
+      try {
+        const { cookies } = await import('next/headers');
+        const cookieStore = await cookies();
+        token = cookieStore.get(PLAYLINK_AUTH)?.value ?? undefined;
+      } catch (error) {
+        // cookies()를 호출할 수 없는 컨텍스트 (예: middleware)
+        logger.warn('Failed to read cookies in backend-client', { error });
+      }
+    } else {
+      // 클라이언트사이드 - store에서 토큰 가져오기
+      token = useAuthStore.getState().token ?? undefined;
+    }
+
     if (token && config.headers) {
       config.headers.Authorization = token.startsWith('Bearer ')
         ? token

@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from '@/constant/query-key';
-import { getNotification } from '@/libs/api/notification/get-notification';
+import { getNotification } from '@/libs/api/frontend/notification/get-notification';
 import { useAuthStore } from '@/store/auth-store';
 import { useQuery } from '@tanstack/react-query';
 

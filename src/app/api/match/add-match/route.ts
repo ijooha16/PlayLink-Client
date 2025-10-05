@@ -1,16 +1,10 @@
-import { backendClient } from '@/libs/http';
+import { BackendMatchAPI } from '@/libs/api/backend';
 import { withApiHandler } from '@/utills/api-handler';
 
 export const POST = withApiHandler(async (request) => {
   const body = await request.formData();
-  const token = request.headers.get('Authorization');
 
-  const { data } = await backendClient.post('/playlink/match', body, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      Authorization: token || '',
-    },
-  });
+  const { data } = await BackendMatchAPI.addMatch(body);
 
   return { status: 'success', data };
 });
