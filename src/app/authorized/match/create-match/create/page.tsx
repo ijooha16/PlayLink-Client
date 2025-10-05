@@ -1,162 +1,129 @@
 'use client';
 
-import DatePickerModal from '@/components/forms/date-picker-modal';
-import DropdownInput from '@/components/forms/dropdown-input';
-import Input from '@/components/ui/input';
+import BottomSheet from '@/components/shared/bottom-sheet';
 import Button from '@/components/ui/button';
-import { DUMMY_PLACE, PATHS } from '@/constant';
-import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 
-const CreateMatchForm = () => {
-  const router = useRouter();
-
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState<Date | null>(null);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [placeId, setPlaceId] = useState('');
-  const [leastSize, setLeastSize] = useState(0);
-  const [maxSize, setMaxSize] = useState<number | ''>('');
-
-  const generateTimeOptions = () => {
-    const times = [];
-    for (let i = 0; i < 24; i++) {
-      for (let j = 0; j < 60; j += 30) {
-        const hour = i;
-        const minute = j;
-        const formattedMinute = minute < 10 ? `0${minute}` : minute;
-        times.push(`${hour}:${formattedMinute}`);
-      }
-    }
-    return times;
-  };
-
-  const handleNext = () => {
-    if (!title.trim() || !date || !startTime || !endTime || !placeId) return;
-    // TODO: Store에 저장
-    router.replace(PATHS.MATCH.CREATE_MATCH + '/description');
-  };
-
-  const isFormValid = title.trim() && date && startTime && endTime && placeId;
+const BottomSheetExample = () => {
+  const [isBasicOpen, setIsBasicOpen] = useState(false);
+  const [isCustomContentOpen, setIsCustomContentOpen] = useState(false);
+  const [isAutoHeightOpen, setIsAutoHeightOpen] = useState(false);
+  const [isHalfHeightOpen, setIsHalfHeightOpen] = useState(false);
+  const [isFullHeightOpen, setIsFullHeightOpen] = useState(false);
+  const [isWithButtonsOpen, setIsWithButtonsOpen] = useState(false);
 
   return (
-    <>
-      <div className='flex flex-col gap-s-16 pb-[80px]'>
-        <div className='flex flex-col space-y-2'>
-          <label className='text-label-l font-semibold text-text-strong'>
-            제목
-          </label>
-          <Input
-            type='text'
-            variant={'default'}
-            sizes={'md'}
-            placeholder='모임 제목을 입력해주세요'
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
+    <div className='flex flex-col gap-4 p-4'>
+      <h1 className='text-heading-01 font-bold'>BottomSheet 예시</h1>
 
-        <div className='flex flex-col space-y-2'>
-          <label className='text-label-l font-semibold text-text-strong'>
-            날짜
-          </label>
-          <DatePickerModal selectedDate={date} onChange={setDate} />
-        </div>
+      <div className='flex flex-col gap-3'>
+        <Button variant='default' onClick={() => setIsBasicOpen(true)}>
+          기본 BottomSheet
+        </Button>
 
-        <div className='flex flex-col space-y-2'>
-          <label className='text-label-l font-semibold text-text-strong'>
-            시간
-          </label>
-          <div className='grid grid-cols-2 gap-2'>
-            <DropdownInput
-              dummyData={generateTimeOptions()}
-              keyword={startTime}
-              setKeyword={setStartTime}
-              placeholderText='시작 시간'
-              isSearchable={false}
-            />
-            <DropdownInput
-              dummyData={generateTimeOptions()}
-              keyword={endTime}
-              setKeyword={setEndTime}
-              placeholderText='종료 시간'
-              isSearchable={false}
-            />
-          </div>
-        </div>
+        <Button variant='default' onClick={() => setIsCustomContentOpen(true)}>
+          커스텀 컨텐츠
+        </Button>
 
-        <div className='flex flex-col space-y-2'>
-          <label className='text-label-l font-semibold text-text-strong'>
-            장소
-          </label>
-          <DropdownInput
-            dummyData={DUMMY_PLACE}
-            keyword={placeId}
-            setKeyword={setPlaceId}
-            placeholderText='장소를 검색해보세요'
-          />
-        </div>
+        <Button variant='default' onClick={() => setIsAutoHeightOpen(true)}>
+          Auto 높이
+        </Button>
 
-        <div className='flex flex-col space-y-2'>
-          <label className='text-label-l font-semibold text-text-strong'>
-            함께할 인원
-          </label>
-          <div className='grid grid-cols-2 gap-2'>
-            <div className='flex flex-col'>
-              <label className='text-body-s text-text-alternative'>
-                최소인원
-              </label>
-              <Input
-                type='number'
-                variant={'default'}
-                sizes={'md'}
-                placeholder='최소인원'
-                value={leastSize}
-                onChange={(e) => setLeastSize(parseInt(e.target.value) || 0)}
-              />
-            </div>
-            <div className='flex flex-col'>
-              <div className='flex gap-2'>
-                <label className='text-body-s text-text-alternative'>
-                  최대인원
-                </label>
-                <div className='flex items-center gap-1'>
-                  <input
-                    id='maxSize'
-                    type='checkbox'
-                    onChange={() => setMaxSize(maxSize === 0 ? '' : 0)}
-                    className='h-4 w-4 rounded border-gray-300'
-                  />
-                  <label htmlFor='maxSize' className='text-body-s'>
-                    제한 없음
-                  </label>
-                </div>
-              </div>
-              <Input
-                type='number'
-                variant={'default'}
-                sizes={'md'}
-                placeholder='최대인원'
-                disabled={maxSize === 0}
-                value={maxSize === 0 ? '' : maxSize}
-                onChange={(e) => setMaxSize(parseInt(e.target.value) || '')}
-              />
-            </div>
-          </div>
-        </div>
+        <Button variant='default' onClick={() => setIsHalfHeightOpen(true)}>
+          Half 높이
+        </Button>
+
+        <Button variant='default' onClick={() => setIsFullHeightOpen(true)}>
+          Full 높이
+        </Button>
+
+        <Button variant='default' onClick={() => setIsWithButtonsOpen(true)}>
+          확인/취소 버튼
+        </Button>
       </div>
 
-      <Button
-        variant='default'
-        disabled={!isFormValid}
-        onClick={handleNext}
-        isFloat
+      {/* 기본 BottomSheet */}
+      <BottomSheet
+        isOpen={isBasicOpen}
+        onClose={() => setIsBasicOpen(false)}
+        confirmText='확인'
+        onConfirm={() => console.log('확인 클릭')}
       >
-        다음
-      </Button>
-    </>
+        이것은 기본 BottomSheet입니다.
+      </BottomSheet>
+
+      {/* 커스텀 컨텐츠 */}
+      <BottomSheet
+        isOpen={isCustomContentOpen}
+        onClose={() => setIsCustomContentOpen(false)}
+        showConfirmButton={false}
+      >
+        <div className='flex flex-col gap-4'>
+          <button className='w-full rounded-lg border border-gray-200 p-4 text-left hover:bg-gray-50'>
+            옵션 1
+          </button>
+          <button className='w-full rounded-lg border border-gray-200 p-4 text-left hover:bg-gray-50'>
+            옵션 2
+          </button>
+          <button className='w-full rounded-lg border border-gray-200 p-4 text-left hover:bg-gray-50'>
+            옵션 3
+          </button>
+        </div>
+      </BottomSheet>
+
+      {/* Auto 높이 */}
+      <BottomSheet
+        isOpen={isAutoHeightOpen}
+        onClose={() => setIsAutoHeightOpen(false)}
+        height='auto'
+      >
+        내용에 맞춰 높이가 자동으로 조절됩니다.
+      </BottomSheet>
+
+      {/* Half 높이 */}
+      <BottomSheet
+        isOpen={isHalfHeightOpen}
+        onClose={() => setIsHalfHeightOpen(false)}
+        height='half'
+      >
+        <div className='space-y-4'>
+          <p>화면의 50% 높이를 차지합니다.</p>
+          <p>스크롤 가능한 영역입니다.</p>
+          {Array.from({ length: 20 }).map((_, i) => (
+            <p key={i}>항목 {i + 1}</p>
+          ))}
+        </div>
+      </BottomSheet>
+
+      {/* Full 높이 */}
+      <BottomSheet
+        isOpen={isFullHeightOpen}
+        onClose={() => setIsFullHeightOpen(false)}
+        height='full'
+      >
+        <div className='space-y-4'>
+          <p>화면의 90% 높이를 차지합니다.</p>
+          {Array.from({ length: 50 }).map((_, i) => (
+            <p key={i}>항목 {i + 1}</p>
+          ))}
+        </div>
+      </BottomSheet>
+
+      {/* 확인/취소 버튼 */}
+      <BottomSheet
+        isOpen={isWithButtonsOpen}
+        onClose={() => setIsWithButtonsOpen(false)}
+        confirmText='진행'
+        cancelText='취소'
+        showCancelButton
+        showConfirmButton
+        onConfirm={() => console.log('진행')}
+        onCancel={() => console.log('취소')}
+      >
+        이 작업을 진행하시겠습니까?
+      </BottomSheet>
+    </div>
   );
 };
 
-export default CreateMatchForm;
+export default BottomSheetExample;
