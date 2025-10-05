@@ -54,11 +54,11 @@ const Interest = () => {
             className={`flex cursor-pointer items-center gap-s-16 rounded-lg p-s-20 transition-colors ${
               selectedType === option.id
                 ? 'border border-brand-primary bg-primary-50'
-                : 'border border-border-netural bg-white'
+                : 'border-border-neutral border bg-white'
             }`}
           >
             <div
-              className={`h-[20px] w-[20px] rounded-full border-border-netural transition-colors ${
+              className={`border-border-neutral h-[20px] w-[20px] rounded-full transition-colors ${
                 selectedType === option.id
                   ? 'border-4 border-brand-primary bg-brand-primary'
                   : 'border-2 border-icon-disabled'

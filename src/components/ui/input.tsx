@@ -1,4 +1,4 @@
-import { Cancel, Check, Eye, EyeOff } from '@/components/shared/icons';
+import { Cancel } from '@/components/shared/icons';
 import { cva, VariantProps } from 'class-variance-authority';
 import React, { forwardRef, useId, useMemo, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -13,12 +13,12 @@ const inputVariants = cva(
         gray: 'rounded-12 bg-bg-normal',
       },
       state: {
-        default: 'border border-border-netural',
+        default: 'border border-border-neutral',
         focused: 'border border-border-strong',
         error: 'border border-system-error',
         success: 'border border-system-information',
         // hover: '',
-        disabled: 'bg-gray-200 text-text-disabled border border-border-netural',
+        disabled: 'bg-gray-200 text-text-disabled border border-border-neutral',
       },
       align: {
         left: 'text-left',
@@ -228,7 +228,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     >
                       <Cancel
                         size={24}
-                        className='cursor-pointer text-icon-netural'
+                        className='text-icon-neutral cursor-pointer'
                       />
                     </button>
                   )}
@@ -242,7 +242,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
           {/* 오른쪽 분리 요소 (예: 인증요청 버튼) */}
           {splitedRightElement && (
-            <div className='flex items-center justify-center rounded-r-12 border-y border-r border-border-netural px-[19px]'>
+            <div className='border-border-neutral flex items-center justify-center rounded-r-12 border-y border-r px-[19px]'>
               {splitedRightElement}
             </div>
           )}
@@ -266,7 +266,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             id={describedById}
             className='w-full text-left text-caption-01 text-system-error'
           >
-            {typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage)}
+            {typeof errorMessage === 'string'
+              ? errorMessage
+              : JSON.stringify(errorMessage)}
           </p>
         )}
 

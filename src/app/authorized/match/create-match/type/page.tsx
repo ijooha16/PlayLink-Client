@@ -41,12 +41,12 @@ const CreateMatchType = () => {
             className={`flex h-[80px] cursor-pointer items-center justify-between rounded-16 border px-5 transition-colors ${
               selectedType === option.id
                 ? 'border-primary-800 bg-primary-50'
-                : 'border-border-netural bg-white'
+                : 'border-border-neutral bg-white'
             }`}
           >
             <div className='flex items-center gap-3'>
               <div
-                className={`${selectedType === option.id ? 'bg-bg-netural bg-primary-300' : 'bg-bg-netural'} flex h-[40px] w-[40px] items-center justify-center rounded-full`}
+                className={`${selectedType === option.id ? 'bg-bg-neutral bg-primary-300' : 'bg-bg-neutral'} flex h-[40px] w-[40px] items-center justify-center rounded-full`}
               >
                 <span className='text-xl'>{option.icon}</span>
               </div>

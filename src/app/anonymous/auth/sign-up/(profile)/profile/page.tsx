@@ -118,7 +118,7 @@ const ProfileSetup = () => {
           <button
             type='button'
             onClick={() => fileInputRef.current?.click()}
-            className='absolute bottom-0 right-0 flex h-[32px] w-[32px] items-center justify-center rounded-full border-2 border-white bg-bg-netural'
+            className='bg-bg-neutral absolute bottom-0 right-0 flex h-[32px] w-[32px] items-center justify-center rounded-full border-2 border-white'
           >
             <Edit size={24} />
           </button>

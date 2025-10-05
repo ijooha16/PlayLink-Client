@@ -1,9 +1,8 @@
 'use client';
 
 import { PATHS } from '@/constant';
-import { checkSignUpAccess } from '@/hooks/auth/use-signup-flow';
 import { usePathname, useRouter } from 'next/navigation';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 
 const SIGN_UP_FLOW = [
   {
@@ -94,7 +93,7 @@ const AuthLayoutContainer = ({
         {title}
       </h1>
       {content && (
-        <p className='font-regular whitespace-pre-line pt-s-4 text-body-02 text-text-netural'>
+        <p className='font-regular text-text-neutral whitespace-pre-line pt-s-4 text-body-02'>
           {content}
         </p>
       )}

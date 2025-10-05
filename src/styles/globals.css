@@ -3,22 +3,22 @@
 @tailwind utilities;
 
 @layer base {
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     @apply relative h-[18px] w-[18px] cursor-pointer appearance-none rounded border border-gray-400 bg-gray-50 after:absolute after:inset-0 after:flex after:items-center after:justify-center after:content-[''];
   }
 
-  input[type="checkbox"]::after {
+  input[type='checkbox']::after {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 3.5L3.5 6L9 1' stroke='transparent' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
     content: '';
   }
 
-  input[type="checkbox"]:checked {
+  input[type='checkbox']:checked {
     @apply border-4 border-primary-800 bg-primary-800;
   }
 
-  input[type="checkbox"]:checked::after {
+  input[type='checkbox']:checked::after {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 3.5L3.5 6L9 1' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
 }
@@ -70,8 +70,8 @@
 
   /* line color */
   --color-line-normal: #eeeeee;
-  --color-line-netural: #e2e2e2;
-  --color-line-alternative: #D0D0D0;
+  --color-line-neutral: #e2e2e2;
+  --color-line-alternative: #d0d0d0;
   --color-line-strong: #121212;
 
   /* system color */
@@ -171,7 +171,6 @@
 * {
   @apply box-border;
 }
-
 
 body {
   color: var(--foreground);

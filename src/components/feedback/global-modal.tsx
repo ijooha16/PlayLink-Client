@@ -54,7 +54,7 @@ export default function GlobalModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 mx-auto flex max-w-screen-sm items-center justify-center">
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={handleOverlayClick}

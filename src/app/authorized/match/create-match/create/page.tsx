@@ -1,162 +1,361 @@
 'use client';
 
-import DatePickerModal from '@/components/forms/date-picker-modal';
-import DropdownInput from '@/components/forms/dropdown-input';
-import Input from '@/components/ui/input';
+import BottomSheet from '@/components/shared/bottom-sheet';
+import {
+  BubbleChat,
+  Calendar,
+  LocationLarge,
+  Sort,
+  UserLove,
+  UserMulti,
+} from '@/components/shared/icons';
+import AgePicker from '@/components/ui/age-picker';
 import Button from '@/components/ui/button';
-import { DUMMY_PLACE, PATHS } from '@/constant';
+import DateTimePicker from '@/components/ui/date-time-picker';
+import GenderPicker from '@/components/ui/gender-picker';
+import LevelPicker from '@/components/ui/level-picker';
+import LocationPicker from '@/components/ui/location-picker';
+import PeoplePicker from '@/components/ui/people-picker';
+import SelectButton from '@/components/ui/select-button';
+import { PATHS } from '@/constant';
+import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 
-const CreateMatchForm = () => {
+const CreateMatchPage = () => {
   const router = useRouter();
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedPeople, setSelectedPeople] = useState('');
 
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState<Date | null>(null);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [placeId, setPlaceId] = useState('');
-  const [leastSize, setLeastSize] = useState(0);
-  const [maxSize, setMaxSize] = useState<number | ''>('');
+  // BottomSheet 상태
+  const [isDateTimeOpen, setIsDateTimeOpen] = useState(false);
+  const [tempDateTime, setTempDateTime] = useState({
+    date: '',
+    hour: '',
+    minute: '',
+    year: 0,
+    month: 0,
+    day: 0,
+  });
 
-  const generateTimeOptions = () => {
-    const times = [];
-    for (let i = 0; i < 24; i++) {
-      for (let j = 0; j < 60; j += 30) {
-        const hour = i;
-        const minute = j;
-        const formattedMinute = minute < 10 ? `0${minute}` : minute;
-        times.push(`${hour}:${formattedMinute}`);
-      }
-    }
-    return times;
+  const [isPeopleOpen, setIsPeopleOpen] = useState(false);
+  const [tempPeople, setTempPeople] = useState({
+    min: 2,
+    max: 2,
+  });
+
+  const [isLevelOpen, setIsLevelOpen] = useState(false);
+  const [tempLevels, setTempLevels] = useState<string[]>([]);
+
+  const [isGenderOpen, setIsGenderOpen] = useState(false);
+  const [tempGender, setTempGender] = useState<string>('');
+
+  const [isAgeOpen, setIsAgeOpen] = useState(false);
+  const [tempAges, setTempAges] = useState<string[]>([]);
+
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [tempLocation, setTempLocation] = useState<string>('');
+
+  // 레벨명 매핑
+  const LEVEL_NAMES = ['입문', '초보', '중급', '고급', '매니아'];
+  const GENDER_MAP: Record<string, string> = {
+    male: '남성',
+    female: '여성',
+    all: '제한없음',
+  };
+  const AGE_MAP: Record<string, string> = {
+    '20s': '20대',
+    '30s': '30대',
+    '40s': '40대',
+    '50s': '50대 이상',
   };
 
-  const handleNext = () => {
-    if (!title.trim() || !date || !startTime || !endTime || !placeId) return;
-    // TODO: Store에 저장
-    router.replace(PATHS.MATCH.CREATE_MATCH + '/description');
+  // 구분자로 레이블 조인
+  const joinLabels = (labels: string[]) => (
+    <>
+      {labels.map((label, idx) => (
+        <span key={idx}>
+          {label}
+          {idx < labels.length - 1 && (
+            <span className='text-text-alternative'> | </span>
+          )}
+        </span>
+      ))}
+    </>
+  );
+
+  const getLevelDisplayText = () => {
+    if (tempLevels.length === 0) return '상관없음';
+    const labels = tempLevels
+      .map((id) => {
+        const match = id.match(/lv(\d+)/);
+        return match ? LEVEL_NAMES[parseInt(match[1]) - 1] : '';
+      })
+      .filter(Boolean);
+    return joinLabels(labels);
   };
 
-  const isFormValid = title.trim() && date && startTime && endTime && placeId;
+  const getGenderDisplayText = () => {
+    return !tempGender ? '상관없음' : GENDER_MAP[tempGender] || '상관없음';
+  };
+
+  const getAgeDisplayText = () => {
+    if (tempAges.length === 0) return '상관없음';
+    if (tempAges.length === 4) return '제한없음';
+    return joinLabels(tempAges.map((id) => AGE_MAP[id] || '').filter(Boolean));
+  };
 
   return (
-    <>
-      <div className='flex flex-col gap-s-16 pb-[80px]'>
-        <div className='flex flex-col space-y-2'>
-          <label className='text-label-l font-semibold text-text-strong'>
-            제목
-          </label>
-          <Input
-            type='text'
-            variant={'default'}
-            sizes={'md'}
-            placeholder='모임 제목을 입력해주세요'
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-
-        <div className='flex flex-col space-y-2'>
-          <label className='text-label-l font-semibold text-text-strong'>
-            날짜
-          </label>
-          <DatePickerModal selectedDate={date} onChange={setDate} />
-        </div>
-
-        <div className='flex flex-col space-y-2'>
-          <label className='text-label-l font-semibold text-text-strong'>
-            시간
-          </label>
-          <div className='grid grid-cols-2 gap-2'>
-            <DropdownInput
-              dummyData={generateTimeOptions()}
-              keyword={startTime}
-              setKeyword={setStartTime}
-              placeholderText='시작 시간'
-              isSearchable={false}
+    <div className='flex flex-col gap-s-16 pt-s-24'>
+      {/* 언제 만날까요? */}
+      <div className='flex flex-col gap-s-12'>
+        <label className='text-body-1 font-medium'>언제 만날까요?</label>
+        <SelectButton
+          icon={
+            <Calendar
+              size={24}
+              className='text-icon-neutral'
+              style={{ strokeWidth: 1.5 }}
             />
-            <DropdownInput
-              dummyData={generateTimeOptions()}
-              keyword={endTime}
-              setKeyword={setEndTime}
-              placeholderText='종료 시간'
-              isSearchable={false}
-            />
-          </div>
-        </div>
-
-        <div className='flex flex-col space-y-2'>
-          <label className='text-label-l font-semibold text-text-strong'>
-            장소
-          </label>
-          <DropdownInput
-            dummyData={DUMMY_PLACE}
-            keyword={placeId}
-            setKeyword={setPlaceId}
-            placeholderText='장소를 검색해보세요'
-          />
-        </div>
-
-        <div className='flex flex-col space-y-2'>
-          <label className='text-label-l font-semibold text-text-strong'>
-            함께할 인원
-          </label>
-          <div className='grid grid-cols-2 gap-2'>
-            <div className='flex flex-col'>
-              <label className='text-body-s text-text-alternative'>
-                최소인원
-              </label>
-              <Input
-                type='number'
-                variant={'default'}
-                sizes={'md'}
-                placeholder='최소인원'
-                value={leastSize}
-                onChange={(e) => setLeastSize(parseInt(e.target.value) || 0)}
-              />
-            </div>
-            <div className='flex flex-col'>
-              <div className='flex gap-2'>
-                <label className='text-body-s text-text-alternative'>
-                  최대인원
-                </label>
-                <div className='flex items-center gap-1'>
-                  <input
-                    id='maxSize'
-                    type='checkbox'
-                    onChange={() => setMaxSize(maxSize === 0 ? '' : 0)}
-                    className='h-4 w-4 rounded border-gray-300'
-                  />
-                  <label htmlFor='maxSize' className='text-body-s'>
-                    제한 없음
-                  </label>
-                </div>
-              </div>
-              <Input
-                type='number'
-                variant={'default'}
-                sizes={'md'}
-                placeholder='최대인원'
-                disabled={maxSize === 0}
-                value={maxSize === 0 ? '' : maxSize}
-                onChange={(e) => setMaxSize(parseInt(e.target.value) || '')}
-              />
-            </div>
-          </div>
-        </div>
+          }
+          placeholder='날짜와 시간을 선택해 주세요.'
+          value={selectedDate}
+          onClick={() => setIsDateTimeOpen(true)}
+        />
       </div>
 
-      <Button
-        variant='default'
-        disabled={!isFormValid}
-        onClick={handleNext}
-        isFloat
+      {/* 인원을 알려주세요! */}
+      <div className='flex flex-col gap-s-12'>
+        <label className='text-body-1 font-medium'>인원을 알려주세요!</label>
+        <SelectButton
+          icon={
+            <UserMulti
+              size={24}
+              className='text-icon-neutral'
+              style={{ strokeWidth: 1.5 }}
+            />
+          }
+          placeholder='최소 2명 | 최대 n명'
+          value={selectedPeople}
+          onClick={() => setIsPeopleOpen(true)}
+        />
+      </div>
+
+      {/* 어떤 멤버를 모을까요? */}
+      <div className='flex flex-col gap-s-12'>
+        <label className='text-body-1 font-medium'>어떤 멤버를 모을까요?</label>
+
+        {/* 운동레벨 */}
+        <SelectButton
+          icon={
+            <Sort
+              size={24}
+              className='text-icon-neutral'
+              style={{ strokeWidth: 1.5 }}
+            />
+          }
+          placeholder='운동레벨'
+          subText={getLevelDisplayText()}
+          defaultSubText='상관없음'
+          onClick={() => setIsLevelOpen(true)}
+        />
+
+        {/* 성별 */}
+        <SelectButton
+          icon={
+            <UserLove
+              size={24}
+              className='text-icon-neutral'
+              style={{ strokeWidth: 1.5 }}
+            />
+          }
+          placeholder='성별'
+          subText={getGenderDisplayText()}
+          defaultSubText='상관없음'
+          onClick={() => setIsGenderOpen(true)}
+        />
+
+        {/* 연령대 */}
+        <SelectButton
+          icon={
+            <BubbleChat
+              size={24}
+              className='text-icon-neutral'
+              style={{ strokeWidth: 1.5 }}
+            />
+          }
+          placeholder='연령대'
+          subText={getAgeDisplayText()}
+          defaultSubText='상관없음'
+          onClick={() => setIsAgeOpen(true)}
+        />
+      </div>
+
+      {/* 어디서 만날까요? */}
+      <div className='flex flex-col gap-s-12'>
+        <label className='text-body-1 font-medium'>어디서 만날까요?</label>
+        <SelectButton
+          icon={
+            <LocationLarge
+              size={24}
+              className='text-icon-neutral'
+              style={{ strokeWidth: 1.5 }}
+            />
+          }
+          placeholder='장소를 선택해주세요'
+          value={tempLocation}
+          onClick={() => setIsLocationOpen(true)}
+        />
+      </div>
+
+      {/* 모임 일시 선택 BottomSheet */}
+      <BottomSheet
+        isOpen={isDateTimeOpen}
+        onClose={() => setIsDateTimeOpen(false)}
+        height='auto'
+        showConfirmButton
+        showCancelButton={false}
+        confirmText='선택'
+        onConfirm={() => {
+          const dateObj = new Date(
+            tempDateTime.year,
+            tempDateTime.month - 1,
+            tempDateTime.day,
+            parseInt(tempDateTime.hour),
+            parseInt(tempDateTime.minute)
+          );
+          setSelectedDate(format(dateObj, 'yyyy년 MM월 dd일 HH:mm'));
+          setIsDateTimeOpen(false);
+        }}
       >
-        다음
-      </Button>
-    </>
+        <DateTimePicker
+          key={isDateTimeOpen ? 'open' : 'closed'}
+          onDateTimeChange={(dateTime) => setTempDateTime(dateTime)}
+          initialDateTime={
+            tempDateTime.year > 0
+              ? {
+                  year: tempDateTime.year,
+                  month: tempDateTime.month,
+                  day: tempDateTime.day,
+                  hour: tempDateTime.hour,
+                  minute: tempDateTime.minute,
+                }
+              : undefined
+          }
+        />
+      </BottomSheet>
+
+      {/* 모임 인원 선택 BottomSheet */}
+      <BottomSheet
+        isOpen={isPeopleOpen}
+        onClose={() => setIsPeopleOpen(false)}
+        height='auto'
+        showConfirmButton
+        showCancelButton={false}
+        confirmText='선택'
+        onConfirm={() => {
+          // 선택된 인원을 "최소 n명 | 최대 n명" 형식으로 저장
+          const formattedPeople = `최소 ${tempPeople.min}명 | 최대 ${tempPeople.max}명`;
+          setSelectedPeople(formattedPeople);
+          setIsPeopleOpen(false);
+        }}
+      >
+        <PeoplePicker
+          key={isPeopleOpen ? 'open' : 'closed'}
+          onPeopleChange={(people) => setTempPeople(people)}
+          initialPeople={tempPeople.min > 0 ? tempPeople : undefined}
+        />
+      </BottomSheet>
+
+      {/* 운동 레벨 선택 BottomSheet */}
+      <BottomSheet
+        isOpen={isLevelOpen}
+        onClose={() => setIsLevelOpen(false)}
+        height='auto'
+        showConfirmButton
+        showCancelButton={false}
+        confirmText='선택'
+        onConfirm={() => {
+          setIsLevelOpen(false);
+        }}
+      >
+        <LevelPicker
+          key={isLevelOpen ? 'open' : 'closed'}
+          onLevelChange={(levels) => setTempLevels(levels)}
+          initialLevels={tempLevels}
+        />
+      </BottomSheet>
+
+      {/* 성별 선택 BottomSheet */}
+      <BottomSheet
+        isOpen={isGenderOpen}
+        onClose={() => setIsGenderOpen(false)}
+        height='auto'
+        showConfirmButton
+        showCancelButton={false}
+        confirmText='선택'
+        onConfirm={() => {
+          setIsGenderOpen(false);
+        }}
+      >
+        <GenderPicker
+          key={isGenderOpen ? 'open' : 'closed'}
+          onGenderChange={(gender) => setTempGender(gender)}
+          initialGender={tempGender}
+        />
+      </BottomSheet>
+
+      {/* 연령대 선택 BottomSheet */}
+      <BottomSheet
+        isOpen={isAgeOpen}
+        onClose={() => setIsAgeOpen(false)}
+        height='auto'
+        showConfirmButton
+        showCancelButton={false}
+        confirmText='선택'
+        onConfirm={() => {
+          setIsAgeOpen(false);
+        }}
+      >
+        <AgePicker
+          key={isAgeOpen ? 'open' : 'closed'}
+          onAgeChange={(ages) => setTempAges(ages)}
+          initialAges={tempAges}
+        />
+      </BottomSheet>
+
+      {/* 장소 선택 BottomSheet */}
+      <BottomSheet
+        isOpen={isLocationOpen}
+        onClose={() => setIsLocationOpen(false)}
+        height='full'
+        showConfirmButton={false}
+        showCancelButton={false}
+      >
+        <LocationPicker
+          key={isLocationOpen ? 'open' : 'closed'}
+          onLocationChange={(location) => setTempLocation(location)}
+          initialLocation={tempLocation}
+          onClose={() => setIsLocationOpen(false)}
+        />
+      </BottomSheet>
+      {!isDateTimeOpen &&
+        !isPeopleOpen &&
+        !isLevelOpen &&
+        !isGenderOpen &&
+        !isAgeOpen &&
+        !isLocationOpen && (
+          <Button
+            isFloat
+            onClick={() =>
+              router.push(`${PATHS.MATCH.CREATE_MATCH}/description`)
+            }
+          >
+            다음
+          </Button>
+        )}
+    </div>
   );
 };
 
-export default CreateMatchForm;
+export default CreateMatchPage;

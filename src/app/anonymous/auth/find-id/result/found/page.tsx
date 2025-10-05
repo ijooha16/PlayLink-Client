@@ -63,7 +63,7 @@ const AccountExistsContent = () => {
             {email}
           </p>
           <div className='flex items-center gap-[4px]'>
-            <p className='text-caption-01 font-medium text-text-netural'>
+            <p className='text-text-neutral text-caption-01 font-medium'>
               가입일
             </p>
             <p className='text-caption-01 font-medium text-text-strong'>
