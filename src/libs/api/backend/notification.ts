@@ -1,17 +1,13 @@
 import { backendClient } from '@/libs/http';
 
-interface NotificationTokenRequest {
-  token: string;
-}
-
 export const BackendNotificationAPI = {
   /**
    * FCM 토큰 전송
    */
-  sendToken: async (payload: NotificationTokenRequest, authToken?: string) => {
-    const response = await backendClient.post('/playlink/notification/token', payload, {
+  sendFCMToken: async (body: string) => {
+    const response = await backendClient.put('/playlink/fcm', body, {
       headers: {
-        ...(authToken && { Authorization: authToken }),
+        'Content-Type': 'application/json',
       },
     });
     return response;
@@ -20,12 +16,8 @@ export const BackendNotificationAPI = {
   /**
    * 알림 목록 조회
    */
-  getNotifications: async (authToken?: string) => {
-    const response = await backendClient.get('/playlink/notification', {
-      headers: {
-        ...(authToken && { Authorization: authToken }),
-      },
-    });
+  getNotificationList: async () => {
+    const response = await backendClient.get('/playlink/notification/list');
     return response;
   },
 };

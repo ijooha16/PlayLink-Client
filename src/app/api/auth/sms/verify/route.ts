@@ -1,12 +1,9 @@
-import { backendClient } from '@/libs/http';
+import { BackendAuthAPI } from '@/libs/api/backend';
 import { withApiHandler } from '@/utills/api-handler';
 
 export const POST = withApiHandler(async (request) => {
   const payload = await request.json();
-  const { data } = await backendClient.post(
-    '/playlink/signup/sms/verify',
-    payload
-  );
+  const { data } = await BackendAuthAPI.verifySMSCode(payload);
 
   return {
     status: 'success',

@@ -2,26 +2,18 @@ import { backendClient } from '@/libs/http';
 
 export const BackendChatAPI = {
   /**
-   * 채팅 목록 조회
+   * 채팅방 목록 조회
    */
-  getChatList: async (token?: string) => {
-    const response = await backendClient.get('/playlink/chat', {
-      headers: {
-        ...(token && { Authorization: token }),
-      },
-    });
+  getChatRoomList: async () => {
+    const response = await backendClient.get('/playlink/chatRoomList');
     return response;
   },
 
   /**
-   * 채팅 상세 조회
+   * 채팅 로그 조회
    */
-  getChatDetail: async (chatId: string, token?: string) => {
-    const response = await backendClient.get(`/playlink/chat/${chatId}`, {
-      headers: {
-        ...(token && { Authorization: token }),
-      },
-    });
+  getChattingLog: async (roomId: string) => {
+    const response = await backendClient.get(`/playlink/chattingLog?roomId=${encodeURIComponent(roomId)}`);
     return response;
   },
 };

@@ -1,4 +1,4 @@
-import { backendClient } from '@/libs/http';
+import { BackendMatchAPI } from '@/libs/api/backend';
 import { withApiHandler } from '@/utills/api-handler';
 
 export const dynamic = 'force-dynamic';
@@ -8,9 +8,7 @@ export const GET = withApiHandler(async (request) => {
   const keyword = searchParams.get('keyword') || '';
   const type = searchParams.get('type') || '';
 
-  const response = await backendClient.get(
-    `/playlink/match?title=${keyword}&type=${type}`
-  );
+  const response = await BackendMatchAPI.searchMatches(keyword, type);
   const data = response.data;
   return { status: 'success', data };
 });

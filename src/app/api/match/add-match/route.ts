@@ -3,9 +3,8 @@ import { withApiHandler } from '@/utills/api-handler';
 
 export const POST = withApiHandler(async (request) => {
   const body = await request.formData();
-  const token = request.headers.get('Authorization') || undefined;
 
-  const { data } = await BackendMatchAPI.addMatch(body, token);
+  const { data } = await BackendMatchAPI.addMatch(body);
 
   return { status: 'success', data };
 });

@@ -1,3 +1,23 @@
+/**
+ * Icon Components with Dynamic Styling
+ *
+ * All icons support dynamic stroke and fill colors via className:
+ *
+ * @example
+ * // Dynamic stroke color
+ * <Check className="text-primary-800" />
+ *
+ * @example
+ * // Dynamic stroke width
+ * <Check className="[&_path]:stroke-[2.5]" />
+ *
+ * @example
+ * // Combined styling
+ * <Check className="text-gray-400 [&_path]:stroke-[2.5]" />
+ *
+ * Note: SVG icons use stroke="currentColor" to inherit text color
+ */
+
 import CancelIcon from '../../../public/images/play-icons/ic_cancel.svg';
 import CheckIcon from '../../../public/images/play-icons/ic_check.svg';
 import ChevronBackIcon from '../../../public/images/play-icons/ic_chevron_left.svg';
