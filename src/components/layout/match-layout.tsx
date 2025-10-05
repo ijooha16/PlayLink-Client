@@ -62,7 +62,7 @@ const MatchLayoutContainer = ({
     <div className='flex flex-col'>
       <h1 className='whitespace-pre-line text-[20px] font-semibold'>{title}</h1>
       {content && (
-        <p className='font-regular whitespace-pre-line pt-s-4 text-body-02 text-text-netural'>
+        <p className='font-regular text-text-neutral whitespace-pre-line pt-s-4 text-body-02'>
           {content}
         </p>
       )}

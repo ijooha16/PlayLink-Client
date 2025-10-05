@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import SelectableCard from './selectable-card';
 
 interface GenderPickerProps {
@@ -14,7 +14,10 @@ const GENDERS = [
   { id: 'all', label: '제한없음' },
 ];
 
-export default function GenderPicker({ onGenderChange, initialGender = '' }: GenderPickerProps) {
+export default function GenderPicker({
+  onGenderChange,
+  initialGender = '',
+}: GenderPickerProps) {
   const [selectedGender, setSelectedGender] = useState<string>(initialGender);
 
   // initialGender이 변경되면 업데이트
@@ -38,7 +41,7 @@ export default function GenderPicker({ onGenderChange, initialGender = '' }: Gen
   return (
     <div className='flex flex-col'>
       <h2 className='text-title-02 font-semibold text-text-strong'>성별</h2>
-      <p className='font-regular mb-s-24 text-body-02 text-text-netural'>
+      <p className='font-regular text-text-neutral mb-s-24 text-body-02'>
         참여 가능한 성별을 선택해주세요.
       </p>
 

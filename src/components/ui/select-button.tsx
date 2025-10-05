@@ -22,9 +22,7 @@ export default function SelectButton({
 }: SelectButtonProps) {
   // defaultSubText가 있는 경우: subText가 defaultSubText와 다르면 선택된 상태
   // defaultSubText가 없는 경우: value가 있으면 선택된 상태
-  const isSelected = defaultSubText
-    ? subText !== defaultSubText
-    : !!value;
+  const isSelected = defaultSubText ? subText !== defaultSubText : !!value;
 
   return (
     <button
@@ -36,7 +34,7 @@ export default function SelectButton({
         className={`flex-1 text-left ${
           isSelected
             ? 'text-body-2 font-medium text-text-strong'
-            : 'text-body-1 text-text-netural'
+            : 'text-body-1 text-text-neutral'
         }`}
       >
         {value || placeholder}
@@ -52,7 +50,7 @@ export default function SelectButton({
           {subText}
         </span>
       )}
-      <ChevronDown size={16} className='text-icon-netural' />
+      <ChevronDown size={16} className='text-icon-neutral' />
     </button>
   );
 }

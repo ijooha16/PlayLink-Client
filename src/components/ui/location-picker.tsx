@@ -1,8 +1,13 @@
 'use client';
 
 import { Search, SearchNone } from '@/components/shared/icons';
+import useDebounce from '@/hooks/common/use-debounce';
+import {
+  KakaoPlace,
+  useSearchPlaces,
+} from '@/hooks/react-query/places/use-search-places';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from './button';
 import Input from './input';
 
@@ -12,63 +17,20 @@ interface LocationPickerProps {
   onClose?: () => void;
 }
 
-interface KakaoPlace {
-  place_name: string;
-  road_address_name: string;
-  address_name: string;
-  x: string;
-  y: string;
-}
-
 export default function LocationPicker({
   onLocationChange,
   initialLocation = '',
   onClose,
 }: LocationPickerProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<KakaoPlace[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<string>('');
 
-  // 자체 API를 통한 장소 검색
-  const searchPlaces = async (query: string) => {
-    if (!query.trim()) {
-      setSearchResults([]);
-      return;
-    }
+  // 검색어 debounce 처리
+  const debouncedQuery = useDebounce(searchQuery, 300);
 
-    setIsSearching(true);
-    try {
-      const response = await fetch(
-        `/api/places/search?query=${encodeURIComponent(query)}`
-      );
-
-      if (response.ok) {
-        const result = await response.json();
-        if (result.status === 'success') {
-          setSearchResults(result.data || []);
-        } else {
-          setSearchResults([]);
-        }
-      } else {
-        setSearchResults([]);
-      }
-    } catch (error) {
-      console.error('장소 검색 오류:', error);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  // 검색어 변경 시 debounce 처리
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      searchPlaces(searchQuery);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+  // React Query로 장소 검색
+  const { data: searchResults = [], isLoading: isSearching } =
+    useSearchPlaces(debouncedQuery);
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
@@ -92,7 +54,7 @@ export default function LocationPicker({
       <h2 className='text-title-02 font-semibold text-text-strong'>
         장소 검색
       </h2>
-      <p className='font-regular mb-s-24 text-body-02 text-text-netural'>
+      <p className='font-regular text-text-neutral mb-s-24 text-body-02'>
         장소를 선택해주세요.
       </p>
 
@@ -105,7 +67,7 @@ export default function LocationPicker({
           onChange={(e) => handleSearch(e.target.value)}
           variant='gray'
           sizes='lg'
-          leftElement={<Search size={20} className='text-icon-netural' />}
+          leftElement={<Search size={20} className='text-icon-neutral' />}
           showCancelToggle
         />
       </div>
@@ -132,7 +94,7 @@ export default function LocationPicker({
       )}
 
       {/* 검색 결과 영역 */}
-      {searchQuery && (
+      {debouncedQuery && (
         <div className='scrollbar-hide flex-1 overflow-y-auto pb-[100px]'>
           {isSearching ? (
             <p className='mt-s-24 text-center text-body-02 text-text-alternative'>
@@ -146,7 +108,7 @@ export default function LocationPicker({
                     onClick={() => handleLocationSelect(place)}
                     className={`w-full text-left transition-colors hover:bg-bg-normal ${
                       selectedLocation === place.place_name
-                        ? 'bg-bg-netural'
+                        ? 'bg-bg-neutral'
                         : ''
                     }`}
                   >
@@ -155,10 +117,10 @@ export default function LocationPicker({
                         {place.place_name}
                       </span>
                       <div className='flex items-center gap-s-8'>
-                        <div className='font-regular flex items-center justify-center rounded-4 border border-line-netural px-s-6 py-s-2 text-caption-01 text-brand-primary'>
+                        <div className='font-regular border-line-neutral flex items-center justify-center rounded-4 border px-s-6 py-s-2 text-caption-01 text-brand-primary'>
                           도로명
                         </div>
-                        <span className='font-regular text-body-02 text-text-netural'>
+                        <span className='font-regular text-text-neutral text-body-02'>
                           {place.road_address_name || place.address_name}
                         </span>
                       </div>
@@ -172,7 +134,7 @@ export default function LocationPicker({
             </div>
           ) : (
             <div className='mt-s-40 flex flex-col items-center gap-s-16'>
-              <SearchNone size={120} className='text-icon-netural' />
+              <SearchNone size={120} className='text-icon-neutral' />
               <p className='text-body-1 font-semibold text-text-strong'>
                 검색 결과가 없어요!
               </p>
@@ -180,7 +142,7 @@ export default function LocationPicker({
                 <button
                   onClick={() => {
                     if (onLocationChange) {
-                      onLocationChange(searchQuery);
+                      onLocationChange(debouncedQuery);
                     }
                     if (onClose) {
                       onClose();
@@ -189,7 +151,7 @@ export default function LocationPicker({
                   className='flex items-center gap-s-8 text-label-m font-semibold text-brand-primary'
                 >
                   <span className='text-xl'>+</span>
-                  <span>{searchQuery} 장소 입력</span>
+                  <span>{debouncedQuery} 장소 입력</span>
                 </button>
               </div>
             </div>

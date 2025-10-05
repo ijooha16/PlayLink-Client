@@ -18,6 +18,7 @@
  * Note: SVG icons use stroke="currentColor" to inherit text color
  */
 
+import CameraIcon from '../../../public/images/play-icons/ic_camera.svg';
 import CancelIcon from '../../../public/images/play-icons/ic_cancel.svg';
 import CheckIcon from '../../../public/images/play-icons/ic_check.svg';
 import ChevronDownIcon from '../../../public/images/play-icons/ic_chevron_down.svg';
@@ -112,6 +113,7 @@ export const ChevronDown = createIcon(ChevronDownIcon, 16, 16);
 export const Kakao = createIcon(KakaoIcon, 24, 24);
 export const Email = createIcon(EmailIcon, 24, 24);
 export const Cancel = createIcon(CancelIcon, 25, 24);
+export const Camera = createIcon(CameraIcon, 20, 20);
 
 export const Welcome = createIcon(WelcomeIcon, 335, 146);
 export const Sparkle1 = createIcon(SparklesIcon1, 335, 146);

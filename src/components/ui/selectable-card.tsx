@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { Check } from '@/components/shared/icons';
+import Image from 'next/image';
 
 interface SelectableCardProps {
   id: string;
@@ -32,13 +32,13 @@ export default function SelectableCard({
       className={`flex h-[80px] cursor-pointer items-center justify-between rounded-16 border px-5 transition-colors ${
         isSelected
           ? 'border-primary-800 bg-primary-50'
-          : 'border-border-netural bg-white'
+          : 'border-border-neutral bg-white'
       }`}
     >
       <div className='flex items-center gap-3'>
         {showIcon && (
           <div
-            className={`${isSelected ? 'bg-bg-netural bg-primary-300' : 'bg-bg-netural'} flex h-[40px] w-[40px] items-center justify-center rounded-full`}
+            className={`${isSelected ? 'bg-bg-neutral bg-primary-300' : 'bg-bg-neutral'} flex h-[40px] w-[40px] items-center justify-center rounded-full`}
           >
             {iconType === 'emoji' ? (
               <span className='text-xl'>{icon}</span>

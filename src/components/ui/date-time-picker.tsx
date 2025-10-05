@@ -1,5 +1,6 @@
 'use client';
 
+import { addDays, format } from 'date-fns';
 import { useState, useEffect, useMemo } from 'react';
 import WheelPicker from './wheel-picker';
 
@@ -24,22 +25,13 @@ interface DateTimePickerProps {
 export default function DateTimePicker({ onDateTimeChange, initialDateTime }: DateTimePickerProps) {
   // 날짜 데이터 생성 (오늘부터 365일) - 메모이제이션
   const dates = useMemo(() => {
-    const dateList: string[] = [];
     const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
     const today = new Date();
-
-    for (let i = 0; i < 365; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
+    return Array.from({ length: 365 }, (_, i) => {
+      const date = addDays(today, i);
       const weekday = weekdays[date.getDay()];
-
-      dateList.push(`${month}.${day} (${weekday})`);
-    }
-
-    return dateList;
+      return `${format(date, 'MM.dd')} (${weekday})`;
+    });
   }, []);
 
   // 시간 데이터 생성 (00-23) - 메모이제이션
@@ -54,32 +46,22 @@ export default function DateTimePicker({ onDateTimeChange, initialDateTime }: Da
 
   // 초기값 계산
   const initialValues = useMemo(() => {
-    const now = new Date();
-
     if (initialDateTime && initialDateTime.year > 0) {
-      // initialDateTime이 있으면 해당 날짜의 인덱스 계산
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-
       const targetDate = new Date(initialDateTime.year, initialDateTime.month - 1, initialDateTime.day);
       targetDate.setHours(0, 0, 0, 0);
-
       const daysDiff = Math.floor((targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-      const dateIndex = Math.max(0, Math.min(364, daysDiff));
 
       return {
-        dateIndex,
+        dateIndex: Math.max(0, Math.min(364, daysDiff)),
         hourIndex: parseInt(initialDateTime.hour, 10),
         minuteIndex: parseInt(initialDateTime.minute, 10),
       };
     }
 
-    // initialDateTime이 없으면 현재 시간
-    return {
-      dateIndex: 0,
-      hourIndex: now.getHours(),
-      minuteIndex: now.getMinutes(),
-    };
+    const now = new Date();
+    return { dateIndex: 0, hourIndex: now.getHours(), minuteIndex: now.getMinutes() };
   }, [initialDateTime]);
 
   const [selectedDateIndex, setSelectedDateIndex] = useState(initialValues.dateIndex);
@@ -96,11 +78,7 @@ export default function DateTimePicker({ onDateTimeChange, initialDateTime }: Da
   // 값이 변경될 때마다 부모에게 알림
   useEffect(() => {
     if (onDateTimeChange) {
-      // 선택된 날짜의 실제 Date 객체 계산
-      const today = new Date();
-      const selectedDate = new Date(today);
-      selectedDate.setDate(today.getDate() + selectedDateIndex);
-
+      const selectedDate = addDays(new Date(), selectedDateIndex);
       onDateTimeChange({
         date: dates[selectedDateIndex],
         hour: hours[selectedHourIndex],

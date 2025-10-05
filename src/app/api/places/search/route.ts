@@ -1,9 +1,8 @@
 import { withApiHandler } from '@/utills/api-handler';
-import { NextRequest } from 'next/server';
 
 const KAKAO_REST_API_KEY = process.env.KAKAO_REST_API_KEY!;
 
-export const GET = withApiHandler(async (request: NextRequest) => {
+export const GET = withApiHandler(async (request: Request) => {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get('query');
 

@@ -107,26 +107,26 @@ const config: Config = {
         },
         text: {
           disabled: 'var(--color-gray-400)',
-          netural: 'var(--color-gray-500)',
+          neutral: 'var(--color-gray-500)',
           alternative: 'var(--color-gray-700)',
           strong: 'var(--color-gray-900)',
         },
         border: {
           normal: 'var(--color-gray-100)',
-          netural: 'var(--color-gray-200)',
+          neutral: 'var(--color-gray-200)',
           alternative: 'var(--color-gray-300)',
           strong: 'var(--color-gray-900)',
         },
         line: {
           normal: 'var(--color-line-normal)',
-          netural: 'var(--color-line-netural)',
+          neutral: 'var(--color-line-neutral)',
           alternative: 'var(--color-line-alternative)',
           strong: 'var(--color-line-strong)',
         },
         bg: {
           white: 'var(--color-gray-0)',
           normal: 'var(--color-gray-50)',
-          netural: 'var(--color-gray-100)',
+          neutral: 'var(--color-gray-100)',
           alternative: 'var(--color-gray-200)',
         },
         system: {
@@ -138,7 +138,7 @@ const config: Config = {
         icon: {
           white: 'var(--color-gray-0)',
           disabled: 'var(--color-gray-400)',
-          netural: 'var(--color-gray-600)',
+          neutral: 'var(--color-gray-600)',
           strong: 'var(--color-gray-900)',
         },
         brand: {

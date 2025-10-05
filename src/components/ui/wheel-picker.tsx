@@ -59,6 +59,9 @@ export default function WheelPicker({
 }: WheelPickerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartYRef = useRef(0);
+  const scrollStartTopRef = useRef(0);
 
   // 경계값 검증
   const safeSelectedIndex = Math.max(0, Math.min(items.length - 1, selectedIndex));
@@ -93,9 +96,33 @@ export default function WheelPicker({
     [infinite, items.length]
   );
 
+  // 마우스 드래그 핸들러
+  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    setIsDragging(true);
+    dragStartYRef.current = e.clientY;
+    scrollStartTopRef.current = containerRef.current.scrollTop;
+    e.preventDefault();
+  }, []);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!isDragging || !containerRef.current) return;
+      const deltaY = dragStartYRef.current - e.clientY;
+      containerRef.current.scrollTop = scrollStartTopRef.current + deltaY;
+    },
+    [isDragging]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
   // 아이템 클릭 핸들러 (event delegation)
   const handleContainerClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
+      if (isDragging) return; // 드래그 중에는 클릭 무시
+
       const target = e.target as HTMLElement;
       const itemDiv = target.closest('[data-virtual-index]') as HTMLElement;
 
@@ -115,7 +142,7 @@ export default function WheelPicker({
         }
       }
     },
-    [infinite, items.length, onChange, itemHeight]
+    [infinite, items.length, onChange, itemHeight, isDragging]
   );
 
   // 초기 마운트 시 스크롤 위치 설정
@@ -261,8 +288,14 @@ export default function WheelPicker({
           scrollSnapType: 'y mandatory',
           WebkitOverflowScrolling: 'touch',
           touchAction: 'pan-y',
+          cursor: isDragging ? 'grabbing' : 'grab',
+          userSelect: 'none',
         }}
         onClick={handleContainerClick}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
         {/* 상단 빈 아이템 */}
         {Array.from({ length: paddingCount }).map((_, i) => (

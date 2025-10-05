@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import SelectableCard from './selectable-card';
 
 interface AgePickerProps {
@@ -15,7 +15,10 @@ const AGE_GROUPS = [
   { id: '50s', label: '50대 이상' },
 ];
 
-export default function AgePicker({ onAgeChange, initialAges = [] }: AgePickerProps) {
+export default function AgePicker({
+  onAgeChange,
+  initialAges = [],
+}: AgePickerProps) {
   const [selectedAges, setSelectedAges] = useState<string[]>(initialAges);
 
   // initialAges이 변경되면 업데이트
@@ -45,7 +48,7 @@ export default function AgePicker({ onAgeChange, initialAges = [] }: AgePickerPr
   return (
     <div className='flex flex-col'>
       <h2 className='text-title-02 font-semibold text-text-strong'>연령대</h2>
-      <p className='font-regular mb-s-24 text-body-02 text-text-netural'>
+      <p className='font-regular text-text-neutral mb-s-24 text-body-02'>
         참여 가능한 연령대를 모두 선택해주세요.
       </p>
 

@@ -48,7 +48,7 @@ const ResetPasswordResult = () => {
             <br />
             변경되었어요!
           </h1>
-          <p className='text-body-02 text-text-netural'>
+          <p className='text-text-neutral text-body-02'>
             새로운 비밀번호로 로그인 해 주세요.
           </p>
         </div>

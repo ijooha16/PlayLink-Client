@@ -11,12 +11,12 @@ type SocialIconButtonProps = {
 const SocialIconButton = ({ type, onClick }: SocialIconButtonProps) => {
   const style: Record<'kakao' | 'email', string> = {
     kakao: 'bg-yellow-300 text-yellow-950',
-    email: 'bg-transparent text-text-strong !border-line-netural',
+    email: 'bg-transparent text-text-strong !border-line-neutral',
   };
 
   return (
     <button
-      className={`flex h-[48px] text-label-l w-full items-center justify-center gap-2 rounded-lg !border [border-style:solid] ${type ? style[type] : ''} font-semibold`}
+      className={`flex h-[48px] w-full items-center justify-center gap-2 rounded-lg !border text-label-l [border-style:solid] ${type ? style[type] : ''} font-semibold`}
       onClick={onClick}
     >
       {type === 'kakao' && (

@@ -77,15 +77,15 @@ const SignIn = () => {
             </Button>
           </form>
 
-          <div className='mx-auto mt-s-16 flex w-full justify-center gap-s-8 text-label-s font-semibold text-text-netural'>
+          <div className='text-text-neutral mx-auto mt-s-16 flex w-full justify-center gap-s-8 text-label-s font-semibold'>
             <Link href={PATHS.AUTH.FIND_ID}>
               <p>아이디 찾기</p>
             </Link>
-            <span className='text-line-netural'>|</span>
+            <span className='text-line-neutral'>|</span>
             <Link href={PATHS.AUTH.RESET_PASSWORD}>
               <p>비밀번호 찾기</p>
             </Link>
-            <span className='text-line-netural'>|</span>
+            <span className='text-line-neutral'>|</span>
             <Link prefetch={true} href={PATHS.AUTH.SIGN_UP}>
               <p className='text-brand-primary'>회원가입</p>
             </Link>

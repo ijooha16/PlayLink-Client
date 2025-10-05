@@ -17,9 +17,13 @@ import LevelPicker from '@/components/ui/level-picker';
 import LocationPicker from '@/components/ui/location-picker';
 import PeoplePicker from '@/components/ui/people-picker';
 import SelectButton from '@/components/ui/select-button';
+import { PATHS } from '@/constant';
+import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const CreateMatchPage = () => {
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedPeople, setSelectedPeople] = useState('');
 
@@ -52,75 +56,53 @@ const CreateMatchPage = () => {
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [tempLocation, setTempLocation] = useState<string>('');
 
-  // 선택된 레벨을 표시 문자열로 변환
+  // 레벨명 매핑
+  const LEVEL_NAMES = ['입문', '초보', '중급', '고급', '매니아'];
+  const GENDER_MAP: Record<string, string> = {
+    male: '남성',
+    female: '여성',
+    all: '제한없음',
+  };
+  const AGE_MAP: Record<string, string> = {
+    '20s': '20대',
+    '30s': '30대',
+    '40s': '40대',
+    '50s': '50대 이상',
+  };
+
+  // 구분자로 레이블 조인
+  const joinLabels = (labels: string[]) => (
+    <>
+      {labels.map((label, idx) => (
+        <span key={idx}>
+          {label}
+          {idx < labels.length - 1 && (
+            <span className='text-text-alternative'> | </span>
+          )}
+        </span>
+      ))}
+    </>
+  );
+
   const getLevelDisplayText = () => {
     if (tempLevels.length === 0) return '상관없음';
-
-    const levelLabels = tempLevels.map((id) => {
-      const match = id.match(/lv(\d+)/);
-      if (match) {
-        const levelNames = ['입문', '초보', '중급', '고급', '매니아'];
-        const index = parseInt(match[1]) - 1;
-        return levelNames[index] || '';
-      }
-      return '';
-    });
-
-    return (
-      <>
-        {levelLabels.map((label, index) => (
-          <span key={index}>
-            {label}
-            {index < levelLabels.length - 1 && (
-              <span className='text-text-alternative'> | </span>
-            )}
-          </span>
-        ))}
-      </>
-    );
+    const labels = tempLevels
+      .map((id) => {
+        const match = id.match(/lv(\d+)/);
+        return match ? LEVEL_NAMES[parseInt(match[1]) - 1] : '';
+      })
+      .filter(Boolean);
+    return joinLabels(labels);
   };
 
-  // 선택된 성별을 표시 문자열로 변환
   const getGenderDisplayText = () => {
-    if (!tempGender) return '상관없음';
-
-    const genderMap: Record<string, string> = {
-      male: '남성',
-      female: '여성',
-      all: '제한없음',
-    };
-
-    return genderMap[tempGender] || '상관없음';
+    return !tempGender ? '상관없음' : GENDER_MAP[tempGender] || '상관없음';
   };
 
-  // 선택된 연령대를 표시 문자열로 변환
   const getAgeDisplayText = () => {
     if (tempAges.length === 0) return '상관없음';
-
-    // 모두 선택하면 제한없음
     if (tempAges.length === 4) return '제한없음';
-
-    const ageMap: Record<string, string> = {
-      '20s': '20대',
-      '30s': '30대',
-      '40s': '40대',
-      '50s': '50대 이상',
-    };
-
-    const ageLabels = tempAges.map((id) => ageMap[id] || '');
-
-    return (
-      <>
-        {ageLabels.map((label, index) => (
-          <span key={index}>
-            {label}
-            {index < ageLabels.length - 1 && (
-              <span className='text-text-alternative'> | </span>
-            )}
-          </span>
-        ))}
-      </>
-    );
+    return joinLabels(tempAges.map((id) => AGE_MAP[id] || '').filter(Boolean));
   };
 
   return (
@@ -132,7 +114,7 @@ const CreateMatchPage = () => {
           icon={
             <Calendar
               size={24}
-              className='text-icon-netural'
+              className='text-icon-neutral'
               style={{ strokeWidth: 1.5 }}
             />
           }
@@ -149,7 +131,7 @@ const CreateMatchPage = () => {
           icon={
             <UserMulti
               size={24}
-              className='text-icon-netural'
+              className='text-icon-neutral'
               style={{ strokeWidth: 1.5 }}
             />
           }
@@ -168,7 +150,7 @@ const CreateMatchPage = () => {
           icon={
             <Sort
               size={24}
-              className='text-icon-netural'
+              className='text-icon-neutral'
               style={{ strokeWidth: 1.5 }}
             />
           }
@@ -183,7 +165,7 @@ const CreateMatchPage = () => {
           icon={
             <UserLove
               size={24}
-              className='text-icon-netural'
+              className='text-icon-neutral'
               style={{ strokeWidth: 1.5 }}
             />
           }
@@ -198,7 +180,7 @@ const CreateMatchPage = () => {
           icon={
             <BubbleChat
               size={24}
-              className='text-icon-netural'
+              className='text-icon-neutral'
               style={{ strokeWidth: 1.5 }}
             />
           }
@@ -216,7 +198,7 @@ const CreateMatchPage = () => {
           icon={
             <LocationLarge
               size={24}
-              className='text-icon-netural'
+              className='text-icon-neutral'
               style={{ strokeWidth: 1.5 }}
             />
           }
@@ -235,9 +217,14 @@ const CreateMatchPage = () => {
         showCancelButton={false}
         confirmText='선택'
         onConfirm={() => {
-          // 선택된 날짜/시간을 "YYYY년 MM월 DD일 HH:MM" 형식으로 저장
-          const formattedDate = `${tempDateTime.year}년 ${String(tempDateTime.month).padStart(2, '0')}월 ${String(tempDateTime.day).padStart(2, '0')}일 ${tempDateTime.hour}:${tempDateTime.minute}`;
-          setSelectedDate(formattedDate);
+          const dateObj = new Date(
+            tempDateTime.year,
+            tempDateTime.month - 1,
+            tempDateTime.day,
+            parseInt(tempDateTime.hour),
+            parseInt(tempDateTime.minute)
+          );
+          setSelectedDate(format(dateObj, 'yyyy년 MM월 dd일 HH:mm'));
           setIsDateTimeOpen(false);
         }}
       >
@@ -352,9 +339,21 @@ const CreateMatchPage = () => {
           onClose={() => setIsLocationOpen(false)}
         />
       </BottomSheet>
-      {!isDateTimeOpen && !isPeopleOpen && !isLevelOpen && !isGenderOpen && !isAgeOpen && !isLocationOpen && (
-        <Button isFloat>다음</Button>
-      )}
+      {!isDateTimeOpen &&
+        !isPeopleOpen &&
+        !isLevelOpen &&
+        !isGenderOpen &&
+        !isAgeOpen &&
+        !isLocationOpen && (
+          <Button
+            isFloat
+            onClick={() =>
+              router.push(`${PATHS.MATCH.CREATE_MATCH}/description`)
+            }
+          >
+            다음
+          </Button>
+        )}
     </div>
   );
 };
