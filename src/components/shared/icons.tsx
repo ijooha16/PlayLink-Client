@@ -20,6 +20,7 @@
 
 import CancelIcon from '../../../public/images/play-icons/ic_cancel.svg';
 import CheckIcon from '../../../public/images/play-icons/ic_check.svg';
+import ChevronDownIcon from '../../../public/images/play-icons/ic_chevron_down.svg';
 import ChevronBackIcon from '../../../public/images/play-icons/ic_chevron_left.svg';
 import ChevronRightIcon from '../../../public/images/play-icons/ic_chevron_right.svg';
 import EditIcon from '../../../public/images/play-icons/ic_edit.svg';
@@ -41,6 +42,7 @@ import CircleIcon from '../../../public/images/play-icons/ic_circle.svg';
 import Error from '../../../public/images/play-icons/ic_error.svg';
 import Success from '../../../public/images/play-icons/ic_info.svg';
 import LocationLargeIcon from '../../../public/images/play-icons/ic_location.svg';
+import RegionIcon from '../../../public/images/play-icons/ic_region.svg';
 import SortIcon from '../../../public/images/play-icons/ic_sort.svg';
 import SparkIcon from '../../../public/images/play-icons/ic_spark.svg';
 import UserLoveIcon from '../../../public/images/play-icons/ic_user_love.svg';
@@ -105,6 +107,7 @@ export const EyeOff = createIcon(EyeOffIcon, 24, 24);
 export const ChevronBack = createIcon(ChevronBackIcon, 20, 20);
 export const ChevronLeft = ChevronBack;
 export const ChevronRight = createIcon(ChevronRightIcon, 24, 24);
+export const ChevronDown = createIcon(ChevronDownIcon, 16, 16);
 
 export const Kakao = createIcon(KakaoIcon, 24, 24);
 export const Email = createIcon(EmailIcon, 24, 24);
@@ -136,3 +139,4 @@ export const Sort = createIcon(SortIcon, 24, 24);
 export const Spark = createIcon(SparkIcon, 24, 24);
 export const UserLove = createIcon(UserLoveIcon, 24, 24);
 export const UserMulti = createIcon(UserMultiIcon, 24, 24);
+export const Region = createIcon(RegionIcon, 24, 24);
