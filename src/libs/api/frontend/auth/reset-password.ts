@@ -1,5 +1,5 @@
-import { apiClient } from '@/libs/http';
 import { API_URLS } from '@/constant/api-urls';
+import { apiClient } from '@/libs/http';
 
 type ResetPasswordType = {
   user_id: number;
@@ -7,9 +7,6 @@ type ResetPasswordType = {
 };
 
 export const resetPassword = async (req: ResetPasswordType) => {
-  console.log('resetPassword', req);
   const { data } = await apiClient.put(API_URLS.AUTH.RESET_PASSWORD, req);
-  console.log('resetPassword data', data);
   return data;
 };
-

@@ -93,7 +93,7 @@ export const BackendAuthAPI = {
    * 비밀번호 재설정
    */
   resetPassword: async (payload: ResetPasswordRequest) => {
-    const response = await backendClient.post(
+    const response = await backendClient.put(
       '/playlink/resetPassword',
       payload
     );
