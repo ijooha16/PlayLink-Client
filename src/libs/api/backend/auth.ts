@@ -52,7 +52,10 @@ export const BackendAuthAPI = {
    * 이메일 인증 코드 전송
    */
   sendEmailCode: async (payload: EmailRequest) => {
-    const response = await backendClient.post('/playlink/email/send', payload);
+    const response = await backendClient.post(
+      '/playlink/signup/email',
+      payload
+    );
     return response;
   },
 
@@ -60,7 +63,10 @@ export const BackendAuthAPI = {
    * 이메일 인증 코드 검증
    */
   verifyEmailCode: async (payload: EmailVerifyRequest) => {
-    const response = await backendClient.post('/playlink/email/verify', payload);
+    const response = await backendClient.post(
+      '/playlink/signup/email/verify',
+      payload
+    );
     return response;
   },
 
@@ -68,7 +74,7 @@ export const BackendAuthAPI = {
    * SMS 인증 코드 전송
    */
   sendSMSCode: async (payload: SMSRequest) => {
-    const response = await backendClient.post('/playlink/sms/send', payload);
+    const response = await backendClient.post('/playlink/signup/sms', payload);
     return response;
   },
 
@@ -76,7 +82,10 @@ export const BackendAuthAPI = {
    * SMS 인증 코드 검증
    */
   verifySMSCode: async (payload: SMSVerifyRequest) => {
-    const response = await backendClient.post('/playlink/sms/verify', payload);
+    const response = await backendClient.post(
+      '/playlink/signup/sms/verify',
+      payload
+    );
     return response;
   },
 
@@ -84,7 +93,10 @@ export const BackendAuthAPI = {
    * 비밀번호 재설정
    */
   resetPassword: async (payload: ResetPasswordRequest) => {
-    const response = await backendClient.post('/playlink/reset-password', payload);
+    const response = await backendClient.post(
+      '/playlink/resetPassword',
+      payload
+    );
     return response;
   },
 
@@ -92,7 +104,9 @@ export const BackendAuthAPI = {
    * 아이디 찾기
    */
   findAccount: async (phoneNumber: string) => {
-    const response = await backendClient.post('/playlink/find-account', { phoneNumber });
+    const response = await backendClient.post('/playlink/find-account', {
+      phoneNumber,
+    });
     return response;
   },
 };
