@@ -3,6 +3,10 @@
 // import { HeartIcon, MessagesSquareIcon } from 'lucide-react';
 import { PATHS } from '@/constant';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import {
+  extractSportsFromResponse,
+  getSportName,
+} from '@/libs/helpers/sport';
 import { MatchType } from '@/types/match/match';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -25,13 +29,8 @@ const MatchCards = (data: { data: MatchType }) => {
     date,
   } = data.data;
 
-  const sportsList = sports?.data?.data?.sports;
-  const sportsName =
-    sportsList &&
-    sportsList.find(
-      (sport: { sports_id: number; sports_name: string }) =>
-        sport.sports_id === sportsType
-    )?.sports_name;
+  const sportsList = extractSportsFromResponse(sports);
+  const sportsName = getSportName(sportsList, sportsType);
 
   const handleMatchClick = (e: React.MouseEvent) => {
     e.preventDefault();

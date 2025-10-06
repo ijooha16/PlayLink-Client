@@ -3,6 +3,10 @@
 import { X } from 'lucide-react';
 import { MouseEvent, useState } from 'react';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import {
+  extractSportsFromResponse,
+  getSportName,
+} from '@/libs/helpers/sport';
 import SportCard from '../features/match/sport-card';
 
 interface SelectExerciseModalProps {
@@ -30,13 +34,8 @@ const SelectExerciseModal = ({
     setIsOpen(false);
   };
 
-  const sportsList = sports?.data?.data?.sports;
-  const sportsName =
-    sportsList &&
-    sportsList.find(
-      (sport: { sports_id: number; sports_name: string }) =>
-        sport.sports_id === selectedSport
-    )?.sports_name;
+  const sportsList = extractSportsFromResponse(sports);
+  const sportsName = getSportName(sportsList, selectedSport ?? undefined);
 
   return (
     <div>

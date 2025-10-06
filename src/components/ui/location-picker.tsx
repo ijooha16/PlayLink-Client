@@ -11,19 +11,25 @@ import { useState } from 'react';
 import Button from './button';
 import Input from './input';
 
+export type LocationData = {
+  placeName: string;
+  placeAddress: string;
+  placeLocation: string; // "y, x" 형식
+};
+
 interface LocationPickerProps {
-  onLocationChange?: (location: string) => void;
-  initialLocation?: string;
+  onLocationChange?: (location: LocationData) => void;
+  initialLocation?: LocationData;
   onClose?: () => void;
 }
 
 export default function LocationPicker({
   onLocationChange,
-  initialLocation = '',
+  initialLocation,
   onClose,
 }: LocationPickerProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState<string>('');
+  const [selectedPlace, setSelectedPlace] = useState<KakaoPlace | null>(null);
 
   // 검색어 debounce 처리
   const debouncedQuery = useDebounce(searchQuery, 300);
@@ -37,12 +43,16 @@ export default function LocationPicker({
   };
 
   const handleLocationSelect = (place: KakaoPlace) => {
-    setSelectedLocation(place.place_name);
+    setSelectedPlace(place);
   };
 
   const handleConfirm = () => {
-    if (selectedLocation && onLocationChange) {
-      onLocationChange(selectedLocation);
+    if (selectedPlace && onLocationChange) {
+      onLocationChange({
+        placeName: selectedPlace.place_name,
+        placeAddress: selectedPlace.road_address_name || selectedPlace.address_name,
+        placeLocation: `${selectedPlace.y}, ${selectedPlace.x}`,
+      });
     }
     if (onClose) {
       onClose();
@@ -107,7 +117,7 @@ export default function LocationPicker({
                   <button
                     onClick={() => handleLocationSelect(place)}
                     className={`w-full text-left transition-colors hover:bg-bg-normal ${
-                      selectedLocation === place.place_name
+                      selectedPlace?.place_name === place.place_name
                         ? 'bg-bg-neutral'
                         : ''
                     }`}
@@ -142,7 +152,11 @@ export default function LocationPicker({
                 <button
                   onClick={() => {
                     if (onLocationChange) {
-                      onLocationChange(debouncedQuery);
+                      onLocationChange({
+                        placeName: debouncedQuery,
+                        placeAddress: '',
+                        placeLocation: '',
+                      });
                     }
                     if (onClose) {
                       onClose();
@@ -159,7 +173,7 @@ export default function LocationPicker({
         </div>
       )}
 
-      {selectedLocation && (
+      {selectedPlace && (
         <Button isFloat onClick={handleConfirm}>
           선택
         </Button>

@@ -50,7 +50,7 @@ export default function Home() {
   return (
     <div>
       <MainHeader />
-      <div className='overflow-auto'>
+      <div className='overflow-auto pb-20'>
         {data && data.data.map((d) => <MatchCards key={d.matchId} data={d} />)}
       </div>
       <MainNewButton />

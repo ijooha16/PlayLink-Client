@@ -6,6 +6,7 @@ import { PATHS } from '@/constant';
 import { clearFlow, completeStep } from '@/hooks/auth/use-signup-flow';
 import { useUpdateProfile } from '@/hooks/react-query/profile/use-profile-query';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import { extractSportsFromResponse } from '@/libs/helpers/sport';
 import { validateSports } from '@/libs/valid/auth';
 import useSignUpStore from '@/store/use-sign-up-store';
 import { useRouter } from 'next/navigation';
@@ -20,8 +21,7 @@ export default function SportsSelectionPage() {
   );
   const { data: sports } = useGetSportsQuery();
 
-  const sportsList: { sports_name: string; sports_id: number }[] =
-    sports?.data?.data?.sports ?? [];
+  const sportsList = extractSportsFromResponse(sports);
 
   // 운동 토글 (최대 3개)
   const toggleSport = (id: number) => {

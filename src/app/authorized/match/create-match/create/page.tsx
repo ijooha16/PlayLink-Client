@@ -14,16 +14,33 @@ import Button from '@/components/ui/button';
 import DateTimePicker from '@/components/ui/date-time-picker';
 import GenderPicker from '@/components/ui/gender-picker';
 import LevelPicker from '@/components/ui/level-picker';
-import LocationPicker from '@/components/ui/location-picker';
+import LocationPicker, { LocationData } from '@/components/ui/location-picker';
 import PeoplePicker from '@/components/ui/people-picker';
 import SelectButton from '@/components/ui/select-button';
-import { PATHS } from '@/constant';
+import { AGE_MAP, GENDER_MAP, LEVEL_NAMES, PATHS } from '@/constant';
+import {
+  validateDateTime,
+  validateLocation,
+  validatePeople,
+} from '@/libs/valid/match';
+import useCreateMatchStore from '@/store/use-create-match-store';
+import { toast } from '@/utills/toast';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const CreateMatchPage = () => {
   const router = useRouter();
+  const {
+    matchData,
+    updateDateTime,
+    updatePeople,
+    updateLevels,
+    updateGender,
+    updateGeneration,
+    updateLocation,
+  } = useCreateMatchStore();
+
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedPeople, setSelectedPeople] = useState('');
 
@@ -54,21 +71,7 @@ const CreateMatchPage = () => {
   const [tempAges, setTempAges] = useState<string[]>([]);
 
   const [isLocationOpen, setIsLocationOpen] = useState(false);
-  const [tempLocation, setTempLocation] = useState<string>('');
-
-  // 레벨명 매핑
-  const LEVEL_NAMES = ['입문', '초보', '중급', '고급', '매니아'];
-  const GENDER_MAP: Record<string, string> = {
-    male: '남성',
-    female: '여성',
-    all: '제한없음',
-  };
-  const AGE_MAP: Record<string, string> = {
-    '20s': '20대',
-    '30s': '30대',
-    '40s': '40대',
-    '50s': '50대 이상',
-  };
+  const [tempLocation, setTempLocation] = useState<LocationData | null>(null);
 
   // 구분자로 레이블 조인
   const joinLabels = (labels: string[]) => (
@@ -96,13 +99,19 @@ const CreateMatchPage = () => {
   };
 
   const getGenderDisplayText = () => {
-    return !tempGender ? '상관없음' : GENDER_MAP[tempGender] || '상관없음';
+    return !tempGender
+      ? '상관없음'
+      : GENDER_MAP[tempGender as keyof typeof GENDER_MAP] || '상관없음';
   };
 
   const getAgeDisplayText = () => {
     if (tempAges.length === 0) return '상관없음';
     if (tempAges.length === 4) return '제한없음';
-    return joinLabels(tempAges.map((id) => AGE_MAP[id] || '').filter(Boolean));
+    return joinLabels(
+      tempAges
+        .map((id) => AGE_MAP[id as keyof typeof AGE_MAP] || '')
+        .filter(Boolean)
+    );
   };
 
   return (
@@ -203,7 +212,7 @@ const CreateMatchPage = () => {
             />
           }
           placeholder='장소를 선택해주세요'
-          value={tempLocation}
+          value={tempLocation?.placeName || ''}
           onClick={() => setIsLocationOpen(true)}
         />
       </div>
@@ -224,7 +233,21 @@ const CreateMatchPage = () => {
             parseInt(tempDateTime.hour),
             parseInt(tempDateTime.minute)
           );
-          setSelectedDate(format(dateObj, 'yyyy년 MM월 dd일 HH:mm'));
+          const formattedDate = format(dateObj, 'yyyy년 MM월 dd일 HH:mm');
+          setSelectedDate(formattedDate);
+
+          // Store에 저장 (API 형식에 맞게)
+          const date = format(dateObj, 'yyyy-MM-dd');
+          const startHour = tempDateTime.hour.padStart(2, '0');
+          const startMinute = tempDateTime.minute.padStart(2, '0');
+          const startTime = `${startHour}:${startMinute}`;
+
+          // endTime은 startTime에서 2시간 후로 기본 설정
+          const endDate = new Date(dateObj);
+          endDate.setHours(endDate.getHours() + 2);
+          const endTime = format(endDate, 'HH:mm');
+
+          updateDateTime(date, startTime, endTime);
           setIsDateTimeOpen(false);
         }}
       >
@@ -257,6 +280,7 @@ const CreateMatchPage = () => {
           // 선택된 인원을 "최소 n명 | 최대 n명" 형식으로 저장
           const formattedPeople = `최소 ${tempPeople.min}명 | 최대 ${tempPeople.max}명`;
           setSelectedPeople(formattedPeople);
+          updatePeople(tempPeople.min, tempPeople.max);
           setIsPeopleOpen(false);
         }}
       >
@@ -276,6 +300,7 @@ const CreateMatchPage = () => {
         showCancelButton={false}
         confirmText='선택'
         onConfirm={() => {
+          updateLevels(tempLevels);
           setIsLevelOpen(false);
         }}
       >
@@ -295,6 +320,7 @@ const CreateMatchPage = () => {
         showCancelButton={false}
         confirmText='선택'
         onConfirm={() => {
+          updateGender(tempGender);
           setIsGenderOpen(false);
         }}
       >
@@ -314,6 +340,7 @@ const CreateMatchPage = () => {
         showCancelButton={false}
         confirmText='선택'
         onConfirm={() => {
+          updateGeneration(tempAges);
           setIsAgeOpen(false);
         }}
       >
@@ -334,8 +361,11 @@ const CreateMatchPage = () => {
       >
         <LocationPicker
           key={isLocationOpen ? 'open' : 'closed'}
-          onLocationChange={(location) => setTempLocation(location)}
-          initialLocation={tempLocation}
+          onLocationChange={(location) => {
+            setTempLocation(location);
+            updateLocation(location);
+          }}
+          initialLocation={tempLocation ?? undefined}
           onClose={() => setIsLocationOpen(false)}
         />
       </BottomSheet>
@@ -347,9 +377,41 @@ const CreateMatchPage = () => {
         !isLocationOpen && (
           <Button
             isFloat
-            onClick={() =>
-              router.push(`${PATHS.MATCH.CREATE_MATCH}/description`)
-            }
+            onClick={() => {
+              // 날짜/시간 검증
+              if (!selectedDate) {
+                toast.error('날짜와 시간을 선택해 주세요.');
+                return;
+              }
+
+              // store에 저장된 값 사용
+              const { date, startTime, endTime } = matchData;
+
+              const dateTimeError = validateDateTime(date, startTime, endTime);
+              if (dateTimeError) {
+                toast.error(dateTimeError);
+                return;
+              }
+
+              // 인원 검증
+              const peopleError = validatePeople(
+                matchData.leastSize,
+                matchData.maxSize
+              );
+              if (peopleError) {
+                toast.error(peopleError);
+                return;
+              }
+
+              // 장소 검증
+              const locationError = validateLocation(tempLocation);
+              if (locationError) {
+                toast.error(locationError);
+                return;
+              }
+
+              router.push(`${PATHS.MATCH.CREATE_MATCH}/description`);
+            }}
           >
             다음
           </Button>

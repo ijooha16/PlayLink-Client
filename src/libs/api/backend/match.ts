@@ -1,5 +1,22 @@
 import { backendClient } from '@/libs/http';
 
+export type CreateMatchPayload = {
+  title: string;
+  contents: string;
+  matchType: number;
+  sportType: number;
+  date: string;
+  startTime: string;
+  endTime: string;
+  leastSize: number;
+  maxSize: number;
+  matchLevel: number;
+  gender: number;
+  generation: number;
+  placeAddress: string;
+  placeLocation: string;
+};
+
 export const BackendMatchAPI = {
   /**
    * 매치 목록 조회

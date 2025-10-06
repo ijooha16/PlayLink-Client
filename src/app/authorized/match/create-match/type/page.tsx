@@ -3,16 +3,24 @@
 import { Check } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import { PATHS } from '@/constant';
+import { validateMatchType } from '@/libs/valid/match';
+import useCreateMatchStore from '@/store/use-create-match-store';
+import { toast } from '@/utills/toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const CreateMatchType = () => {
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const updateMatchType = useCreateMatchStore((state) => state.updateMatchType);
+  const [selectedType, setSelectedType] = useState<string | null>('play');
 
   const handleNext = () => {
-    if (selectedType === null) return;
-    // TODO: Store에 저장
+    const error = validateMatchType(selectedType);
+    if (error) {
+      toast.error(error);
+      return;
+    }
+    updateMatchType(selectedType as 'play' | 'watch');
     router.replace(PATHS.MATCH.CREATE_MATCH + '/sports');
   };
 

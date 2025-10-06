@@ -4,11 +4,15 @@ import SportCard from '@/components/features/match/sport-card';
 import Button from '@/components/ui/button';
 import { PATHS } from '@/constant';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import { validateSportType } from '@/libs/valid/match';
+import useCreateMatchStore from '@/store/use-create-match-store';
+import { toast } from '@/utills/toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const CreateMatchSports = () => {
   const router = useRouter();
+  const updateSportType = useCreateMatchStore((state) => state.updateSportType);
   const [selectedSport, setSelectedSport] = useState<number | null>(null);
 
   const { data: sports } = useGetSportsQuery();
@@ -17,8 +21,12 @@ const CreateMatchSports = () => {
     sports?.data?.data?.sports ?? [];
 
   const handleNext = () => {
-    if (selectedSport === null) return;
-    // TODO: Store에 저장
+    const error = validateSportType(selectedSport);
+    if (error) {
+      toast.error(error);
+      return;
+    }
+    updateSportType(selectedSport!);
     router.replace(PATHS.MATCH.CREATE_MATCH + '/create');
   };
 
