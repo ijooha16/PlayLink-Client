@@ -5,36 +5,117 @@ import TextArea from '@/components/forms/textarea';
 import { Camera } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import { PATHS } from '@/constant';
+import { useAddMatchMutation } from '@/hooks/react-query/match/use-add-match-mutation';
+import { validateTitle, validateContents } from '@/libs/valid/match';
+import useCreateMatchStore from '@/store/use-create-match-store';
+import { toast } from '@/utills/toast';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const CreateMatchDescription = () => {
   const router = useRouter();
+  const { updateDescription, getApiPayload, reset } = useCreateMatchStore();
+  const { mutate: createMatch, isPending } = useAddMatchMutation();
+
   const [matchName, setMatchName] = useState('');
   const [description, setDescription] = useState('');
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleNext = () => {
-    if (!matchName.trim() || !description.trim()) return;
-    // TODO: Store에 저장 및 API 호출
-    router.replace(PATHS.HOME);
+    // 제목 검증
+    const titleError = validateTitle(matchName);
+    if (titleError) {
+      toast.error(titleError);
+      return;
+    }
+
+    // 내용 검증
+    const contentsError = validateContents(description);
+    if (contentsError) {
+      toast.error(contentsError);
+      return;
+    }
+
+    // Store에 description 저장
+    updateDescription(matchName.trim(), description.trim());
+
+    // FormData 생성
+    const formData = new FormData();
+    const apiPayload = getApiPayload();
+
+    // API payload의 모든 필드를 FormData에 추가
+    Object.entries(apiPayload).forEach(([key, value]) => {
+      formData.append(key, String(value));
+    });
+
+    // 이미지 파일이 있으면 추가
+    if (imageFile) {
+      formData.append('img', imageFile);
+    }
+
+    createMatch(formData, {
+      onSuccess: () => {
+        reset();
+        router.replace(PATHS.HOME);
+      },
+      onError: (error) => {
+        console.error('매치 생성 실패:', error);
+        toast.error('매치 생성에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   };
 
   return (
     <>
       <div className='flex flex-col gap-s-16 pb-[80px]'>
-        <div className='border-line-neutral relative flex h-[80px] w-[80px] items-center justify-center rounded-8 border'>
-          <Image
-            src='/images/sport-svg-icons/sport=1_Ic_Soccer.svg'
-            alt='Soccer'
-            width={40}
-            height={40}
-            className='object-contain'
-          />
+        <div className='relative h-[80px] w-[80px]'>
+          <label
+            htmlFor='match-image'
+            className='border-line-neutral flex h-full w-full cursor-pointer items-center justify-center overflow-hidden rounded-8 border bg-white'
+          >
+            {imagePreview ? (
+              <Image
+                src={imagePreview}
+                alt='Match thumbnail'
+                fill
+                className='object-cover'
+                unoptimized
+              />
+            ) : (
+              <Image
+                src='/images/sport-svg-icons/sport=1_Ic_Soccer.svg'
+                alt='Default'
+                width={40}
+                height={40}
+                className='object-contain'
+              />
+            )}
+          </label>
           {/* 카메라 아이콘 - 우측 하단 border에 걸침 */}
-          <div className='bg-bg-neutral absolute -bottom-2 -right-2 flex h-[32px] w-[32px] items-center justify-center rounded-full'>
+          <div className='pointer-events-none absolute -bottom-2 -right-2 flex h-[32px] w-[32px] items-center justify-center rounded-full bg-bg-neutral'>
             <Camera size={20} className='text-icon-strong' />
           </div>
+          <input
+            id='match-image'
+            type='file'
+            accept='image/*'
+            onChange={handleImageChange}
+            className='hidden'
+          />
         </div>
 
         {/* 모임명 Input */}
@@ -54,7 +135,7 @@ const CreateMatchDescription = () => {
           maxLength={2000}
           showCharCount
         />
-        <div className='bg-bg-neutral flex flex-col gap-s-8 rounded-12 p-s-20'>
+        <div className='flex flex-col gap-s-8 rounded-12 bg-bg-neutral p-s-20'>
           <p className='text-body-02 font-semibold text-text-strong'>
             모임설명 작성 Tip
           </p>
@@ -75,11 +156,11 @@ const CreateMatchDescription = () => {
 
       <Button
         variant='default'
-        disabled={!matchName.trim() || !description.trim()}
+        disabled={!matchName.trim() || !description.trim() || isPending}
         onClick={handleNext}
         isFloat
       >
-        완료
+        {isPending ? '생성 중...' : '완료'}
       </Button>
     </>
   );

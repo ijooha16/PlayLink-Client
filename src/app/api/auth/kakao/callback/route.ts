@@ -1,12 +1,12 @@
-import { KakaoAPI } from '@/libs/api/external';
 import { BackendAuthAPI } from '@/libs/api/backend';
+import { KakaoAPI } from '@/libs/api/external';
+import { deleteCookie, setAuthCookie } from '@/libs/cookie-utils';
 import { normalizePhone } from '@/libs/valid/auth';
-import { setAuthCookie, deleteCookie } from '@/libs/cookie-utils';
 import { withApiHandlerRaw } from '@/utills/api-handler';
+import { randomUUID } from 'crypto';
 import { NextResponse } from 'next/server';
 import { UAParser } from 'ua-parser-js';
 import { z } from 'zod';
-import { randomUUID } from 'crypto';
 
 // 랜덤 전화번호 생성 (숫자만, 11자리)
 const generateRandomPhone = (): string => {
@@ -15,7 +15,10 @@ const generateRandomPhone = (): string => {
   const digits = uuid.replace(/\D/g, '').substring(0, 8);
 
   // 8자리가 안되면 랜덤 숫자로 채우기
-  const paddedDigits = digits.padEnd(8, Math.random().toString().substring(2, 10));
+  const paddedDigits = digits.padEnd(
+    8,
+    Math.random().toString().substring(2, 10)
+  );
 
   return `010${paddedDigits.substring(0, 8)}`;
 };
@@ -26,7 +29,9 @@ const kakaoSignupSchema = z.object({
   email: z.string().email('올바른 이메일 형식이 아닙니다'),
   password: z.string().min(1, '비밀번호를 입력해주세요'),
   passwordCheck: z.string().min(1, '비밀번호 확인을 입력해주세요'),
-  phoneNumber: z.string().regex(/^01[016789]\d{8}$/, '올바른 전화번호 형식이 아닙니다'),
+  phoneNumber: z
+    .string()
+    .regex(/^01[016789]\d{8}$/, '올바른 전화번호 형식이 아닙니다'),
   platform: z.string().min(1, '플랫폼 정보가 필요합니다'),
   device_id: z.string().min(1, '디바이스 ID가 필요합니다'),
   device_type: z.enum(['computer', 'mobile', 'tablet', 'unknown']),
@@ -100,11 +105,14 @@ export const POST = withApiHandlerRaw(async (request) => {
 
   const email = kakaoUserInfo.kakao_account?.email || '';
   const name = kakaoUserInfo.properties?.nickname || '카카오사용자';
-  const rawPhoneNumber = kakaoUserInfo.kakao_account?.phone_number || generateRandomPhone();
+  const rawPhoneNumber =
+    kakaoUserInfo.kakao_account?.phone_number || generateRandomPhone();
   const phoneNumber = normalizePhone(rawPhoneNumber); // 숫자만 추출
 
   // 카카오 프로필 이미지 가져오기
-  const profileImageUrl = kakaoUserInfo.properties?.profile_image || kakaoUserInfo.properties?.thumbnail_image;
+  const profileImageUrl =
+    kakaoUserInfo.properties?.profile_image ||
+    kakaoUserInfo.properties?.thumbnail_image;
   const profileImageBlob = profileImageUrl
     ? await KakaoAPI.downloadProfileImage(profileImageUrl)
     : null;
@@ -148,7 +156,7 @@ export const POST = withApiHandlerRaw(async (request) => {
 
   // 프로필 이미지 추가 (있는 경우)
   if (profileImageBlob) {
-    formData.append('profileImg', profileImageBlob, 'profile.jpg');
+    formData.append('img', profileImageBlob, 'profile.jpg');
   }
 
   // 로그인 페이로드
@@ -221,12 +229,19 @@ export const POST = withApiHandlerRaw(async (request) => {
       if (signupError instanceof Error) {
         console.error('Error Message:', signupError.message);
       }
-      if (typeof signupError === 'object' && signupError !== null && 'response' in signupError) {
+      if (
+        typeof signupError === 'object' &&
+        signupError !== null &&
+        'response' in signupError
+      ) {
         const axiosError = signupError as {
           response?: { status?: number; statusText?: string; data?: unknown };
         };
         console.error('Status:', axiosError.response?.status);
-        console.error('Error Data:', JSON.stringify(axiosError.response?.data, null, 2));
+        console.error(
+          'Error Data:',
+          JSON.stringify(axiosError.response?.data, null, 2)
+        );
       }
       console.error('========================');
 
