@@ -7,8 +7,8 @@ export const LEVEL_NAMES = ['입문', '초보', '중급', '고급', '매니아']
 
 // 성별 매핑
 export const GENDER_MAP = {
-  male: '남성',
-  female: '여성',
+  male: '남자만',
+  female: '여자만',
   all: '제한없음',
 } as const;
 

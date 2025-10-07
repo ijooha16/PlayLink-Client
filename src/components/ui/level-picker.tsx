@@ -35,7 +35,7 @@ const LEVELS = [
   },
   {
     id: 'lv5',
-    label: 'Lv5. 매니아',
+    label: 'Lv5. 전문가',
     icon: '/images/medal/ic_level_5.svg',
     description: '전문적인 수준의 운동이 가능해요.',
   },
@@ -76,7 +76,7 @@ export default function LevelPicker({
       <h2 className='text-title-02 font-semibold text-text-strong'>
         운동 레벨
       </h2>
-      <p className='font-regular text-text-neutral mb-s-24 text-body-02'>
+      <p className='font-regular mb-s-24 text-body-02 text-text-neutral'>
         참여 가능한 레벨을 모두 선택해주세요.
       </p>
 

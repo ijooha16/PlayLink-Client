@@ -3,12 +3,12 @@
 import Loading from '@/components/ui/loading';
 import { PATHS } from '@/constant';
 import { TOAST_ALERT_MESSAGES } from '@/constant/toast-alert';
-import { apiClient } from '@/libs/http';
 import { Auth } from '@/libs/api/frontend/auth/auth';
 import { findAccountByPhoneEmail } from '@/libs/api/frontend/auth/find-account';
-import { getDeviceInfo } from '@/utills/get-device-info';
+import { apiClient } from '@/libs/http';
 import { useAlertStore } from '@/store/alert-store';
 import useSignUpStore from '@/store/use-sign-up-store';
+import { getDeviceInfo } from '@/utills/get-device-info';
 import { toast } from '@/utills/toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
@@ -62,7 +62,9 @@ function KakaoCallbackPage() {
         console.log('카카오 사용자 정보:', kakaoResponse.data);
 
         if (!kakaoResponse.data.success) {
-          throw new Error(kakaoResponse.data.error || '카카오 정보 가져오기 실패');
+          throw new Error(
+            kakaoResponse.data.error || '카카오 정보 가져오기 실패'
+          );
         }
 
         const { email, name, profileImage } = kakaoResponse.data.data;
@@ -79,7 +81,7 @@ function KakaoCallbackPage() {
         console.log('이메일:', email);
         const findAccountResponse = await findAccountByPhoneEmail({
           phoneNumber,
-          email
+          email,
         });
         console.log('findAccount 응답:', findAccountResponse);
 

@@ -1,6 +1,5 @@
-import { BackendAuthAPI } from '@/libs/api/backend';
 import { KakaoAPI } from '@/libs/api/external';
-import { deleteCookie, setAuthCookie } from '@/libs/cookie-utils';
+import { deleteCookie } from '@/libs/cookie-utils';
 import { normalizePhone } from '@/libs/valid/auth';
 import { withApiHandlerRaw } from '@/utills/api-handler';
 import { randomUUID } from 'crypto';
@@ -96,6 +95,7 @@ export const POST = withApiHandlerRaw(async (request) => {
 
     // 카카오 사용자 정보 가져오기
     const kakaoUserInfo = await KakaoAPI.getUserInfo(accessToken);
+    console.log('Kakao User Info:', kakaoUserInfo);
 
     const email = kakaoUserInfo.kakao_account?.email || '';
     const name = kakaoUserInfo.properties?.nickname || '카카오사용자';
