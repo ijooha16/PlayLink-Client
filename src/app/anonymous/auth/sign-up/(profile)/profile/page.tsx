@@ -17,7 +17,7 @@ const ProfileSetup = () => {
 
   const [nickname, setNickname] = useState(profile.nickname || '');
   const isFile = (v: unknown): v is File => v instanceof File;
-  const [profileImage, setProfileImage] = useState<File | null>(
+  const [profileImage, setProfileImage] = useState<File | string | null>(
     profile.img || null
   );
   const [preview, setPreview] = useState<string | null>(null);
@@ -42,6 +42,7 @@ const ProfileSetup = () => {
       setPreview(profileImage);
     }
   }, [profileImage]);
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
