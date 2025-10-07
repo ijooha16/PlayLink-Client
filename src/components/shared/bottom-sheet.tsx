@@ -9,6 +9,12 @@ import {
 } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
+const SCROLL_LOCK_THRESHOLD = 5;
+const HANDLE_CLOSE_OFFSET = 80;
+const HANDLE_CLOSE_VELOCITY = 1100;
+const CONTENT_STRONG_OFFSET = 120;
+const CONTENT_STRONG_VELOCITY = 1400;
+
 interface BottomSheetProps {
   isOpen: boolean;
   onClose: () => void;
@@ -40,6 +46,8 @@ export default function BottomSheet({
   const sheetRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const dragOrigin = useRef<'handle' | 'content' | null>(null);
+  const hasStrongContentGesture = useRef(false);
 
   const y = useMotionValue(0);
 
@@ -50,6 +58,10 @@ export default function BottomSheet({
     } else {
       document.body.style.overflow = '';
     }
+
+    dragOrigin.current = null;
+    hasStrongContentGesture.current = false;
+    setIsDragging(false);
 
     return () => {
       document.body.style.overflow = '';
@@ -86,63 +98,122 @@ export default function BottomSheet({
 
   const handleDragStart = (
     event: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
+    _info: PanInfo
   ) => {
     const target = event.target as HTMLElement;
-    const isHandleArea = handleRef.current?.contains(target);
 
-    if (isHandleArea) {
-      setIsDragging(true);
-      return;
-    }
+    hasStrongContentGesture.current = false;
 
-    const isContentArea = contentRef.current?.contains(target);
-
-    if (isContentArea) {
+    if (!sheetRef.current?.contains(target)) {
+      dragOrigin.current = null;
       setIsDragging(false);
       return;
     }
 
-    const scrollTop = contentRef.current?.scrollTop || 0;
-
-    if (scrollTop <= 5 && info.offset.y > 0) {
-      setIsDragging(true);
+    if (target.closest('[data-wheel-picker="true"]')) {
+      dragOrigin.current = null;
+      setIsDragging(false);
+      return;
     }
+
+    if (handleRef.current?.contains(target)) {
+      dragOrigin.current = 'handle';
+      setIsDragging(true);
+      return;
+    }
+
+    if (contentRef.current?.contains(target)) {
+      const scrollTop = contentRef.current.scrollTop ?? 0;
+      dragOrigin.current =
+        scrollTop <= SCROLL_LOCK_THRESHOLD ? 'content' : null;
+      setIsDragging(false);
+      return;
+    }
+
+    dragOrigin.current = null;
+    setIsDragging(false);
   };
 
   const handleDrag = (
-    event: MouseEvent | TouchEvent | PointerEvent,
+    _event: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
-    if (!isDragging) return;
+    const origin = dragOrigin.current;
 
-    if (info.offset.y > 0) {
-      y.set(info.offset.y);
-    } else {
-      y.set(0);
+    if (origin === 'handle') {
+      const nextY = Math.max(info.offset.y, 0);
+      y.set(nextY);
+      return;
     }
+
+    if (origin === 'content') {
+      y.set(0);
+
+      if (info.offset.y <= 0) {
+        return;
+      }
+
+      const strongOffset = info.offset.y > CONTENT_STRONG_OFFSET;
+      const strongVelocity = info.velocity.y > CONTENT_STRONG_VELOCITY;
+      if ((strongOffset || strongVelocity) && !hasStrongContentGesture.current) {
+        hasStrongContentGesture.current = true;
+        dragOrigin.current = null;
+        setIsDragging(false);
+        y.stop();
+        y.set(0);
+        onClose();
+      }
+      return;
+    }
+
+    y.set(0);
   };
 
   const handleDragEnd = (
-    event: MouseEvent | TouchEvent | PointerEvent,
+    _event: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
-    if (!isDragging) return;
+    const origin = dragOrigin.current;
+    const offsetY = info.offset.y;
+    const velocityY = info.velocity.y;
+
+    dragOrigin.current = null;
+
+    if (origin === 'handle') {
+      const shouldClose = offsetY > HANDLE_CLOSE_OFFSET || velocityY > HANDLE_CLOSE_VELOCITY;
+
+      if (shouldClose && offsetY > 0) {
+        setIsDragging(false);
+        onClose();
+        return;
+      }
+
+      setIsDragging(false);
+      y.stop();
+      y.set(0);
+      return;
+    }
+
+    if (origin === 'content') {
+      if (hasStrongContentGesture.current && offsetY > 0) {
+        hasStrongContentGesture.current = false;
+        onClose();
+        return;
+      }
+
+      hasStrongContentGesture.current = false;
+      y.stop();
+      y.set(0);
+      return;
+    }
 
     setIsDragging(false);
-
-    const threshold = height === 'full' ? 200 : 150;
-    const shouldClose = info.offset.y > threshold || info.velocity.y > 500;
-
-    if (shouldClose) {
-      onClose();
-    } else {
-      y.set(0);
-    }
+    y.stop();
+    y.set(0);
   };
 
   const handleOverlayDragEnd = (
-    event: MouseEvent | TouchEvent | PointerEvent,
+    _event: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
     const shouldClose = info.offset.y > 50 || info.velocity.y > 300;
@@ -180,12 +251,14 @@ export default function BottomSheet({
             aria-modal='true'
             className={`relative z-10 w-full ${heightClasses[height]} flex flex-col rounded-t-3xl bg-white shadow-xl`}
             initial={{ y: '100%' }}
-            animate={{ y: 0 }}
+            animate={isDragging ? false : { y: 0 }}
             exit={{ y: '100%' }}
             transition={{
-              type: 'tween',
-              duration: 0.5,
-              ease: [0.32, 0.72, 0, 1],
+              type: 'spring',
+              damping: 30,
+              stiffness: 300,
+              mass: 1,
+              velocity: 2,
             }}
             drag='y'
             dragConstraints={{ top: 0, bottom: 0 }}

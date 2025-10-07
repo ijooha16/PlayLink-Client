@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const titleSchema = z
   .string({ required_error: '모임명을 입력해 주세요.' })
-  .min(5, '모임명은 최소 5글자 이상 입력해 주세요.')
+  .min(2, '모임명은 최소 2글자 이상 입력해 주세요.')
   .max(50, '모임명은 최대 50글자까지 입력 가능합니다.');
 
 export const validateTitle = (title: string): string => {

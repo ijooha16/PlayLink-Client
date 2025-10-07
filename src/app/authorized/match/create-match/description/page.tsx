@@ -6,7 +6,7 @@ import { Camera } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import { PATHS } from '@/constant';
 import { useAddMatchMutation } from '@/hooks/react-query/match/use-add-match-mutation';
-import { validateTitle, validateContents } from '@/libs/valid/match';
+import { validateContents, validateTitle } from '@/libs/valid/match';
 import useCreateMatchStore from '@/store/use-create-match-store';
 import { toast } from '@/utills/toast';
 import Image from 'next/image';
@@ -22,6 +22,7 @@ const CreateMatchDescription = () => {
   const [description, setDescription] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [titleError, setTitleError] = useState('');
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -35,11 +36,22 @@ const CreateMatchDescription = () => {
     }
   };
 
+  const handleMatchNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMatchName(value);
+    if (value.trim()) {
+      const error = validateTitle(value);
+      setTitleError(error);
+    } else {
+      setTitleError('');
+    }
+  };
+
   const handleNext = () => {
     // 제목 검증
     const titleError = validateTitle(matchName);
     if (titleError) {
-      toast.error(titleError);
+      setTitleError(titleError);
       return;
     }
 
@@ -69,6 +81,7 @@ const CreateMatchDescription = () => {
 
     createMatch(formData, {
       onSuccess: () => {
+        toast.success('매치가 성공적으로 생성되었습니다!');
         reset();
         router.replace(PATHS.HOME);
       },
@@ -85,7 +98,7 @@ const CreateMatchDescription = () => {
         <div className='relative h-[80px] w-[80px]'>
           <label
             htmlFor='match-image'
-            className='border-line-neutral flex h-full w-full cursor-pointer items-center justify-center overflow-hidden rounded-8 border bg-white'
+            className='flex h-full w-full cursor-pointer items-center justify-center overflow-hidden rounded-8 border border-line-neutral bg-white'
           >
             {imagePreview ? (
               <Image
@@ -120,18 +133,20 @@ const CreateMatchDescription = () => {
 
         {/* 모임명 Input */}
         <Input
-          label='모임명'
+          label='모임 제목'
           value={matchName}
-          onChange={(e) => setMatchName(e.target.value)}
-          placeholder='이름을 입력해 주세요. (5글자 이상)'
+          onChange={handleMatchNameChange}
+          placeholder='모임 제목을 입력해 주세요.'
+          hasError={!!titleError}
+          errorMessage={titleError}
         />
 
         {/* 주제 TextArea */}
         <TextArea
-          label='주제'
+          label='모임 설명'
           value={description}
           onChange={(value) => setDescription(value)}
-          placeholder='메시지를 입력해 주세요.'
+          placeholder='모임 설명을 입력해주세요.'
           maxLength={2000}
           showCharCount
         />
@@ -156,7 +171,7 @@ const CreateMatchDescription = () => {
 
       <Button
         variant='default'
-        disabled={!matchName.trim() || !description.trim() || isPending}
+        disabled={!matchName.trim() || !description.trim() || isPending || !!titleError}
         onClick={handleNext}
         isFloat
       >

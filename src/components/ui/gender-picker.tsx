@@ -9,8 +9,8 @@ interface GenderPickerProps {
 }
 
 const GENDERS = [
-  { id: 'male', label: '남성' },
-  { id: 'female', label: '여성' },
+  { id: 'male', label: '남자만' },
+  { id: 'female', label: '여자만' },
   { id: 'all', label: '제한없음' },
 ];
 
@@ -41,7 +41,7 @@ export default function GenderPicker({
   return (
     <div className='flex flex-col'>
       <h2 className='text-title-02 font-semibold text-text-strong'>성별</h2>
-      <p className='font-regular text-text-neutral mb-s-24 text-body-02'>
+      <p className='font-regular mb-s-24 text-body-02 text-text-neutral'>
         참여 가능한 성별을 선택해주세요.
       </p>
 

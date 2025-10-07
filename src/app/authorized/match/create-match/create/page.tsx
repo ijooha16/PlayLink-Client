@@ -44,8 +44,11 @@ const CreateMatchPage = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedPeople, setSelectedPeople] = useState('');
 
-  // BottomSheet 상태
-  const [isDateTimeOpen, setIsDateTimeOpen] = useState(false);
+  // BottomSheet 상태 - 하나의 상태로 통합
+  const [openSheet, setOpenSheet] = useState<
+    'dateTime' | 'people' | 'level' | 'gender' | 'age' | 'location' | null
+  >(null);
+
   const [tempDateTime, setTempDateTime] = useState({
     date: '',
     hour: '',
@@ -55,22 +58,17 @@ const CreateMatchPage = () => {
     day: 0,
   });
 
-  const [isPeopleOpen, setIsPeopleOpen] = useState(false);
-  const [tempPeople, setTempPeople] = useState({
+  const [tempPeople, setTempPeople] = useState<{
+    min: number;
+    max: number | null;
+  }>({
     min: 2,
     max: 2,
   });
 
-  const [isLevelOpen, setIsLevelOpen] = useState(false);
   const [tempLevels, setTempLevels] = useState<string[]>([]);
-
-  const [isGenderOpen, setIsGenderOpen] = useState(false);
   const [tempGender, setTempGender] = useState<string>('');
-
-  const [isAgeOpen, setIsAgeOpen] = useState(false);
   const [tempAges, setTempAges] = useState<string[]>([]);
-
-  const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [tempLocation, setTempLocation] = useState<LocationData | null>(null);
 
   // 구분자로 레이블 조인
@@ -129,7 +127,7 @@ const CreateMatchPage = () => {
           }
           placeholder='날짜와 시간을 선택해 주세요.'
           value={selectedDate}
-          onClick={() => setIsDateTimeOpen(true)}
+          onClick={() => setOpenSheet('dateTime')}
         />
       </div>
 
@@ -146,7 +144,7 @@ const CreateMatchPage = () => {
           }
           placeholder='최소 2명 | 최대 n명'
           value={selectedPeople}
-          onClick={() => setIsPeopleOpen(true)}
+          onClick={() => setOpenSheet('people')}
         />
       </div>
 
@@ -166,7 +164,7 @@ const CreateMatchPage = () => {
           placeholder='운동레벨'
           subText={getLevelDisplayText()}
           defaultSubText='상관없음'
-          onClick={() => setIsLevelOpen(true)}
+          onClick={() => setOpenSheet('level')}
         />
 
         {/* 성별 */}
@@ -181,7 +179,7 @@ const CreateMatchPage = () => {
           placeholder='성별'
           subText={getGenderDisplayText()}
           defaultSubText='상관없음'
-          onClick={() => setIsGenderOpen(true)}
+          onClick={() => setOpenSheet('gender')}
         />
 
         {/* 연령대 */}
@@ -196,7 +194,7 @@ const CreateMatchPage = () => {
           placeholder='연령대'
           subText={getAgeDisplayText()}
           defaultSubText='상관없음'
-          onClick={() => setIsAgeOpen(true)}
+          onClick={() => setOpenSheet('age')}
         />
       </div>
 
@@ -213,14 +211,14 @@ const CreateMatchPage = () => {
           }
           placeholder='장소를 선택해주세요'
           value={tempLocation?.placeName || ''}
-          onClick={() => setIsLocationOpen(true)}
+          onClick={() => setOpenSheet('location')}
         />
       </div>
 
       {/* 모임 일시 선택 BottomSheet */}
       <BottomSheet
-        isOpen={isDateTimeOpen}
-        onClose={() => setIsDateTimeOpen(false)}
+        isOpen={openSheet === 'dateTime'}
+        onClose={() => setOpenSheet(null)}
         height='auto'
         showConfirmButton
         showCancelButton={false}
@@ -248,11 +246,11 @@ const CreateMatchPage = () => {
           const endTime = format(endDate, 'HH:mm');
 
           updateDateTime(date, startTime, endTime);
-          setIsDateTimeOpen(false);
+          setOpenSheet(null);
         }}
       >
         <DateTimePicker
-          key={isDateTimeOpen ? 'open' : 'closed'}
+          key={openSheet === 'dateTime' ? 'open' : 'closed'}
           onDateTimeChange={(dateTime) => setTempDateTime(dateTime)}
           initialDateTime={
             tempDateTime.year > 0
@@ -270,22 +268,25 @@ const CreateMatchPage = () => {
 
       {/* 모임 인원 선택 BottomSheet */}
       <BottomSheet
-        isOpen={isPeopleOpen}
-        onClose={() => setIsPeopleOpen(false)}
+        isOpen={openSheet === 'people'}
+        onClose={() => setOpenSheet(null)}
         height='auto'
         showConfirmButton
         showCancelButton={false}
         confirmText='선택'
         onConfirm={() => {
           // 선택된 인원을 "최소 n명 | 최대 n명" 형식으로 저장
-          const formattedPeople = `최소 ${tempPeople.min}명 | 최대 ${tempPeople.max}명`;
+          const formattedPeople =
+            tempPeople.max === null
+              ? `최소 ${tempPeople.min}명 | 최대 제한없음`
+              : `최소 ${tempPeople.min}명 | 최대 ${tempPeople.max}명`;
           setSelectedPeople(formattedPeople);
-          updatePeople(tempPeople.min, tempPeople.max);
-          setIsPeopleOpen(false);
+          updatePeople(tempPeople.min, tempPeople.max ?? 999);
+          setOpenSheet(null);
         }}
       >
         <PeoplePicker
-          key={isPeopleOpen ? 'open' : 'closed'}
+          key={openSheet === 'people' ? 'open' : 'closed'}
           onPeopleChange={(people) => setTempPeople(people)}
           initialPeople={tempPeople.min > 0 ? tempPeople : undefined}
         />
@@ -293,19 +294,19 @@ const CreateMatchPage = () => {
 
       {/* 운동 레벨 선택 BottomSheet */}
       <BottomSheet
-        isOpen={isLevelOpen}
-        onClose={() => setIsLevelOpen(false)}
+        isOpen={openSheet === 'level'}
+        onClose={() => setOpenSheet(null)}
         height='auto'
         showConfirmButton
         showCancelButton={false}
         confirmText='선택'
         onConfirm={() => {
           updateLevels(tempLevels);
-          setIsLevelOpen(false);
+          setOpenSheet(null);
         }}
       >
         <LevelPicker
-          key={isLevelOpen ? 'open' : 'closed'}
+          key={openSheet === 'level' ? 'open' : 'closed'}
           onLevelChange={(levels) => setTempLevels(levels)}
           initialLevels={tempLevels}
         />
@@ -313,19 +314,19 @@ const CreateMatchPage = () => {
 
       {/* 성별 선택 BottomSheet */}
       <BottomSheet
-        isOpen={isGenderOpen}
-        onClose={() => setIsGenderOpen(false)}
+        isOpen={openSheet === 'gender'}
+        onClose={() => setOpenSheet(null)}
         height='auto'
         showConfirmButton
         showCancelButton={false}
         confirmText='선택'
         onConfirm={() => {
           updateGender(tempGender);
-          setIsGenderOpen(false);
+          setOpenSheet(null);
         }}
       >
         <GenderPicker
-          key={isGenderOpen ? 'open' : 'closed'}
+          key={openSheet === 'gender' ? 'open' : 'closed'}
           onGenderChange={(gender) => setTempGender(gender)}
           initialGender={tempGender}
         />
@@ -333,19 +334,19 @@ const CreateMatchPage = () => {
 
       {/* 연령대 선택 BottomSheet */}
       <BottomSheet
-        isOpen={isAgeOpen}
-        onClose={() => setIsAgeOpen(false)}
+        isOpen={openSheet === 'age'}
+        onClose={() => setOpenSheet(null)}
         height='auto'
         showConfirmButton
         showCancelButton={false}
         confirmText='선택'
         onConfirm={() => {
           updateGeneration(tempAges);
-          setIsAgeOpen(false);
+          setOpenSheet(null);
         }}
       >
         <AgePicker
-          key={isAgeOpen ? 'open' : 'closed'}
+          key={openSheet === 'age' ? 'open' : 'closed'}
           onAgeChange={(ages) => setTempAges(ages)}
           initialAges={tempAges}
         />
@@ -353,69 +354,65 @@ const CreateMatchPage = () => {
 
       {/* 장소 선택 BottomSheet */}
       <BottomSheet
-        isOpen={isLocationOpen}
-        onClose={() => setIsLocationOpen(false)}
+        isOpen={openSheet === 'location'}
+        onClose={() => setOpenSheet(null)}
         height='full'
         showConfirmButton={false}
         showCancelButton={false}
       >
         <LocationPicker
-          key={isLocationOpen ? 'open' : 'closed'}
+          key={openSheet === 'location' ? 'open' : 'closed'}
           onLocationChange={(location) => {
             setTempLocation(location);
             updateLocation(location);
           }}
           initialLocation={tempLocation ?? undefined}
-          onClose={() => setIsLocationOpen(false)}
+          onClose={() => setOpenSheet(null)}
         />
       </BottomSheet>
-      {!isDateTimeOpen &&
-        !isPeopleOpen &&
-        !isLevelOpen &&
-        !isGenderOpen &&
-        !isAgeOpen &&
-        !isLocationOpen && (
-          <Button
-            isFloat
-            onClick={() => {
-              // 날짜/시간 검증
-              if (!selectedDate) {
-                toast.error('날짜와 시간을 선택해 주세요.');
-                return;
-              }
+      {!openSheet && (
+        <Button
+          isFloat
+          disabled={!selectedDate || !selectedPeople || !tempLocation}
+          onClick={() => {
+            // 날짜/시간 검증
+            if (!selectedDate) {
+              toast.error('날짜와 시간을 선택해 주세요.');
+              return;
+            }
 
-              // store에 저장된 값 사용
-              const { date, startTime, endTime } = matchData;
+            // store에 저장된 값 사용
+            const { date, startTime, endTime } = matchData;
 
-              const dateTimeError = validateDateTime(date, startTime, endTime);
-              if (dateTimeError) {
-                toast.error(dateTimeError);
-                return;
-              }
+            const dateTimeError = validateDateTime(date, startTime, endTime);
+            if (dateTimeError) {
+              toast.error(dateTimeError);
+              return;
+            }
 
-              // 인원 검증
-              const peopleError = validatePeople(
-                matchData.leastSize,
-                matchData.maxSize
-              );
-              if (peopleError) {
-                toast.error(peopleError);
-                return;
-              }
+            // 인원 검증
+            const peopleError = validatePeople(
+              matchData.leastSize,
+              matchData.maxSize
+            );
+            if (peopleError) {
+              toast.error(peopleError);
+              return;
+            }
 
-              // 장소 검증
-              const locationError = validateLocation(tempLocation);
-              if (locationError) {
-                toast.error(locationError);
-                return;
-              }
+            // 장소 검증
+            const locationError = validateLocation(tempLocation);
+            if (locationError) {
+              toast.error(locationError);
+              return;
+            }
 
-              router.push(`${PATHS.MATCH.CREATE_MATCH}/description`);
-            }}
-          >
-            다음
-          </Button>
-        )}
+            router.push(`${PATHS.MATCH.CREATE_MATCH}/description`);
+          }}
+        >
+          다음
+        </Button>
+      )}
     </div>
   );
 };

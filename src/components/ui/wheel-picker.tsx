@@ -11,6 +11,12 @@ interface WheelPickerProps {
   showHighlight?: boolean;
 }
 
+interface MomentumState {
+  velocity: number;
+  timestamp: number;
+  isAnimating: boolean;
+}
+
 interface WheelPickerItemProps {
   item: string;
   virtualIndex: number;
@@ -39,7 +45,6 @@ const WheelPickerItem = memo(function WheelPickerItem({
       style={{
         height: `${itemHeight}px`,
         opacity,
-        scrollSnapAlign: 'start',
       }}
     >
       <span className={isSelected ? 'text-body-1 font-semibold' : 'text-body-02 font-medium'}>
@@ -63,8 +68,106 @@ export default function WheelPicker({
   const dragStartYRef = useRef(0);
   const scrollStartTopRef = useRef(0);
 
+  // Momentum scrolling state
+  const momentumRef = useRef<MomentumState>({
+    velocity: 0,
+    timestamp: Date.now(),
+    isAnimating: false,
+  });
+  const animationFrameRef = useRef<number>();
+  const lastDragYRef = useRef(0);
+  const lastDragTimeRef = useRef(0);
+  const wheelTimeoutRef = useRef<NodeJS.Timeout>();
+  const isInternalChangeRef = useRef(false);
+
+  // Velocity tracking for better momentum calculation
+  const velocitySamplesRef = useRef<number[]>([]);
+  const maxVelocitySamples = 5;
+
   // 경계값 검증
   const safeSelectedIndex = Math.max(0, Math.min(items.length - 1, selectedIndex));
+
+  // Stop momentum animation
+  const stopMomentum = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = undefined;
+    }
+    momentumRef.current.isAnimating = false;
+    momentumRef.current.velocity = 0;
+  }, []);
+
+  // 스크롤 끝났을 때 가장 가까운 아이템으로 스냅
+  const handleScrollEnd = useCallback(() => {
+    // 초기화 중이거나 아이템이 없으면 실행하지 않음
+    if (!containerRef.current || isInitializing || items.length === 0) {
+      return;
+    }
+
+    const paddingCount = Math.floor(5 / 2);
+    const scrollTop = containerRef.current.scrollTop;
+
+    // 가운데 위치한 아이템의 가상 인덱스 계산
+    const centerPosition = scrollTop + paddingCount * itemHeight;
+    const centerVirtualIndex = Math.round(centerPosition / itemHeight);
+    const virtualIndex = centerVirtualIndex - paddingCount;
+
+    // 무한 스크롤: 실제 인덱스로 변환, 일반: 범위 제한
+    const finalIndex = infinite
+      ? virtualIndex % items.length
+      : Math.max(0, Math.min(items.length - 1, virtualIndex));
+
+    if (finalIndex !== safeSelectedIndex) {
+      isInternalChangeRef.current = true;
+      onChange(finalIndex);
+    }
+
+    // 부드럽게 스냅 (infinite: virtualIndex, non-infinite: finalIndex 사용)
+    const snapIndex = infinite ? virtualIndex : finalIndex;
+    containerRef.current.scrollTo({
+      top: snapIndex * itemHeight,
+      behavior: 'smooth',
+    });
+  }, [isInitializing, itemHeight, safeSelectedIndex, items.length, onChange, infinite]);
+
+  // Momentum animation loop
+  const animateMomentum = useCallback(() => {
+    if (!containerRef.current || !momentumRef.current.isAnimating) return;
+
+    const now = Date.now();
+    const deltaTime = now - momentumRef.current.timestamp;
+    momentumRef.current.timestamp = now;
+
+    // Apply friction (감속) - iOS 스타일 높은 friction
+    const friction = 0.95; // 0.95로 높여서 스크롤 거리 크게 증가
+    momentumRef.current.velocity *= friction;
+
+    // Stop if velocity is too small
+    if (Math.abs(momentumRef.current.velocity) < 0.3) {
+      stopMomentum();
+      handleScrollEnd();
+      return;
+    }
+
+    // Apply velocity to scroll
+    const scrollDelta = momentumRef.current.velocity * (deltaTime / 16); // Normalize to 60fps
+    containerRef.current.scrollTop += scrollDelta;
+
+    // Continue animation
+    animationFrameRef.current = requestAnimationFrame(animateMomentum);
+  }, [stopMomentum, handleScrollEnd]);
+
+  // Start momentum with given velocity
+  const startMomentum = useCallback(
+    (velocity: number) => {
+      stopMomentum();
+      momentumRef.current.velocity = velocity;
+      momentumRef.current.timestamp = Date.now();
+      momentumRef.current.isAnimating = true;
+      animationFrameRef.current = requestAnimationFrame(animateMomentum);
+    },
+    [stopMomentum, animateMomentum]
+  );
 
   // 무한 스크롤을 위한 아이템 반복 (3 copies 기법)
   const repeatCount = infinite ? 3 : 1;
@@ -96,27 +199,92 @@ export default function WheelPicker({
     [infinite, items.length]
   );
 
+  // Wheel 이벤트 핸들러 (부드러운 스크롤)
+  const handleWheel = useCallback(
+    (e: WheelEvent) => {
+      e.preventDefault();
+      if (!containerRef.current) return;
+
+      // 기존 timeout과 momentum 정지
+      if (wheelTimeoutRef.current) {
+        clearTimeout(wheelTimeoutRef.current);
+      }
+      stopMomentum();
+
+      // deltaY를 적절히 스케일링 (너무 빠르지 않게)
+      const scaledDelta = e.deltaY * 0.3; // PC 휠을 부드럽게
+      containerRef.current.scrollTop += scaledDelta;
+
+      // wheel이 멈추면 snap 실행
+      wheelTimeoutRef.current = setTimeout(() => {
+        handleScrollEnd();
+      }, 100);
+    },
+    [stopMomentum]
+  );
+
   // 마우스 드래그 핸들러
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
+    stopMomentum();
     setIsDragging(true);
     dragStartYRef.current = e.clientY;
+    lastDragYRef.current = e.clientY;
+    lastDragTimeRef.current = Date.now();
     scrollStartTopRef.current = containerRef.current.scrollTop;
+    velocitySamplesRef.current = []; // Reset velocity samples
     e.preventDefault();
-  }, []);
+  }, [stopMomentum]);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (!isDragging || !containerRef.current) return;
       const deltaY = dragStartYRef.current - e.clientY;
       containerRef.current.scrollTop = scrollStartTopRef.current + deltaY;
+
+      // Track velocity samples for better momentum calculation
+      const now = Date.now();
+      const timeDelta = now - lastDragTimeRef.current;
+      if (timeDelta > 0) {
+        const posDelta = e.clientY - lastDragYRef.current;
+        const velocity = -posDelta / timeDelta;
+
+        // Store velocity samples (최근 5개만 유지)
+        velocitySamplesRef.current.push(velocity);
+        if (velocitySamplesRef.current.length > maxVelocitySamples) {
+          velocitySamplesRef.current.shift();
+        }
+      }
+      lastDragYRef.current = e.clientY;
+      lastDragTimeRef.current = now;
     },
-    [isDragging]
+    [isDragging, maxVelocitySamples]
   );
 
   const handleMouseUp = useCallback(() => {
+    if (isDragging) {
+      // Calculate average velocity from recent samples
+      let finalVelocity = 0;
+      if (velocitySamplesRef.current.length > 0) {
+        // 최근 샘플들의 평균 사용
+        const sum = velocitySamplesRef.current.reduce((acc, v) => acc + v, 0);
+        const avgVelocity = sum / velocitySamplesRef.current.length;
+
+        // iOS 스타일: velocity multiplier를 35-40으로 증폭
+        finalVelocity = avgVelocity * 38;
+      }
+
+      // Apply momentum from drag (임계값 0.2로 낮춤)
+      if (Math.abs(finalVelocity) > 0.2) {
+        startMomentum(finalVelocity);
+      } else {
+        handleScrollEnd();
+      }
+
+      velocitySamplesRef.current = []; // Reset samples
+    }
     setIsDragging(false);
-  }, []);
+  }, [isDragging, startMomentum, handleScrollEnd]);
 
   // 아이템 클릭 핸들러 (event delegation)
   const handleContainerClick = useCallback(
@@ -132,13 +300,16 @@ export default function WheelPicker({
         const targetIndex = infinite ? actualIndex : virtualIndex;
 
         if (targetIndex >= 0 && targetIndex < items.length) {
-          onChange(targetIndex);
           if (!infinite && containerRef.current) {
+            // non-infinite: 직접 scroll + onChange (중복 방지)
+            isInternalChangeRef.current = true;
             containerRef.current.scrollTo({
               top: virtualIndex * itemHeight,
               behavior: 'smooth',
             });
           }
+          // infinite: onChange만 호출 (useEffect에서 smooth scroll)
+          onChange(targetIndex);
         }
       }
     },
@@ -171,43 +342,43 @@ export default function WheelPicker({
   // 선택된 인덱스 변경 시 스크롤 이동
   useEffect(() => {
     if (containerRef.current && !isInitializing && items.length > 0) {
+      // 내부 변경(handleScrollEnd)인 경우 스크롤하지 않음
+      if (isInternalChangeRef.current) {
+        isInternalChangeRef.current = false;
+        return;
+      }
+
+      // 외부 변경인 경우 smooth scroll로 이동
       const scrollPosition = infinite
         ? getVirtualIndex(safeSelectedIndex) * itemHeight
         : safeSelectedIndex * itemHeight;
-      containerRef.current.scrollTop = scrollPosition;
+      containerRef.current.scrollTo({
+        top: scrollPosition,
+        behavior: 'smooth',
+      });
     }
   }, [safeSelectedIndex, itemHeight, isInitializing, items.length, infinite, getVirtualIndex]);
 
-  // 스크롤 끝났을 때 가장 가까운 아이템으로 스냅
-  const handleScrollEnd = useCallback(() => {
-    // 초기화 중이거나 아이템이 없으면 실행하지 않음
-    if (!containerRef.current || isInitializing || items.length === 0) {
-      return;
-    }
+  // Wheel 이벤트 리스너 등록
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    const paddingCount = Math.floor(5 / 2);
-    const scrollTop = containerRef.current.scrollTop;
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, [handleWheel]);
 
-    // 가운데 위치한 아이템의 가상 인덱스 계산
-    const centerPosition = scrollTop + paddingCount * itemHeight;
-    const centerVirtualIndex = Math.round(centerPosition / itemHeight);
-    const virtualIndex = centerVirtualIndex - paddingCount;
-
-    // 무한 스크롤: 실제 인덱스로 변환, 일반: 범위 제한
-    const finalIndex = infinite
-      ? getActualIndex(virtualIndex)
-      : Math.max(0, Math.min(items.length - 1, virtualIndex));
-
-    if (finalIndex !== safeSelectedIndex) {
-      onChange(finalIndex);
-    }
-
-    // 부드럽게 스냅
-    containerRef.current.scrollTo({
-      top: virtualIndex * itemHeight,
-      behavior: 'smooth',
-    });
-  }, [isInitializing, itemHeight, safeSelectedIndex, items.length, onChange, infinite, getActualIndex]);
+  // Cleanup animation on unmount
+  useEffect(() => {
+    return () => {
+      stopMomentum();
+      if (wheelTimeoutRef.current) {
+        clearTimeout(wheelTimeoutRef.current);
+      }
+    };
+  }, [stopMomentum]);
 
   // 무한 스크롤 경계 체크 (즉시 실행)
   const checkBoundaryAndReset = useCallback(() => {
@@ -239,10 +410,17 @@ export default function WheelPicker({
       // 경계 체크는 즉시 실행
       checkBoundaryAndReset();
 
+      // momentum animation 중에는 스냅하지 않음
+      if (momentumRef.current.isAnimating) {
+        return;
+      }
+
       // 스냅은 디바운스
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        handleScrollEnd();
+        if (!momentumRef.current.isAnimating) {
+          handleScrollEnd();
+        }
       }, 150);
     };
 
@@ -285,12 +463,12 @@ export default function WheelPicker({
         className='relative z-30 scrollbar-hide overflow-y-auto'
         style={{
           height: `${visibleCount * itemHeight}px`,
-          scrollSnapType: 'y mandatory',
           WebkitOverflowScrolling: 'touch',
           touchAction: 'pan-y',
           cursor: isDragging ? 'grabbing' : 'grab',
           userSelect: 'none',
         }}
+        data-wheel-picker='true'
         onClick={handleContainerClick}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -303,7 +481,6 @@ export default function WheelPicker({
             key={`top-${i}`}
             style={{
               height: `${itemHeight}px`,
-              scrollSnapAlign: 'start',
             }}
           />
         ))}
@@ -335,7 +512,6 @@ export default function WheelPicker({
             key={`bottom-${i}`}
             style={{
               height: `${itemHeight}px`,
-              scrollSnapAlign: 'start',
             }}
           />
         ))}
