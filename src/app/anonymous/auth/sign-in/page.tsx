@@ -4,9 +4,8 @@ import { Input } from '@/components/forms/input';
 import Header from '@/components/layout/header';
 import Button from '@/components/ui/button';
 import Loading from '@/components/ui/loading';
-import { PATHS } from '@/constant';
+import { LOGIN_DEVICE_IDS, PATHS } from '@/constant';
 import { useSignin } from '@/hooks/react-query/auth/use-signin';
-import { getDeviceInfo } from '@/utills/get-device-info';
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 
@@ -26,12 +25,10 @@ const SignIn = () => {
 
     if (!isEmailValid || !isPasswordValid) return;
 
-    const infos = await getDeviceInfo();
-
     signIn({
       email: trimmedEmail,
       password: trimmedPassword,
-      device_id: infos.deviceId,
+      device_id: LOGIN_DEVICE_IDS.DEFAULT,
     });
   };
 

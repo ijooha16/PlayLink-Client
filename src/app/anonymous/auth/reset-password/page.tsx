@@ -93,6 +93,7 @@ const ResetPassword = () => {
         findAccountAfterVerify({
           phoneNumber: normalizePhone(phone),
           email: email.trim(),
+          account_type: '0',
         });
       },
     });
@@ -134,6 +135,7 @@ const ResetPassword = () => {
         findAccount({
           phoneNumber: normalizePhone(phone),
           email: email.trim(),
+          account_type: '0',
         });
       }, 1500);
     } else {

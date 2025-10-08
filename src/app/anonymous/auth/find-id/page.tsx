@@ -31,7 +31,10 @@ export default function FindId() {
       },
       onVerifySuccess: function () {
         stop(); // 인증 성공 시 타이머 중지
-        findAccountAfterVerify({ phoneNumber: normalizePhone(phone) });
+        findAccountAfterVerify({
+          phoneNumber: normalizePhone(phone),
+          account_type: '0',
+        });
       },
     });
 

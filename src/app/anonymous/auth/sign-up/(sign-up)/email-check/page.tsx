@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 
 import { Input } from '@/components/forms/input';
 import Button from '@/components/ui/button';
-import { PATHS } from '@/constant';
+import { LOGIN_DEVICE_IDS, PATHS } from '@/constant';
 
 import { useFindAccount } from '@/hooks/react-query/auth/use-find-account';
 import { useSignUp, useSignin } from '@/hooks/react-query/auth/use-signin';
@@ -70,12 +70,11 @@ const EmailCheckNonCheck = () => {
   });
 
   const { mutate: signUp } = useSignUp({
-    onSuccess: async () => {
-      const deviceInfo = await getDeviceInfo();
+    onSuccess: () => {
       signIn({
         email: signUpData.emailCheck.email,
         password: signUpData.emailCheck.password,
-        device_id: deviceInfo.deviceId,
+        device_id: LOGIN_DEVICE_IDS.DEFAULT,
       });
     },
   });
@@ -87,7 +86,11 @@ const EmailCheckNonCheck = () => {
       : '';
 
     if (phone) {
-      findAccount({ phoneNumber: phone, email });
+      findAccount({
+        phoneNumber: phone,
+        email,
+        account_type: '0',
+      });
       return;
     }
 

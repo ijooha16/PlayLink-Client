@@ -1,11 +1,12 @@
 'use client';
 
 import Loading from '@/components/ui/loading';
-import { PATHS } from '@/constant';
+import { LOGIN_DEVICE_IDS, PATHS } from '@/constant';
 import { TOAST_ALERT_MESSAGES } from '@/constant/toast-alert';
 import { Auth } from '@/libs/api/frontend/auth/auth';
 import { findAccountByPhoneEmail } from '@/libs/api/frontend/auth/find-account';
 import { apiClient } from '@/libs/http';
+import { generatePasswordFromDeviceId } from '@/libs/valid/auth';
 import { useAlertStore } from '@/store/alert-store';
 import useSignUpStore from '@/store/use-sign-up-store';
 import { getDeviceInfo } from '@/utills/get-device-info';
@@ -27,13 +28,6 @@ function KakaoCallbackPage() {
       const errorDescription = searchParams.get('error_description');
       const state = searchParams.get('state');
 
-      console.log('=== 프론트엔드 카카오 콜백 처리 ===');
-      console.log('받은 code:', code);
-      console.log('받은 error:', error);
-      console.log('받은 errorDescription:', errorDescription);
-      console.log('받은 state:', state);
-      console.log('전체 searchParams:', searchParams.toString());
-
       if (error && !code) {
         console.error('카카오 인증 실패:', error, errorDescription);
         openAlert(
@@ -53,13 +47,10 @@ function KakaoCallbackPage() {
 
       try {
         // 1. 백엔드에서 카카오 사용자 정보 가져오기
-        console.log('백엔드 API 호출:', '/api/auth/kakao/callback');
         const kakaoResponse = await apiClient.post('/api/auth/kakao/callback', {
           code,
           state,
         });
-
-        console.log('카카오 사용자 정보:', kakaoResponse.data);
 
         if (!kakaoResponse.data.success) {
           throw new Error(
@@ -71,34 +62,26 @@ function KakaoCallbackPage() {
         const phoneNumber = '01039481599'; // 하드코딩된 전화번호
 
         // 2. 디바이스 정보 가져오기
-        console.log('=== 디바이스 정보 가져오기 ===');
         const deviceInfo = await getDeviceInfo();
-        console.log('디바이스 정보:', deviceInfo);
+        const kakaoPassword = generatePasswordFromDeviceId(deviceInfo.deviceId);
 
         // 3. 전화번호와 이메일로 계정 존재 여부 확인
-        console.log('=== 전화번호와 이메일로 계정 존재 여부 확인 ===');
-        console.log('전화번호:', phoneNumber);
-        console.log('이메일:', email);
         const findAccountResponse = await findAccountByPhoneEmail({
           phoneNumber,
           email,
+          account_type: '1',
         });
-        console.log('findAccount 응답:', findAccountResponse);
 
         const errCode = findAccountResponse.errCode;
 
         // 4-1. 계정이 존재하는 경우 (errCode: 0) - 로그인만 시도
         if (errCode === 0) {
-          console.log('=== 기존 계정 발견, 로그인 시도 ===');
-          console.log('계정 데이터:', findAccountResponse.data);
-
           const loginResult = await Auth.SignIn({
             email,
-            password: '1Q2w3e4r!',
-            device_id: deviceInfo.deviceId,
+            password: kakaoPassword,
+            device_id: LOGIN_DEVICE_IDS.SOCIAL,
           });
 
-          console.log('로그인 성공:', loginResult);
           toast.success(TOAST_ALERT_MESSAGES.KAKAO_LOGIN_SUCCESS);
           router.replace(PATHS.HOME);
           return;
@@ -106,14 +89,12 @@ function KakaoCallbackPage() {
 
         // 4-2. 계정이 없는 경우 (errCode: 4006 또는 6001) - 회원가입 후 로그인
         if (errCode === 4006 || errCode === 6001) {
-          console.log('=== 신규 계정, 회원가입 진행 ===');
-
           // 회원가입
           const signupResult = await Auth.SignUp({
             name,
             email,
-            password: '1Q2w3e4r!',
-            passwordCheck: '1Q2w3e4r!',
+            password: kakaoPassword,
+            passwordCheck: kakaoPassword,
             phoneNumber,
             platform: deviceInfo.platform,
             device_id: deviceInfo.deviceId,
@@ -121,22 +102,18 @@ function KakaoCallbackPage() {
             account_type: '1', // 1: 카카오
           });
 
-          console.log('회원가입 성공:', signupResult);
-
           // 카카오 프로필 이미지가 있으면 store에 저장
           if (profileImage) {
             updateProfile('img', profileImage);
-            console.log('카카오 프로필 이미지 저장 완료');
           }
 
           // 자동 로그인
           const loginResult = await Auth.SignIn({
             email,
-            password: '1Q2w3e4r!',
-            device_id: deviceInfo.deviceId,
+            password: kakaoPassword,
+            device_id: LOGIN_DEVICE_IDS.SOCIAL,
           });
 
-          console.log('자동 로그인 성공:', loginResult);
           toast.success(TOAST_ALERT_MESSAGES.KAKAO_LOGIN_SUCCESS);
           router.replace(PATHS.AUTH.WELCOME);
           return;

@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 type FindAccountRequestType = {
   phoneNumber: string;
   email?: string;
+  account_type: string;
 };
 
 type ErrorCode = 0 | 1008 | 4006 | 6001 | 99999;
@@ -159,10 +160,14 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
         return findAccountByPhoneEmail({
           phoneNumber: params.phoneNumber,
           email: params.email,
+          account_type: params.account_type,
         });
       }
       // email이 없으면 findAccountByPhone만 호출
-      return findAccountByPhone({ phoneNumber: params.phoneNumber });
+      return findAccountByPhone({
+        phoneNumber: params.phoneNumber,
+        account_type: params.account_type,
+      });
     },
     onSuccess: handleResponse,
     onError: handleError,

@@ -59,7 +59,10 @@ const PhoneCheck: React.FC = function () {
       onVerifySuccess: function () {
         stop(); // 인증 성공 시 타이머 중지
         // 인증 성공 후 계정 정보를 다시 조회
-        findAccountAfterVerify({ phoneNumber: normalizedPhone });
+        findAccountAfterVerify({
+          phoneNumber: normalizedPhone,
+          account_type: '0',
+        });
       },
     });
 
