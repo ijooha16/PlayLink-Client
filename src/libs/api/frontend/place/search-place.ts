@@ -8,19 +8,47 @@ export interface KakaoPlace {
   y: string;
 }
 
-export const searchPlaces = async (query: string): Promise<KakaoPlace[]> => {
+interface KakaoMeta {
+  is_end: boolean;
+  pageable_count: number;
+  total_count: number;
+  same_name?: {
+    keyword: string;
+    selected_region: string;
+    region: string[];
+  };
+}
+
+export interface SearchPlacesOptions {
+  query: string;
+  page?: number;
+  size?: number;
+}
+
+export interface SearchPlacesResponse {
+  places: KakaoPlace[];
+  meta: KakaoMeta | null;
+}
+
+export const searchPlaces = async ({
+  query,
+  page = 1,
+  size = 15,
+}: SearchPlacesOptions): Promise<SearchPlacesResponse> => {
   if (!query.trim()) {
-    return [];
+    return { places: [], meta: null };
   }
 
   const { data } = await apiClient.get<{
     status: string;
-    data: KakaoPlace[];
-  }>(`/api/places/search?query=${encodeURIComponent(query)}`);
+    data: SearchPlacesResponse;
+  }>('/api/places/search', {
+    params: { query, page, size },
+  });
 
   if (data.status === 'success') {
-    return data.data || [];
+    return data.data || { places: [], meta: null };
   }
 
-  return [];
+  return { places: [], meta: null };
 };

@@ -9,6 +9,7 @@ interface WheelPickerProps {
   itemHeight?: number;
   infinite?: boolean;
   showHighlight?: boolean;
+  scrollSignal?: number;
 }
 
 interface MomentumState {
@@ -61,6 +62,7 @@ export default function WheelPicker({
   itemHeight = 48,
   infinite = false,
   showHighlight = true,
+  scrollSignal = 0,
 }: WheelPickerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInitializing, setIsInitializing] = useState(true);
@@ -79,6 +81,7 @@ export default function WheelPicker({
   const lastDragTimeRef = useRef(0);
   const wheelTimeoutRef = useRef<NodeJS.Timeout>();
   const isInternalChangeRef = useRef(false);
+  const lastReportedIndexRef = useRef<number | null>(null);
 
   // Velocity tracking for better momentum calculation
   const velocitySamplesRef = useRef<number[]>([]);
@@ -119,6 +122,7 @@ export default function WheelPicker({
 
     if (finalIndex !== safeSelectedIndex) {
       isInternalChangeRef.current = true;
+      lastReportedIndexRef.current = finalIndex;
       onChange(finalIndex);
     }
 
@@ -203,6 +207,7 @@ export default function WheelPicker({
   const handleWheel = useCallback(
     (e: WheelEvent) => {
       e.preventDefault();
+      e.stopPropagation();
       if (!containerRef.current) return;
 
       // 기존 timeout과 momentum 정지
@@ -220,7 +225,7 @@ export default function WheelPicker({
         handleScrollEnd();
       }, 100);
     },
-    [stopMomentum]
+    [stopMomentum, handleScrollEnd]
   );
 
   // 마우스 드래그 핸들러
@@ -286,6 +291,28 @@ export default function WheelPicker({
     setIsDragging(false);
   }, [isDragging, startMomentum, handleScrollEnd]);
 
+  const handlePointerDownCapture = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (e.pointerType === 'touch') {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+  }, []);
+
+  const handlePointerMoveCapture = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  }, []);
+
+  const handlePointerUpCapture = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+  }, []);
+
+  const stopTouchPropagation = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  }, []);
+
   // 아이템 클릭 핸들러 (event delegation)
   const handleContainerClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -309,6 +336,7 @@ export default function WheelPicker({
             });
           }
           // infinite: onChange만 호출 (useEffect에서 smooth scroll)
+          lastReportedIndexRef.current = targetIndex;
           onChange(targetIndex);
         }
       }
@@ -344,10 +372,14 @@ export default function WheelPicker({
     if (containerRef.current && !isInitializing && items.length > 0) {
       // 내부 변경(handleScrollEnd)인 경우 스크롤하지 않음
       if (isInternalChangeRef.current) {
-        isInternalChangeRef.current = false;
-        return;
+        if (lastReportedIndexRef.current === safeSelectedIndex) {
+          isInternalChangeRef.current = false;
+          return;
+        }
       }
 
+      isInternalChangeRef.current = false;
+      lastReportedIndexRef.current = null;
       // 외부 변경인 경우 smooth scroll로 이동
       const scrollPosition = infinite
         ? getVirtualIndex(safeSelectedIndex) * itemHeight
@@ -357,7 +389,7 @@ export default function WheelPicker({
         behavior: 'smooth',
       });
     }
-  }, [safeSelectedIndex, itemHeight, isInitializing, items.length, infinite, getVirtualIndex]);
+  }, [safeSelectedIndex, itemHeight, isInitializing, items.length, infinite, getVirtualIndex, scrollSignal]);
 
   // Wheel 이벤트 리스너 등록
   useEffect(() => {
@@ -474,6 +506,13 @@ export default function WheelPicker({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onPointerDown={handlePointerDownCapture}
+        onPointerMove={handlePointerMoveCapture}
+        onPointerUp={handlePointerUpCapture}
+        onPointerCancel={handlePointerUpCapture}
+        onTouchStart={stopTouchPropagation}
+        onTouchMove={stopTouchPropagation}
+        onTouchEnd={stopTouchPropagation}
       >
         {/* 상단 빈 아이템 */}
         {Array.from({ length: paddingCount }).map((_, i) => (

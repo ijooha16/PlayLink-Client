@@ -1,15 +1,29 @@
 'use client';
 
 import { QUERY_KEYS } from '@/constant/query-key';
-import { searchPlaces } from '@/libs/api/frontend/place/search-place';
-import { useQuery } from '@tanstack/react-query';
+import {
+  searchPlaces,
+  type SearchPlacesResponse,
+} from '@/libs/api/frontend/place/search-place';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
-export { type KakaoPlace } from '@/libs/api/frontend/place/search-place';
+export {
+  type KakaoPlace,
+  type SearchPlacesResponse,
+} from '@/libs/api/frontend/place/search-place';
 
 export const useSearchPlaces = (query: string) => {
-  return useQuery({
+  return useInfiniteQuery<SearchPlacesResponse>({
     queryKey: [QUERY_KEYS.PLACE, query],
-    queryFn: () => searchPlaces(query),
+    queryFn: ({ pageParam = 1 }) =>
+      searchPlaces({ query, page: pageParam, size: 15 }),
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage.meta || lastPage.meta.is_end) {
+        return undefined;
+      }
+      return allPages.length + 1;
+    },
+    initialPageParam: 1,
     enabled: query.trim().length > 0,
   });
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import { addDays, format } from 'date-fns';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import WheelPicker from './wheel-picker';
 
 interface DateTimePickerProps {
@@ -22,11 +22,27 @@ interface DateTimePickerProps {
   };
 }
 
+type Selection = {
+  dateIndex: number;
+  hourIndex: number;
+  minuteIndex: number;
+};
+
+const MINUTE_STEP = 10;
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
+const isSameSelection = (a: Selection, b: Selection) =>
+  a.dateIndex === b.dateIndex &&
+  a.hourIndex === b.hourIndex &&
+  a.minuteIndex === b.minuteIndex;
+
 export default function DateTimePicker({
   onDateTimeChange,
   initialDateTime,
 }: DateTimePickerProps) {
-  // 날짜 데이터 생성 (오늘부터 365일) - 메모이제이션
   const dates = useMemo(() => {
     const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
     const today = new Date();
@@ -37,136 +53,240 @@ export default function DateTimePicker({
     });
   }, []);
 
-  // 시간 데이터 생성 (00-23) - 메모이제이션
-  const hours = useMemo(() => {
-    return Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
+  const hours = useMemo(
+    () => Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')),
+    []
+  );
+
+  const minutes = useMemo(
+    () =>
+      Array.from({ length: 6 }, (_, i) =>
+        String(i * MINUTE_STEP).padStart(2, '0')
+      ),
+    []
+  );
+
+  const startOfToday = useMemo(() => {
+    const base = new Date();
+    base.setHours(0, 0, 0, 0);
+    return base;
   }, []);
 
-  // 분 데이터 생성 (00, 10, 20, 30, 40, 50) - 메모이제이션
-  const minutes = useMemo(() => {
-    return Array.from({ length: 6 }, (_, i) => String(i * 10).padStart(2, '0'));
-  }, []);
+  const clampSelection = useCallback(
+    (draft: Selection): Selection => ({
+      dateIndex: clamp(draft.dateIndex, 0, dates.length - 1),
+      hourIndex: clamp(draft.hourIndex, 0, hours.length - 1),
+      minuteIndex: clamp(draft.minuteIndex, 0, minutes.length - 1),
+    }),
+    [dates.length, hours.length, minutes.length]
+  );
 
-  // 초기값 계산
-  const initialValues = useMemo(() => {
-    if (initialDateTime && initialDateTime.year > 0) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const targetDate = new Date(
-        initialDateTime.year,
-        initialDateTime.month - 1,
-        initialDateTime.day
+  const toDate = useCallback(
+    (selection: Selection) => {
+      const base = new Date(startOfToday);
+      base.setDate(base.getDate() + selection.dateIndex);
+      base.setHours(
+        selection.hourIndex,
+        selection.minuteIndex * MINUTE_STEP,
+        0,
+        0
       );
-      targetDate.setHours(0, 0, 0, 0);
-      const daysDiff = Math.floor(
-        (targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-      );
+      return base;
+    },
+    [startOfToday]
+  );
 
-      // 분을 10분 단위로 반올림하여 인덱스 계산 (0, 10, 20, 30, 40, 50 -> 0, 1, 2, 3, 4, 5)
-      const minuteValue = parseInt(initialDateTime.minute, 10);
-      const minuteIndex = Math.round(minuteValue / 10) % 6;
+  const shiftToNextInterval = useCallback(() => {
+    const now = new Date();
+    now.setSeconds(0, 0);
+    const remainder = now.getMinutes() % MINUTE_STEP;
+    if (remainder !== 0) {
+      now.setMinutes(now.getMinutes() + (MINUTE_STEP - remainder));
+    } else {
+      now.setMinutes(now.getMinutes() + MINUTE_STEP);
+    }
 
+    const diffMs = now.getTime() - startOfToday.getTime();
+    let dateIndex = Math.floor(diffMs / DAY_IN_MS);
+    if (dateIndex < 0) dateIndex = 0;
+    if (dateIndex >= dates.length) {
       return {
-        dateIndex: Math.max(0, Math.min(364, daysDiff)),
-        hourIndex: parseInt(initialDateTime.hour, 10),
-        minuteIndex: minuteIndex,
+        dateIndex: dates.length - 1,
+        hourIndex: hours.length - 1,
+        minuteIndex: minutes.length - 1,
       };
     }
 
-    const now = new Date();
-    // 현재 분을 10분 단위로 반올림하여 인덱스 계산
-    const minuteIndex = Math.round(now.getMinutes() / 10) % 6;
     return {
-      dateIndex: 0,
+      dateIndex,
       hourIndex: now.getHours(),
-      minuteIndex: minuteIndex,
+      minuteIndex: Math.floor(now.getMinutes() / MINUTE_STEP) % minutes.length,
     };
-  }, [initialDateTime]);
+  }, [dates.length, hours.length, minutes.length, startOfToday]);
 
-  const [selectedDateIndex, setSelectedDateIndex] = useState(
-    initialValues.dateIndex
-  );
-  const [selectedHourIndex, setSelectedHourIndex] = useState(
-    initialValues.hourIndex
-  );
-  const [selectedMinuteIndex, setSelectedMinuteIndex] = useState(
-    initialValues.minuteIndex
-  );
+  const ensureFutureIfToday = useCallback(
+    (draft: Selection): Selection => {
+      const normalized = clampSelection(draft);
 
-  // 무한 루프 방지를 위한 ref
-  const isAdjustingRef = useRef(false);
-
-  // initialDateTime이 변경되면 인덱스 업데이트
-  useEffect(() => {
-    setSelectedDateIndex(initialValues.dateIndex);
-    setSelectedHourIndex(initialValues.hourIndex);
-    setSelectedMinuteIndex(initialValues.minuteIndex);
-  }, [initialValues]);
-
-  // 과거 시간 자동 조정 로직
-  useEffect(() => {
-    // 조정 중이면 리턴 (무한 루프 방지)
-    if (isAdjustingRef.current) {
-      isAdjustingRef.current = false;
-      return;
-    }
-
-    // 오늘 날짜가 아니면 검증 불필요
-    if (selectedDateIndex !== 0) {
-      return;
-    }
-
-    const now = new Date();
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-
-    // 선택한 시간 계산
-    const selectedHour = selectedHourIndex;
-    const selectedMinute = selectedMinuteIndex * 10; // 0, 10, 20, 30, 40, 50
-
-    // 과거 시간인지 확인
-    const isPast =
-      selectedHour < currentHour ||
-      (selectedHour === currentHour && selectedMinute < currentMinute);
-
-    if (isPast) {
-      // 조정 플래그 설정
-      isAdjustingRef.current = true;
-
-      // 현재 분을 10분 단위로 올림
-      const adjustedMinuteIndex = Math.ceil(currentMinute / 10) % 6;
-
-      // 분이 60분을 넘어가면 다음 시간으로
-      let adjustedHourIndex = currentHour;
-      let finalMinuteIndex = adjustedMinuteIndex;
-
-      if (currentMinute >= 50) {
-        // 50분 이상이면 다음 시간 00분으로
-        adjustedHourIndex = (currentHour + 1) % 24;
-        finalMinuteIndex = 0;
+      if (normalized.dateIndex !== 0) {
+        return normalized;
       }
 
-      // 부드럽게 조정
-      setSelectedHourIndex(adjustedHourIndex);
-      setSelectedMinuteIndex(finalMinuteIndex);
-    }
-  }, [selectedDateIndex, selectedHourIndex, selectedMinuteIndex]);
+      const candidate = toDate(normalized);
+      const now = new Date();
 
-  // 값이 변경될 때마다 부모에게 알림
-  useEffect(() => {
-    if (onDateTimeChange) {
-      const selectedDate = addDays(new Date(), selectedDateIndex);
-      onDateTimeChange({
-        date: dates[selectedDateIndex],
-        hour: hours[selectedHourIndex],
-        minute: minutes[selectedMinuteIndex],
-        year: selectedDate.getFullYear(),
-        month: selectedDate.getMonth() + 1,
-        day: selectedDate.getDate(),
+      if (candidate <= now) {
+        const bumped = shiftToNextInterval();
+        return clampSelection(bumped);
+      }
+
+      return normalized;
+    },
+    [clampSelection, shiftToNextInterval, toDate]
+  );
+
+  const selectionFromInitial = useCallback(
+    (
+      source?: {
+        year: number;
+        month: number;
+        day: number;
+        hour: string;
+        minute: string;
+      }
+    ): Selection => {
+      if (!source || source.year <= 0) {
+        return ensureFutureIfToday(shiftToNextInterval());
+      }
+
+      const midnight = new Date(source.year, source.month - 1, source.day);
+      midnight.setHours(0, 0, 0, 0);
+
+      const diffMs = midnight.getTime() - startOfToday.getTime();
+      const rawDateIndex = Math.floor(diffMs / DAY_IN_MS);
+      const hourValue = parseInt(source.hour, 10);
+      const minuteValue = parseInt(source.minute, 10);
+
+      return ensureFutureIfToday({
+        dateIndex: rawDateIndex,
+        hourIndex: Number.isNaN(hourValue) ? 0 : hourValue,
+        minuteIndex: Number.isNaN(minuteValue)
+          ? 0
+          : Math.floor(minuteValue / MINUTE_STEP),
       });
+    },
+    [ensureFutureIfToday, shiftToNextInterval, startOfToday]
+  );
+
+  const [selection, setSelection] = useState<Selection>(() =>
+    selectionFromInitial(initialDateTime)
+  );
+  const [scrollSignals, setScrollSignals] = useState({
+    date: 0,
+    hour: 0,
+    minute: 0,
+  });
+
+  const lastPropSignatureRef = useRef<string | null>(null);
+  const lastEmittedSignatureRef = useRef<string>('EMPTY');
+
+  useEffect(() => {
+    if (!initialDateTime || initialDateTime.year <= 0) {
+      lastPropSignatureRef.current = 'EMPTY';
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDateIndex, selectedHourIndex, selectedMinuteIndex]);
+
+    const signature = `${initialDateTime.year}-${initialDateTime.month}-${initialDateTime.day}-${initialDateTime.hour}-${initialDateTime.minute}`;
+
+    if (lastPropSignatureRef.current === signature) {
+      return;
+    }
+
+    lastPropSignatureRef.current = signature;
+
+    const nextSelection = selectionFromInitial(initialDateTime);
+    setSelection((prev) =>
+      isSameSelection(prev, nextSelection) ? prev : nextSelection
+    );
+  }, [initialDateTime, selectionFromInitial]);
+
+  const updateSelection = useCallback(
+    (partial: Partial<Selection>) => {
+      setSelection((prev) => {
+        const draft: Selection = {
+          dateIndex: partial.dateIndex ?? prev.dateIndex,
+          hourIndex: partial.hourIndex ?? prev.hourIndex,
+          minuteIndex: partial.minuteIndex ?? prev.minuteIndex,
+        };
+
+        const adjusted = ensureFutureIfToday(draft);
+
+        if (
+          draft.dateIndex !== adjusted.dateIndex ||
+          draft.hourIndex !== adjusted.hourIndex ||
+          draft.minuteIndex !== adjusted.minuteIndex
+        ) {
+          setScrollSignals((signals) => ({
+            date: signals.date + (draft.dateIndex !== adjusted.dateIndex ? 1 : 0),
+            hour: signals.hour + (draft.hourIndex !== adjusted.hourIndex ? 1 : 0),
+            minute:
+              signals.minute +
+              (draft.minuteIndex !== adjusted.minuteIndex ? 1 : 0),
+          }));
+        }
+
+        return isSameSelection(prev, adjusted) ? prev : adjusted;
+      });
+    },
+    [ensureFutureIfToday]
+  );
+
+  const handleDateChange = useCallback(
+    (index: number) => updateSelection({ dateIndex: index }),
+    [updateSelection]
+  );
+
+  const handleHourChange = useCallback(
+    (index: number) => updateSelection({ hourIndex: index }),
+    [updateSelection]
+  );
+
+  const handleMinuteChange = useCallback(
+    (index: number) => updateSelection({ minuteIndex: index }),
+    [updateSelection]
+  );
+
+  const { dateIndex, hourIndex, minuteIndex } = selection;
+
+  useEffect(() => {
+    if (!onDateTimeChange) return;
+
+    const signature = `${dateIndex}-${hourIndex}-${minuteIndex}`;
+    if (lastEmittedSignatureRef.current === signature) {
+      return;
+    }
+
+    lastEmittedSignatureRef.current = signature;
+
+    const selectedDate = addDays(startOfToday, dateIndex);
+    onDateTimeChange({
+      date: dates[dateIndex],
+      hour: hours[hourIndex],
+      minute: minutes[minuteIndex],
+      year: selectedDate.getFullYear(),
+      month: selectedDate.getMonth() + 1,
+      day: selectedDate.getDate(),
+    });
+  }, [
+    dateIndex,
+    hourIndex,
+    minuteIndex,
+    onDateTimeChange,
+    dates,
+    hours,
+    minutes,
+    startOfToday,
+  ]);
 
   return (
     <div className='flex flex-col'>
@@ -174,7 +294,6 @@ export default function DateTimePicker({
 
       <div className='overflow-hidden rounded-8 border border-line-neutral'>
         <div className='flex'>
-          {/* 날짜 컬럼 */}
           <div className='flex flex-1 flex-col'>
             <div className='flex justify-center bg-bg-normal px-s-12 py-s-8'>
               <span className='font-regular text-label-m text-text-alternative'>
@@ -183,12 +302,12 @@ export default function DateTimePicker({
             </div>
             <WheelPicker
               items={dates}
-              selectedIndex={selectedDateIndex}
-              onChange={setSelectedDateIndex}
+              selectedIndex={dateIndex}
+              onChange={handleDateChange}
+              scrollSignal={scrollSignals.date}
             />
           </div>
 
-          {/* 시간 컬럼 */}
           <div className='flex flex-1 flex-col'>
             <div className='flex justify-center bg-bg-normal px-s-12 py-s-8'>
               <span className='font-regular text-label-m text-text-alternative'>
@@ -197,12 +316,12 @@ export default function DateTimePicker({
             </div>
             <WheelPicker
               items={hours}
-              selectedIndex={selectedHourIndex}
-              onChange={setSelectedHourIndex}
+              selectedIndex={hourIndex}
+              onChange={handleHourChange}
+              scrollSignal={scrollSignals.hour}
             />
           </div>
 
-          {/* 분 컬럼 */}
           <div className='flex flex-1 flex-col'>
             <div className='flex justify-center bg-bg-normal px-s-12 py-s-8'>
               <span className='font-regular text-label-m text-text-alternative'>
@@ -211,8 +330,9 @@ export default function DateTimePicker({
             </div>
             <WheelPicker
               items={minutes}
-              selectedIndex={selectedMinuteIndex}
-              onChange={setSelectedMinuteIndex}
+              selectedIndex={minuteIndex}
+              onChange={handleMinuteChange}
+              scrollSignal={scrollSignals.minute}
               infinite
             />
           </div>
