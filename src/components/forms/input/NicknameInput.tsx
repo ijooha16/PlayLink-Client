@@ -31,50 +31,58 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
     const [touched, setTouched] = useState(false);
 
     const defaultHelperText = !value.length
-      ? '닉네임은 글자 또는 숫자 2자 이상 15자 이하로 입력해주세요'
+      ? '한글, 영문, 숫자 2~12자로 입력해주세요'
       : '';
 
-    const validate = useCallback((nickname: string) => {
-      const error = validateNickname(nickname);
+    const validate = useCallback(
+      (nickname: string) => {
+        const error = validateNickname(nickname);
 
-      setLocalError(error || '');
-      onValidate?.(!error, error || '');
+        setLocalError(error || '');
+        onValidate?.(!error, error || '');
 
-      return !error;
-    }, [onValidate]);
+        return !error;
+      },
+      [onValidate]
+    );
 
-    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      onChange?.(newValue);
+    const handleChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        onChange?.(newValue);
 
-      // 실시간 validation 또는 touched 상태일 때 validation
-      if (validateOnChange || (touched && newValue)) {
-        if (newValue) {
-          validate(newValue);
-        } else {
+        // 실시간 validation 또는 touched 상태일 때 validation
+        if (validateOnChange || (touched && newValue)) {
+          if (newValue) {
+            validate(newValue);
+          } else {
+            setLocalError('');
+            onValidate?.(false, '');
+          }
+        } else if (!newValue) {
           setLocalError('');
           onValidate?.(false, '');
         }
-      } else if (!newValue) {
-        setLocalError('');
-        onValidate?.(false, '');
-      }
-    }, [onChange, validate, touched, validateOnChange, onValidate]);
+      },
+      [onChange, validate, touched, validateOnChange, onValidate]
+    );
 
-    const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-      setTouched(true);
-      if (value) {
-        validate(value);
-      }
-      onBlur?.(e);
-    }, [value, validate, onBlur]);
+    const handleBlur = useCallback(
+      (e: React.FocusEvent<HTMLInputElement>) => {
+        setTouched(true);
+        if (value) {
+          validate(value);
+        }
+        onBlur?.(e);
+      },
+      [value, validate, onBlur]
+    );
 
     useEffect(() => {
       if (externalErrorMessage) {
         setLocalError(externalErrorMessage);
       }
     }, [externalErrorMessage]);
-
 
     const displayError = externalErrorMessage || localError;
     const hasError = externalHasError || Boolean(displayError);
@@ -83,9 +91,9 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
       <Input
         ref={ref}
         label={label}
-        type="text"
-        variant="default"
-        sizes="lg"
+        type='text'
+        variant='default'
+        sizes='lg'
         placeholder={placeholder}
         value={value}
         onChange={handleChange}

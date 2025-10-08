@@ -45,7 +45,7 @@ export default function SportsSelectionPage() {
     onSuccess: () => {
       completeStep('sports');
       clearFlow();
-      router.replace(PATHS.HOME);
+      router.push(PATHS.HOME);
     },
   });
 

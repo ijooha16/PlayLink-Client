@@ -2,6 +2,7 @@
 
 import { PATHS } from '@/constant';
 import { Auth } from '@/libs/api/frontend/auth/auth';
+import { Profile } from '@/libs/api/frontend/profile/profile';
 import { toast } from '@/utills/toast';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -31,20 +32,24 @@ interface AuthOptions {
 
 export const useSignin = (options: AuthOptions = {}) => {
   const router = useRouter();
-
   return useMutation<
     ApiResponse<UserData>,
     AxiosError<ApiResponse>,
     Parameters<typeof Auth.SignIn>[0]
   >({
     mutationFn: Auth.SignIn,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (options.onSuccess) {
         options.onSuccess(data);
         return;
       }
 
-      router.replace(PATHS.HOME);
+      const profile = await Profile.Get();
+      if (profile.data.nickname || profile.data.favorSports.length > 0) {
+        router.replace(PATHS.AUTH.WELCOME);
+      } else {
+        router.replace(PATHS.HOME);
+      }
       toast.success('로그인 성공!');
     },
     onError: (error) => {

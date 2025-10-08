@@ -67,6 +67,7 @@ const Address = () => {
   const router = useRouter();
 
   const [address, setAddress] = useState(profile.address || '');
+  const [selectedAddress, setSelectedAddress] = useState(profile.address || '');
   const [error, setError] = useState('');
   const [results, setResults] = useState<SearchItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -98,9 +99,9 @@ const Address = () => {
           }
           const full = `${h.region_1depth_name} ${h.region_2depth_name} ${h.region_3depth_name}`;
           setAddress(full);
+          setSelectedAddress(full);
           setResults([]);
           setError('');
-          updateProfile('address', full);
         }
       );
     } catch (e) {
@@ -217,24 +218,24 @@ const Address = () => {
     const fullAddress = item.full;
     console.log('Setting address to:', fullAddress);
     setAddress(fullAddress);
-    setResults([]);
+    setSelectedAddress(fullAddress);
     setError('');
-    updateProfile('address', fullAddress);
   };
 
   const handleAddressChange = (v: string) => {
     setAddress(v);
+    setSelectedAddress('');
     setError('');
   };
 
   const handleNext = () => {
-    if (!address.trim()) {
-      setError('주소를 입력해주세요.');
+    if (!selectedAddress.trim()) {
+      setError('주소를 선택해주세요.');
       return;
     }
-    updateProfile('address', address.trim());
+    updateProfile('address', selectedAddress.trim());
     completeStep('address');
-    router.replace(PATHS.AUTH.INTEREST);
+    router.push(PATHS.AUTH.INTEREST);
   };
 
   return (
@@ -246,13 +247,14 @@ const Address = () => {
         errorMessage={error}
         loading={loading}
         results={results}
+        selectedValue={selectedAddress}
         onResultSelect={handlePick}
         onCurrentLocationClick={handleUseCurrentLocation}
         autoFocus
       />
       <Button
         variant='default'
-        disabled={!address.trim()}
+        disabled={!selectedAddress.trim()}
         onClick={handleNext}
         isFloat
       >

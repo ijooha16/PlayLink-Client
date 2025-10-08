@@ -5,6 +5,7 @@ import useDebounce from '@/hooks/common/use-debounce';
 import {
   KakaoPlace,
   useSearchPlaces,
+  type SearchPlacesResponse,
 } from '@/hooks/react-query/places/use-search-places';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -34,12 +35,23 @@ export default function LocationPicker({
   // 검색어 debounce 처리
   const debouncedQuery = useDebounce(searchQuery, 300);
 
-  // React Query로 장소 검색
-  const { data: searchResults = [], isLoading: isSearching } =
-    useSearchPlaces(debouncedQuery);
+  // React Query로 장소 검색 (페이지네이션)
+  const {
+    data: searchResultPages,
+    isLoading: isInitialLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useSearchPlaces(debouncedQuery);
+
+  const searchResults =
+    searchResultPages?.pages.flatMap(
+      (page: SearchPlacesResponse) => page.places
+    ) ?? [];
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
+    setSelectedPlace(null);
   };
 
   const handleLocationSelect = (place: KakaoPlace) => {
@@ -50,7 +62,8 @@ export default function LocationPicker({
     if (selectedPlace && onLocationChange) {
       onLocationChange({
         placeName: selectedPlace.place_name,
-        placeAddress: selectedPlace.road_address_name || selectedPlace.address_name,
+        placeAddress:
+          selectedPlace.road_address_name || selectedPlace.address_name,
         placeLocation: `${selectedPlace.y}, ${selectedPlace.x}`,
       });
     }
@@ -64,7 +77,7 @@ export default function LocationPicker({
       <h2 className='text-title-02 font-semibold text-text-strong'>
         장소 검색
       </h2>
-      <p className='font-regular text-text-neutral mb-s-24 text-body-02'>
+      <p className='font-regular mb-s-24 text-body-02 text-text-neutral'>
         장소를 선택해주세요.
       </p>
 
@@ -106,7 +119,7 @@ export default function LocationPicker({
       {/* 검색 결과 영역 */}
       {debouncedQuery && (
         <div className='scrollbar-hide flex-1 overflow-y-auto pb-[100px]'>
-          {isSearching ? (
+          {isInitialLoading && searchResults.length === 0 ? (
             <p className='mt-s-24 text-center text-body-02 text-text-alternative'>
               검색 중...
             </p>
@@ -127,10 +140,10 @@ export default function LocationPicker({
                         {place.place_name}
                       </span>
                       <div className='flex items-center gap-s-8'>
-                        <div className='font-regular border-line-neutral flex items-center justify-center rounded-4 border px-s-6 py-s-2 text-caption-01 text-brand-primary'>
+                        <div className='font-regular flex items-center justify-center rounded-4 border border-line-neutral px-s-6 py-s-2 text-caption-01 text-brand-primary'>
                           도로명
                         </div>
-                        <span className='font-regular text-text-neutral text-body-02'>
+                        <span className='font-regular text-body-02 text-text-neutral'>
                           {place.road_address_name || place.address_name}
                         </span>
                       </div>
@@ -141,6 +154,17 @@ export default function LocationPicker({
                   )}
                 </div>
               ))}
+              {hasNextPage && (
+                <div className='flex items-center justify-center border-t border-line-neutral px-s-16 py-s-16'>
+                  <button
+                    onClick={() => fetchNextPage()}
+                    disabled={isFetchingNextPage}
+                    className='text-label-m font-semibold text-brand-primary disabled:cursor-not-allowed disabled:opacity-60'
+                  >
+                    {isFetchingNextPage ? '불러오는 중...' : '더 보기'}
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className='mt-s-40 flex flex-col items-center gap-s-16'>

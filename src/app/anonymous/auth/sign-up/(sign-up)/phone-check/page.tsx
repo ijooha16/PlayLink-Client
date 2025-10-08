@@ -78,13 +78,13 @@ const PhoneCheck: React.FC = function () {
         createdAt: accountData.created_at || '',
         accountType: accountData.account_type?.toString() || '0',
       });
-      router.replace(`${PATHS.AUTH.FOUND}?${params.toString()}`);
+      router.push(`${PATHS.AUTH.FOUND}?${params.toString()}`);
     },
     onAccountNotFound: function () {
       // 인증 후 계정이 없으면 회원가입 진행
       updateSignUp('phoneNumber', normalizedPhone);
       completeStep('phone-check');
-      router.replace(PATHS.AUTH.EMAIL_CHECK);
+      router.push(PATHS.AUTH.EMAIL_CHECK);
     },
     onInvalidInput: function (message) {
       setErrors({ phone: message });

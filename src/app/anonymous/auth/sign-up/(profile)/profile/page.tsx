@@ -6,6 +6,8 @@ import { Edit, Profile } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
 import { PATHS } from '@/constant';
 import { completeStep } from '@/hooks/auth/use-signup-flow';
+import { checkNicknameDuplicate } from '@/libs/api/frontend/auth/check-nickname';
+import { validateNickname } from '@/libs/valid/auth/nickname';
 import useSignUpStore from '@/store/use-sign-up-store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -22,7 +24,9 @@ const ProfileSetup = () => {
   );
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isCheckingNickname, setIsCheckingNickname] = useState(false);
   const [isNicknameValid, setIsNicknameValid] = useState(false);
+  const [nicknameError, setNicknameError] = useState('');
 
   const normalizedNickname = useMemo(() => nickname.trim(), [nickname]);
 
@@ -78,20 +82,66 @@ const ProfileSetup = () => {
   const handleNext = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
-    if (!isNicknameValid || !normalizedNickname.length) return;
+    if (isCheckingNickname) return;
 
-    updateProfile('nickname', normalizedNickname);
-
-    if (profileImage) {
-      const imgToSave = isFile(profileImage)
-        ? profileImage
-        : await urlToFile(profileImage, 'profile-from-url.jpg');
-
-      updateProfile('img', imgToSave);
+    if (!normalizedNickname.length) {
+      setNicknameError('닉네임을 입력해 주세요.');
+      setIsNicknameValid(false);
+      return;
     }
 
-    completeStep('profile');
-    router.replace(PATHS.AUTH.ADDRESS);
+    const formatError = validateNickname(normalizedNickname);
+    if (formatError) {
+      setNicknameError(formatError);
+      setIsNicknameValid(false);
+      return;
+    }
+
+    setIsNicknameValid(true);
+    setIsCheckingNickname(true);
+    setNicknameError('');
+
+    try {
+      const response = await checkNicknameDuplicate(normalizedNickname);
+
+      if (response.status === 'error') {
+        setNicknameError(
+          response.message || '닉네임 확인 중 오류가 발생했습니다.'
+        );
+        return;
+      }
+
+      if (response.errCode !== 0) {
+        setNicknameError(
+          response.message || '닉네임 확인 중 오류가 발생했습니다.'
+        );
+        return;
+      }
+
+      const isDuplicate = Number(response.data?.isDuplicate ?? 0) === 1;
+
+      if (isDuplicate) {
+        setNicknameError('이미 사용 중인 닉네임입니다.');
+        return;
+      }
+
+      updateProfile('nickname', normalizedNickname);
+
+      if (profileImage) {
+        const imgToSave = isFile(profileImage)
+          ? profileImage
+          : await urlToFile(profileImage, 'profile-from-url.jpg');
+
+        updateProfile('img', imgToSave);
+      }
+
+      completeStep('profile');
+      router.push(PATHS.AUTH.ADDRESS);
+    } catch (error) {
+      setNicknameError('닉네임 확인에 실패했습니다. 잠시 후 다시 시도해주세요.');
+    } finally {
+      setIsCheckingNickname(false);
+    }
   };
 
   return (
@@ -138,11 +188,19 @@ const ProfileSetup = () => {
         <div className='flex flex-col pb-[24px]'>
           <Input.Nickname
             value={nickname}
-            onChange={setNickname}
+            onChange={(value) => {
+              setNickname(value);
+              if (nicknameError) {
+                setNicknameError('');
+              }
+            }}
             onValidate={(isValid, error) => {
               setIsNicknameValid(isValid);
+              setNicknameError(error || '');
             }}
             autoFocus
+            hasError={Boolean(nicknameError)}
+            errorMessage={nicknameError}
             // TODO SUCCESS 및 디바운싱 db호출 구현
           />
         </div>
@@ -150,10 +208,12 @@ const ProfileSetup = () => {
         <Button
           variant='default'
           type='submit'
-          disabled={!nickname.trim() || !isNicknameValid}
+          disabled={
+            !normalizedNickname || !isNicknameValid || isCheckingNickname
+          }
           isFloat
         >
-          다음
+          {isCheckingNickname ? '확인 중...' : '다음'}
         </Button>
       </form>
     </>

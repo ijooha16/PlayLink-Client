@@ -21,6 +21,11 @@ const AccountExistsContent = () => {
   const source = searchParams.get('source');
 
   const handleGoToLogin = () => {
+    if (accountType === '1') {
+      window.location.href = '/api/auth/kakao/login';
+      return;
+    }
+
     router.push(PATHS.AUTH.SIGN_IN);
   };
   return (

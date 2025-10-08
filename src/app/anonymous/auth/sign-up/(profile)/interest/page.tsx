@@ -20,7 +20,7 @@ const Interest = () => {
 
     updateProfile('favor', selectedType);
     completeStep('interest');
-    router.replace(PATHS.AUTH.SPORTS);
+    router.push(PATHS.AUTH.SPORTS);
   };
 
   const options = [
