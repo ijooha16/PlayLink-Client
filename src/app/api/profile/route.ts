@@ -5,6 +5,7 @@ import { withApiHandler } from '@/utills/api-handler';
 export const GET = withApiHandler(
   async () => {
     const { data } = await BackendProfileAPI.getProfile();
+    console.log(data);
 
     return { status: 'success', data };
   },

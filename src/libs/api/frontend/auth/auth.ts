@@ -42,7 +42,10 @@ interface UserData {
 
 export const Auth = {
   SignIn: async (req: SignInType): Promise<ApiResponse<UserData>> => {
-    const { data } = await apiClient.post<ApiResponse<UserData>>(API_URLS.AUTH.SIGNIN, req);
+    const { data } = await apiClient.post<ApiResponse<UserData>>(
+      API_URLS.AUTH.SIGNIN,
+      req
+    );
 
     // Zustand store에 토큰 저장 (메모리)
     if (data.status === 'success' && data.accessToken) {
@@ -61,9 +64,13 @@ export const Auth = {
       }
     });
 
-    const { data } = await apiClient.post<ApiResponse<UserData>>(API_URLS.AUTH.SIGNUP, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
+    const { data } = await apiClient.post<ApiResponse<UserData>>(
+      API_URLS.AUTH.SIGNUP,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
     return data;
   },
 
@@ -74,5 +81,5 @@ export const Auth = {
     useAuthStore.getState().clearAuth();
 
     return data;
-  }
+  },
 };

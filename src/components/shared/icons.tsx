@@ -33,6 +33,7 @@ import SearchNoneIcon from '../../../public/images/play-icons/ic_search_none.svg
 import LocationIcon from '../../../public/images/play-icons/ic_sm_location.svg';
 import KakaoIcon from '../../../public/images/social/Ic_kakao.svg';
 import EmailIcon from '../../../public/images/social/Ic_mail.svg';
+import AppleIcon from '../../../public/images/social/apple.svg';
 
 import ProfileIcon from '../../../public/images/play-icons/ic_profile.svg';
 
@@ -112,6 +113,7 @@ export const ChevronDown = createIcon(ChevronDownIcon, 16, 16);
 
 export const Kakao = createIcon(KakaoIcon, 24, 24);
 export const Email = createIcon(EmailIcon, 24, 24);
+export const Apple = createIcon(AppleIcon, 24, 24);
 export const Cancel = createIcon(CancelIcon, 25, 24);
 export const Camera = createIcon(CameraIcon, 20, 20);
 
