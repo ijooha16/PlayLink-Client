@@ -64,7 +64,7 @@ const EmailCheckNonCheck = () => {
 
   const { mutate: signIn } = useSignin({
     onSuccess: () => {
-      router.replace(PATHS.AUTH.WELCOME);
+      router.push(PATHS.AUTH.WELCOME);
       resetSignUp();
     },
   });

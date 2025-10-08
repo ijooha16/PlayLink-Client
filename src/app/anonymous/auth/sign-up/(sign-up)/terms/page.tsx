@@ -109,7 +109,7 @@ const TermsScreen = () => {
         onClick={() => {
           updateSignUp('terms', isAllRequiredChecked);
           completeStep('terms');
-          router.replace(PATHS.AUTH.PHONE_CHECK);
+          router.push(PATHS.AUTH.PHONE_CHECK);
         }}
         isFloat
       >

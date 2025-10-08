@@ -23,13 +23,14 @@ const SIGN_UP_FLOW = [
   {
     key: 'welcome',
     path: PATHS.AUTH.WELCOME,
-    title: '플레이링크에 오신 것을 환영해요!',
+    title: '플레이링크에\n 오신 것을 환영해요!',
     content: '운동메이트를 찾기 위해 프로필을 완성해 주세요.',
   },
   {
     key: 'profile',
     path: PATHS.AUTH.PROFILE,
     title: '프로필 사진과 닉네임을 \n설정해주세요!',
+    content: '나중에 변경할 수 있어요.',
   },
   {
     key: 'address',
@@ -93,7 +94,7 @@ const AuthLayoutContainer = ({
         {title}
       </h1>
       {content && (
-        <p className='font-regular text-text-neutral whitespace-pre-line pt-s-4 text-body-02'>
+        <p className='font-regular whitespace-pre-line pt-s-4 text-body-02 text-text-neutral'>
           {content}
         </p>
       )}

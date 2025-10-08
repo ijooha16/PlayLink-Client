@@ -91,7 +91,7 @@ const ProfileSetup = () => {
     }
 
     completeStep('profile');
-    router.replace(PATHS.AUTH.ADDRESS);
+    router.push(PATHS.AUTH.ADDRESS);
   };
 
   return (

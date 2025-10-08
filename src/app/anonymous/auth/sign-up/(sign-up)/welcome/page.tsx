@@ -47,7 +47,7 @@ const WelcomePage = () => {
       </div>
       <Button
         variant='default'
-        onClick={() => router.replace(PATHS.AUTH.PROFILE)}
+        onClick={() => router.push(PATHS.AUTH.PROFILE)}
         isFloat
       >
         프로필 완성하기

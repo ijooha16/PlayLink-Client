@@ -25,6 +25,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       loading = false,
       results = [],
       onResultSelect,
+      selectedValue,
       hasMore = false,
       onLoadMore,
       totalCount = 0,
@@ -122,7 +123,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
           {onCurrentLocationClick && (
             <div
               onClick={onCurrentLocationClick}
-              className='flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-s-4 px-s-12 py-s-16'
+              className='flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-s-4 py-s-16'
             >
               <Location size={16} />
               <span className='label-m font-regular text-brand-primary'>
@@ -148,7 +149,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
         {results.length > 0 && (
           <div className='mt-s-20'>
             {totalCount > 0 && (
-              <div className='mx-s-20 mb-s-12 flex items-center justify-between px-s-12'>
+              <div className='mb-s-12 flex items-center justify-between px-s-12'>
                 <span className='text-caption-01 text-text-alternative'>
                   총 {totalCount}개의 결과
                 </span>
@@ -158,7 +159,10 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
               <div
                 key={`${item.full}-${idx}`}
                 onClick={() => handleResultSelect(item)}
-                className='hover:bg-bg-weak mx-s-20 flex min-h-[48px] w-full cursor-pointer gap-s-4 border-b border-line-normal px-s-12 py-s-16'
+                className={`flex min-h-[48px] w-full cursor-pointer gap-s-4 border-b border-line-normal px-s-12 py-s-16 transition-colors ${
+                  selectedValue === item.full ? 'rounded-12 bg-bg-neutral' : ''
+                }`}
+                aria-selected={selectedValue === item.full}
               >
                 <span className='font-regular text-body-01 text-text-strong'>
                   {item.si} {item.gu} <strong>{item.dong}</strong>
@@ -168,7 +172,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             {hasMore && onLoadMore && (
               <div
                 onClick={onLoadMore}
-                className='hover:bg-bg-weak mx-s-20 flex min-h-[48px] w-full cursor-pointer items-center justify-center px-s-12 py-s-16'
+                className='flex min-h-[48px] w-full cursor-pointer items-center justify-center px-s-12 py-s-16'
               >
                 <span className='text-body-01 font-medium text-brand-primary'>
                   {loading ? '로딩 중...' : '더보기'}
