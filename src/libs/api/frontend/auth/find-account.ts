@@ -3,11 +3,13 @@ import { API_URLS } from '@/constant/api-urls';
 
 type FindAccountByPhoneType = {
   phoneNumber: string;
+  account_type: string;
 };
 
 type FindAccountByPhoneEmailType = {
   phoneNumber: string;
   email: string;
+  account_type: string;
 };
 
 export const findAccountByPhone = async (req: FindAccountByPhoneType) => {
