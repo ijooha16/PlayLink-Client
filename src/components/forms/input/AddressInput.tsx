@@ -117,6 +117,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             showCancelToggle={showCancelToggle && Boolean(value)}
             disabled={disabled}
             autoFocus={autoFocus}
+            isSignupFlow
             {...props}
           />
 

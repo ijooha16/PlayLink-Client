@@ -21,6 +21,8 @@ export const TextAreaInput = forwardRef<HTMLTextAreaElement, TextAreaInputProps>
       helperText,
       showCharCount = true,
       maxLength = 500,
+      minHeight,
+      maxHeight,
       validateOnChange = false,
       autoFocus = false,
       ...props

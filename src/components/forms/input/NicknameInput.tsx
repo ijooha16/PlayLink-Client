@@ -106,6 +106,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
         showCancelToggle={showCancelToggle && Boolean(value)}
         disabled={disabled}
         autoFocus={autoFocus}
+        isSignupFlow
         {...props}
       />
     );

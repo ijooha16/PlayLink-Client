@@ -109,6 +109,7 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
         disabled={disabled}
         autoComplete="email"
         autoFocus={autoFocus}
+        isSignupFlow
         {...props}
       />
     );

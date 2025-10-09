@@ -57,6 +57,8 @@ type InputProps = Omit<
     successMessage?: string;
     /** 도움말 텍스트 (에러가 없을 때 표시) */
     helperText?: string;
+    /** 회원가입/로그인 인풋일 때 (성공 후 보더 파란색으로 변하는 속성 컨트롤) */
+    isSignupFlow?: boolean;
     /** 상단 라벨 */
     label?: string;
     /** 우측 타이머 텍스트 (ex. 02:59) */
@@ -90,6 +92,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       hasError,
       hasSuccess,
+      isSignupFlow,
       label,
       timer,
       showPasswordToggle,
@@ -126,7 +129,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       if (disabled) return 'disabled';
       if (focused) return 'focused';
       if (hasError) return 'error';
-      if (finalSuccess) return 'success';
+      if (isSignupFlow && finalSuccess) return 'success';
       // if (hover) return 'hover';
       return state;
     }, [disabled, hasError, finalSuccess, focused, hover, state]);
