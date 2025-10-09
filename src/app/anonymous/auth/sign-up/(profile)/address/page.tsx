@@ -225,15 +225,15 @@ const Address = () => {
   const handleAddressChange = (v: string) => {
     setAddress(v);
     setSelectedAddress('');
-    setError('');
   };
 
-  const handleNext = () => {
-    if (!selectedAddress.trim()) {
+  const handleNext = (addrFromChild?: string) => {
+    const final = (addrFromChild ?? selectedAddress).trim();
+    if (!final) {
       setError('주소를 선택해주세요.');
       return;
     }
-    updateProfile('address', selectedAddress.trim());
+    updateProfile('address', final);
     completeStep('address');
     router.push(PATHS.AUTH.INTEREST);
   };
@@ -251,15 +251,8 @@ const Address = () => {
         onResultSelect={handlePick}
         onCurrentLocationClick={handleUseCurrentLocation}
         autoFocus
-      />
-      <Button
-        variant='default'
-        disabled={!selectedAddress.trim()}
         onClick={handleNext}
-        isFloat
-      >
-        다음
-      </Button>
+      />
     </>
   );
 };

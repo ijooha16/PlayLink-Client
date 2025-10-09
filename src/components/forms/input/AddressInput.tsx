@@ -30,6 +30,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       onLoadMore,
       totalCount = 0,
       autoFocus = false,
+      onClick,
       ...props
     },
     ref
@@ -80,10 +81,8 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
     const handleResultSelect = useCallback(
       (item: { full: string; si: string; gu: string; dong: string }) => {
         console.log('AddressInput handleResultSelect:', item);
-        onChange?.(item.full);
         onResultSelect?.(item);
-        setLocalError('');
-        onValidate?.(true, '');
+        onClick?.(item.full);
       },
       [onChange, onResultSelect, onValidate]
     );
@@ -109,10 +108,6 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
             value={value}
             onChange={handleChange}
             onBlur={handleBlur}
-            hasError={hasError}
-            errorMessage={displayError}
-            hasSuccess={externalHasSuccess}
-            successMessage={externalSuccessMessage}
             leftElement={<Search size={20} className='text-icon-neutral' />}
             showCancelToggle={showCancelToggle && Boolean(value)}
             disabled={disabled}
