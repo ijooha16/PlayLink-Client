@@ -1,4 +1,4 @@
-import { Cancel } from '@/components/shared/icons';
+import { Cancel, Check, ErrorIcon } from '@/components/shared/icons';
 import { cva, VariantProps } from 'class-variance-authority';
 import React, { forwardRef, useId, useMemo, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -231,21 +231,39 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     >
                       <Cancel
                         size={24}
-                        className='text-icon-neutral cursor-pointer'
+                        className='cursor-pointer text-icon-neutral'
                       />
                     </button>
+                  )}
+                </>
+              )}
+              {!focused && (
+                <>
+                  {/* 에러 상태 아이콘 */}
+                  {hasError && !rightElement && (
+                    <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-system-error'>
+                      <ErrorIcon />
+                    </div>
+                  )}
+
+                  {/* 성공 상태 아이콘 - disabled 상태에서는 표시 안 함 */}
+                  {!disabled && finalSuccess && !hasError && !rightElement && (
+                    <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-primary-800'>
+                      <Check size={12} className='text-white' />
+                    </div>
                   )}
                 </>
               )}
 
               {/* 사용자 정의 우측 요소 */}
               {rightElement}
+              {hasSuccess && <div>success</div> && hasError && <div>error</div>}
             </div>
           </div>
 
           {/* 오른쪽 분리 요소 (예: 인증요청 버튼) */}
           {splitedRightElement && (
-            <div className='border-border-neutral flex items-center justify-center rounded-r-12 border-y border-r px-[19px]'>
+            <div className='flex items-center justify-center rounded-r-12 border-y border-r border-border-neutral px-[19px]'>
               {splitedRightElement}
             </div>
           )}
