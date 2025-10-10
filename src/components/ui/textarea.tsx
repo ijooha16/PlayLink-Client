@@ -23,24 +23,18 @@ type TextAreaProps = Omit<
   'className'
 > &
   VariantProps<typeof textareaVariants> & {
-    /** 외부 래퍼에 적용할 클래스 */
     wrapperClassName?: string;
-    /** 에러여부(외부 제어) */
     hasError?: boolean;
-    /** 에러메시지 텍스트 */
     errorMessage?: string;
-    /** 성공여부(외부 제어) */
     hasSuccess?: boolean;
-    /** 성공메시지 텍스트 */
     successMessage?: string;
-    /** 도움말 텍스트 (에러가 없을 때 표시) */
     helperText?: string;
-    /** 상단 라벨 */
     label?: string;
-    /** 글자수 표시 여부 */
     showCharCount?: boolean;
-    /** 최대 글자수 */
     maxLength?: number;
+    minHeight?: number;
+    maxHeight?: number;
+    autoGrow?: boolean;
   };
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
@@ -57,9 +51,13 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       showCharCount = true,
       maxLength = 500,
       onBlur,
+      onChange,
       wrapperClassName,
       id,
       disabled,
+      minHeight = 80,
+      maxHeight = 240,
+      autoGrow = true, // <- 기본 켬
       value = '',
       ...props
     },
@@ -69,22 +67,47 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     const inputId = id ?? `textarea-${reactId}`;
 
     const [focused, setFocused] = useState(false);
-    const [hover, setHover] = useState(false);
     const [touched, setTouched] = useState(false);
 
-    // 자동 success 판단: 외부에서 전달된 hasSuccess 또는 (touched + 에러없음 + 값있음)
-    const finalSuccess = useMemo(() => {
-      return hasSuccess || (touched && !hasError && Boolean(value));
-    }, [hasSuccess, touched, hasError, value]);
+    const innerRef = React.useRef<HTMLTextAreaElement | null>(null);
+    React.useImperativeHandle(
+      ref,
+      () => innerRef.current as HTMLTextAreaElement
+    );
 
-    // disabled > focused > error > success > hover > state 순으로 우선순위
-    const finalState = useMemo(() => {
+    // 높이 자동 조절 함수
+    const resize = React.useCallback(() => {
+      const el = innerRef.current;
+      if (!el || !autoGrow) return;
+
+      // 계산 전 height 초기화
+      el.style.height = 'auto';
+
+      // 실제 컨텐츠 높이
+      const next = Math.min(maxHeight, el.scrollHeight);
+      el.style.height = `${next}px`;
+
+      // 스크롤바 처리
+      el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden';
+    }, [autoGrow, maxHeight]);
+
+    // 값이 바뀔 때도 재계산(외부에서 value 제어 시)
+    React.useLayoutEffect(() => {
+      resize();
+    }, [value, resize]);
+
+    const finalSuccess = React.useMemo(
+      () => hasSuccess || (touched && !hasError && Boolean(value)),
+      [hasSuccess, touched, hasError, value]
+    );
+
+    const finalState = React.useMemo(() => {
       if (disabled) return 'disabled';
       if (focused) return 'focused';
       if (hasError) return 'error';
       if (finalSuccess) return 'success';
       return state;
-    }, [disabled, hasError, finalSuccess, focused, hover, state]);
+    }, [disabled, hasError, finalSuccess, focused, state]);
 
     const describedById = errorMessage ? `${inputId}-error` : undefined;
     const currentLength = String(value).length;
@@ -104,34 +127,33 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 
         <div
           className={twMerge(
-            textareaVariants({
-              variant,
-              state: finalState,
-            }),
+            textareaVariants({ variant, state: finalState }),
             'flex flex-col'
           )}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
         >
           <textarea
             id={inputId}
-            ref={ref}
+            ref={innerRef}
             disabled={disabled}
             aria-invalid={hasError ? true : undefined}
             aria-describedby={describedById}
-            className='font-regular min-h-[100px] w-full resize-none bg-transparent text-body-02 text-text-strong outline-none placeholder:text-text-disabled'
+            className='font-regular w-full resize-none bg-transparent text-body-02 text-text-strong outline-none placeholder:text-text-disabled'
+            style={{ minHeight, maxHeight, overflowY: 'hidden' }}
             onFocus={() => setFocused(true)}
             onBlur={(e) => {
               setFocused(false);
               setTouched(true);
               onBlur?.(e);
             }}
+            onInput={resize}
+            onChange={(e) => {
+              onChange?.(e);
+            }}
             value={value}
             maxLength={maxLength}
             {...props}
           />
 
-          {/* 글자수 표시 - 하단 */}
           {showCharCount && (
             <div className='flex justify-start pt-s-8'>
               <span className='text-caption-01 font-medium text-text-disabled'>
@@ -152,7 +174,6 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           )}
         </div>
 
-        {/* 에러 메시지 - 포커스 해제 시에만 표시 */}
         {!focused && hasError && errorMessage && (
           <p
             id={describedById}
@@ -164,7 +185,6 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           </p>
         )}
 
-        {/* 도움말 텍스트 */}
         {!hasError && !hasSuccess && helperText && (
           <p className='w-full pt-s-2 text-left text-caption-01 text-text-disabled'>
             {helperText}
@@ -175,5 +195,4 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   }
 );
 
-TextArea.displayName = 'TextArea';
 export default TextArea;

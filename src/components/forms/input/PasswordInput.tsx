@@ -115,6 +115,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         showCancelToggle={showCancelToggle && Boolean(value)}
         disabled={disabled}
         autoComplete={isConfirm ? 'new-password' : 'current-password'}
+        isSignupFlow
         {...props}
       />
     );

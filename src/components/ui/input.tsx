@@ -1,4 +1,4 @@
-import { Cancel } from '@/components/shared/icons';
+import { Cancel, Check, ErrorIcon } from '@/components/shared/icons';
 import { cva, VariantProps } from 'class-variance-authority';
 import React, { forwardRef, useId, useMemo, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -57,6 +57,8 @@ type InputProps = Omit<
     successMessage?: string;
     /** 도움말 텍스트 (에러가 없을 때 표시) */
     helperText?: string;
+    /** 회원가입/로그인 인풋일 때 (성공 후 보더 파란색으로 변하는 속성 컨트롤) */
+    isSignupFlow?: boolean;
     /** 상단 라벨 */
     label?: string;
     /** 우측 타이머 텍스트 (ex. 02:59) */
@@ -90,6 +92,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       hasError,
       hasSuccess,
+      isSignupFlow,
       label,
       timer,
       showPasswordToggle,
@@ -126,7 +129,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       if (disabled) return 'disabled';
       if (focused) return 'focused';
       if (hasError) return 'error';
-      if (finalSuccess) return 'success';
+      if (isSignupFlow && finalSuccess) return 'success';
       // if (hover) return 'hover';
       return state;
     }, [disabled, hasError, finalSuccess, focused, hover, state]);
@@ -228,21 +231,39 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     >
                       <Cancel
                         size={24}
-                        className='text-icon-neutral cursor-pointer'
+                        className='cursor-pointer text-icon-neutral'
                       />
                     </button>
+                  )}
+                </>
+              )}
+              {!focused && (
+                <>
+                  {/* 에러 상태 아이콘 */}
+                  {hasError && !rightElement && (
+                    <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-system-error'>
+                      <ErrorIcon />
+                    </div>
+                  )}
+
+                  {/* 성공 상태 아이콘 - disabled 상태에서는 표시 안 함 */}
+                  {!disabled && finalSuccess && !hasError && !rightElement && (
+                    <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-primary-800'>
+                      <Check size={12} className='text-white' />
+                    </div>
                   )}
                 </>
               )}
 
               {/* 사용자 정의 우측 요소 */}
               {rightElement}
+              {hasSuccess && <div>success</div> && hasError && <div>error</div>}
             </div>
           </div>
 
           {/* 오른쪽 분리 요소 (예: 인증요청 버튼) */}
           {splitedRightElement && (
-            <div className='border-border-neutral flex items-center justify-center rounded-r-12 border-y border-r px-[19px]'>
+            <div className='flex items-center justify-center rounded-r-12 border-y border-r border-border-neutral px-[19px]'>
               {splitedRightElement}
             </div>
           )}

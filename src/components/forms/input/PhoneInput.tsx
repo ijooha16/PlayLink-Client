@@ -94,6 +94,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         showCancelToggle={showCancelToggle && Boolean(value)}
         disabled={disabled}
         autoFocus={autoFocus}
+        isSignupFlow
         {...props}
       />
     );

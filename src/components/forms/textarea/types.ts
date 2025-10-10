@@ -23,4 +23,6 @@ export interface TextAreaInputProps extends BaseTextAreaProps {
   showCharCount?: boolean;
   maxLength?: number;
   validateOnChange?: boolean;
+  minHeight?: number;
+  maxHeight?: number;
 }

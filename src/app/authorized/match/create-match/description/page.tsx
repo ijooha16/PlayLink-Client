@@ -148,6 +148,8 @@ const CreateMatchDescription = () => {
           onChange={(value) => setDescription(value)}
           placeholder='모임 설명을 입력해주세요.'
           maxLength={2000}
+          minHeight={100}
+          maxHeight={240}
           showCharCount
         />
         <div className='flex flex-col gap-s-8 rounded-12 bg-bg-neutral p-s-20'>
