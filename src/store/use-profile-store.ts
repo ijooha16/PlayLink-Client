@@ -31,5 +31,4 @@ export const useProfileStepStore = create<ProfileStepStore>()(
         })),
       reset: () => set({ data: initialData }),
     }),
-
-  )
+);

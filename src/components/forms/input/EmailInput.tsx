@@ -26,7 +26,7 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
       showCheckIcon = false,
       autoFocus = false,
       isSignupFlow = true,
-      showSuccessMessage=true,
+      showSuccessMessage = true,
       ...props
     },
     ref
@@ -97,11 +97,14 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
 
     const displayError = externalErrorMessage || localError;
     const hasError = externalHasError || Boolean(displayError);
-    
+
     const isValid = !hasError && Boolean(value) && touched;
     const displaySuccess = externalHasSuccess || isValid;
-    const displaySuccessMessage = externalSuccessMessage || (isValid && isSignupFlow && showSuccessMessage ? SUCCESS_MESSAGES.EMAIL : '');
-    
+    const displaySuccessMessage =
+      externalSuccessMessage ||
+      (isValid && isSignupFlow && showSuccessMessage
+        ? SUCCESS_MESSAGES.EMAIL
+        : '');
 
     const checkIcon = showCheckIcon ? (
       <div className='flex h-[20px] w-[20px] items-center justify-center rounded-full bg-primary-800'>

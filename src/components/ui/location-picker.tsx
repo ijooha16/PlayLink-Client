@@ -46,7 +46,7 @@ export default function LocationPicker({
 
   const searchResults =
     searchResultPages?.pages.flatMap(
-      (page: SearchPlacesResponse) => page.places
+      (page) => page.places
     ) ?? [];
 
   const handleSearch = (value: string) => {

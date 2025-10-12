@@ -33,8 +33,6 @@ export const getSportName = (
 /**
  * API 응답에서 스포츠 목록 추출
  */
-export const extractSportsFromResponse = (
-  data: any
-): Sport[] => {
+export const extractSportsFromResponse = (data: any): Sport[] => {
   return data?.data?.data?.sports || [];
 };

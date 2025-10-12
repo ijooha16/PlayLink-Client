@@ -1,86 +1,90 @@
-'use client'
+'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 interface ProgressBarProps {
-  currentStep: 0 | 1 | 2 | 3
-  onChange: (step: 0 | 1 | 2 | 3) => void
+  currentStep: 0 | 1 | 2 | 3;
+  onChange: (step: 0 | 1 | 2 | 3) => void;
 }
 
-const stepLabels = ['가까운 동네', '', '', '먼 동네']
-const stepPercents = ['가까운 동네', '조금 먼 동네', '먼 동네', '아주 먼 동네']
+const stepLabels = ['가까운 동네', '', '', '먼 동네'];
+const stepPercents = ['가까운 동네', '조금 먼 동네', '먼 동네', '아주 먼 동네'];
 
 // TODO PWA 할 때 navigator,vibrate()로 햅틱 추가
 const RangeBar = ({ currentStep, onChange }: ProgressBarProps) => {
-  const steps = useMemo(() => [0, 1, 2, 3] as const, [])
-  const barRef = useRef<HTMLDivElement>(null)
-  const [isDragging, setIsDragging] = useState(false)
-  const [progressWidth, setProgressWidth] = useState(0) // 진행 바 퍼센트
+  const steps = useMemo(() => [0, 1, 2, 3] as const, []);
+  const barRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [progressWidth, setProgressWidth] = useState(0); // 진행 바 퍼센트
 
   // step → % 계산 함수
-  const stepToPercent = (step: number) => (step / (steps.length - 1)) * 100
+  const stepToPercent = (step: number) => (step / (steps.length - 1)) * 100;
 
   useEffect(() => {
     // 드래그 중이 아닐 때는 step에 맞춰 스냅
     if (!isDragging) {
-      setProgressWidth(stepToPercent(currentStep))
+      setProgressWidth(stepToPercent(currentStep));
     }
-  }, [currentStep, isDragging])
+  }, [currentStep, isDragging]);
 
   const getPercentFromPosition = (clientX: number) => {
-    if (!barRef.current) return progressWidth
-    const rect = barRef.current.getBoundingClientRect()
-    const x = clientX - rect.left
-    return Math.max(0, Math.min(100, (x / rect.width) * 100))
-  }
+    if (!barRef.current) return progressWidth;
+    const rect = barRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    return Math.max(0, Math.min(100, (x / rect.width) * 100));
+  };
 
   // 가장 가까운 step 찾기
   const snapToStep = (percent: number) => {
-    const step = Math.round((percent / 100) * (steps.length - 1)) as 0 | 1 | 2 | 3
-    return step
-  }
+    const step = Math.round((percent / 100) * (steps.length - 1)) as
+      | 0
+      | 1
+      | 2
+      | 3;
+    return step;
+  };
 
   // 마우스/터치 이벤트
   const handleStart = (clientX: number) => {
-    setIsDragging(true)
-    setProgressWidth(getPercentFromPosition(clientX))
-  }
+    setIsDragging(true);
+    setProgressWidth(getPercentFromPosition(clientX));
+  };
   const handleMove = (clientX: number) => {
-    if (isDragging) setProgressWidth(getPercentFromPosition(clientX))
-  }
+    if (isDragging) setProgressWidth(getPercentFromPosition(clientX));
+  };
   const handleEnd = () => {
-    setIsDragging(false)
-    const step = snapToStep(progressWidth)
-    onChange(step)
-  }
+    setIsDragging(false);
+    const step = snapToStep(progressWidth);
+    onChange(step);
+  };
 
   // 전역 이벤트 등록
   useEffect(() => {
-    const mouseMove = (e: MouseEvent) => handleMove(e.clientX)
-    const touchMove = (e: TouchEvent) => handleMove(e.touches[0].clientX)
-    const mouseUp = handleEnd
-    const touchEnd = handleEnd
+    const mouseMove = (e: MouseEvent) => handleMove(e.clientX);
+    const touchMove = (e: TouchEvent) => handleMove(e.touches[0].clientX);
+    const mouseUp = handleEnd;
+    const touchEnd = handleEnd;
 
     if (isDragging) {
-      window.addEventListener('mousemove', mouseMove)
-      window.addEventListener('mouseup', mouseUp)
-      window.addEventListener('touchmove', touchMove)
-      window.addEventListener('touchend', touchEnd)
+      window.addEventListener('mousemove', mouseMove);
+      window.addEventListener('mouseup', mouseUp);
+      window.addEventListener('touchmove', touchMove);
+      window.addEventListener('touchend', touchEnd);
     }
     return () => {
-      window.removeEventListener('mousemove', mouseMove)
-      window.removeEventListener('mouseup', mouseUp)
-      window.removeEventListener('touchmove', touchMove)
-      window.removeEventListener('touchend', touchEnd)
-    }
-  }, [isDragging, progressWidth])
+      window.removeEventListener('mousemove', mouseMove);
+      window.removeEventListener('mouseup', mouseUp);
+      window.removeEventListener('touchmove', touchMove);
+      window.removeEventListener('touchend', touchEnd);
+    };
+  }, [isDragging, progressWidth]);
 
   return (
     <div className='relative w-full px-4 py-6'>
       <div className='px-4'>
         <div
           ref={barRef}
-          className='relative h-3 w-full rounded-full bg-gray-300 cursor-pointer'
+          className='relative h-3 w-full cursor-pointer rounded-full bg-gray-300'
           onMouseDown={(e) => handleStart(e.clientX)}
           onTouchStart={(e) => handleStart(e.touches[0].clientX)}
         >
@@ -101,7 +105,9 @@ const RangeBar = ({ currentStep, onChange }: ProgressBarProps) => {
                 style={{
                   transform: 'translateY(-25%)',
                   backgroundColor:
-                    step <= currentStep ? 'rgb(59, 130, 246)' : 'rgb(209 213 219)',
+                    step <= currentStep
+                      ? 'rgb(59, 130, 246)'
+                      : 'rgb(209 213 219)',
                 }}
               />
             ))}
@@ -121,7 +127,7 @@ const RangeBar = ({ currentStep, onChange }: ProgressBarProps) => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RangeBar
+export default RangeBar;
