@@ -45,7 +45,7 @@ export const useSignin = (options: AuthOptions = {}) => {
       }
 
       const profile = await Profile.Get();
-      if (profile.data.nickname || profile.data.favorSports.length > 0) {
+      if (profile.data.nickname || !profile.data.favorSports) {
         router.replace(PATHS.AUTH.WELCOME);
       } else {
         router.replace(PATHS.HOME);

@@ -1,19 +1,20 @@
 'use client';
 
 import Button from '@/components/ui/button';
-import {
-  AnimatePresence,
-  motion,
-  PanInfo,
-  useMotionValue,
-} from 'framer-motion';
+import { animate, AnimatePresence, motion, useMotionValue, useTransform } from 'framer-motion';
+import type { AnimationPlaybackControls, PanInfo, SpringOptions } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-const SCROLL_LOCK_THRESHOLD = 5;
 const HANDLE_CLOSE_OFFSET = 80;
 const HANDLE_CLOSE_VELOCITY = 1100;
-const CONTENT_STRONG_OFFSET = 120;
-const CONTENT_STRONG_VELOCITY = 1400;
+const SPRING_CONFIG: SpringOptions = {
+  type: 'spring',
+  stiffness: 360,
+  damping: 36,
+  mass: 0.92,
+  restDelta: 0.3,
+  restSpeed: 12,
+};
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -45,26 +46,104 @@ export default function BottomSheet({
   const contentRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
+  const sheetHeightRef = useRef(0);
+  const closingAnimationRef = useRef<Promise<void> | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const dragOrigin = useRef<'handle' | 'content' | null>(null);
-  const hasStrongContentGesture = useRef(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const dragOrigin = useRef<'handle' | null>(null);
+  const animationControls = useRef<AnimationPlaybackControls | null>(null);
 
   const y = useMotionValue(0);
+  const overlayOpacity = useTransform(y, (value) => {
+    const height = sheetHeightRef.current || sheetRef.current?.getBoundingClientRect().height || 1;
+    const progress = Math.min(Math.max(value / height, 0), 1);
+    return 0.5 * (1 - progress);
+  });
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      y.set(0);
-    } else {
-      document.body.style.overflow = '';
+  const stopActiveAnimation = () => {
+    animationControls.current?.stop();
+    animationControls.current = null;
+  };
+
+  const animateTo = (target: number, options?: Partial<SpringOptions>) => {
+    stopActiveAnimation();
+    const controls = animate(y, target, {
+      ...SPRING_CONFIG,
+      velocity: y.getVelocity(),
+      ...options,
+    });
+    animationControls.current = controls;
+    return new Promise<void>((resolve) => {
+      controls.then(() => {
+        if (animationControls.current === controls) {
+          animationControls.current = null;
+        }
+        resolve();
+      });
+    });
+  };
+
+  const measureSheetHeight = () => {
+    const fallbackHeight = typeof window !== 'undefined' ? window.innerHeight : 0;
+    const measured =
+      sheetRef.current?.getBoundingClientRect().height ?? fallbackHeight;
+    sheetHeightRef.current = measured;
+    return measured;
+  };
+
+  const closeSheet = () => {
+    if (closingAnimationRef.current) {
+      return closingAnimationRef.current;
     }
 
-    dragOrigin.current = null;
-    hasStrongContentGesture.current = false;
+    setIsClosing(true);
     setIsDragging(false);
+    dragOrigin.current = null;
+
+    const targetY = sheetHeightRef.current || measureSheetHeight();
+    const promise = animateTo(targetY).then(() => {
+      closingAnimationRef.current = null;
+      onClose();
+    });
+
+    closingAnimationRef.current = promise;
+    return promise;
+  };
+
+  useEffect(() => {
+    let frame: number | null = null;
+    const previousOverflow = document.body.style.overflow;
+
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+
+      stopActiveAnimation();
+      closingAnimationRef.current = null;
+      dragOrigin.current = null;
+      setIsClosing(false);
+      setIsDragging(false);
+
+      frame = requestAnimationFrame(() => {
+        const height = measureSheetHeight();
+        y.set(height);
+        animateTo(0);
+      });
+    } else {
+      document.body.style.overflow = '';
+      stopActiveAnimation();
+      closingAnimationRef.current = null;
+      y.set(0);
+      dragOrigin.current = null;
+      setIsDragging(false);
+      setIsClosing(false);
+    }
 
     return () => {
-      document.body.style.overflow = '';
+      if (frame !== null) {
+        cancelAnimationFrame(frame);
+      }
+      document.body.style.overflow = previousOverflow;
+      stopActiveAnimation();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -72,28 +151,29 @@ export default function BottomSheet({
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
-        onClose();
+        closeSheet();
       }
     };
 
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const handleOverlayClick = () => {
     if (closeOnOverlay) {
-      onClose();
+      closeSheet();
     }
   };
 
   const handleConfirm = () => {
     onConfirm?.();
-    onClose();
+    closeSheet();
   };
 
   const handleCancel = () => {
     onCancel?.();
-    onClose();
+    closeSheet();
   };
 
   const handleDragStart = (
@@ -102,9 +182,13 @@ export default function BottomSheet({
   ) => {
     const target = event.target as HTMLElement;
 
-    hasStrongContentGesture.current = false;
-
     if (!sheetRef.current?.contains(target)) {
+      dragOrigin.current = null;
+      setIsDragging(false);
+      return;
+    }
+
+    if (target.closest('[data-no-drag="true"]')) {
       dragOrigin.current = null;
       setIsDragging(false);
       return;
@@ -119,14 +203,6 @@ export default function BottomSheet({
     if (handleRef.current?.contains(target)) {
       dragOrigin.current = 'handle';
       setIsDragging(true);
-      return;
-    }
-
-    if (contentRef.current?.contains(target)) {
-      const scrollTop = contentRef.current.scrollTop ?? 0;
-      dragOrigin.current =
-        scrollTop <= SCROLL_LOCK_THRESHOLD ? 'content' : null;
-      setIsDragging(false);
       return;
     }
 
@@ -146,26 +222,6 @@ export default function BottomSheet({
       return;
     }
 
-    if (origin === 'content') {
-      y.set(0);
-
-      if (info.offset.y <= 0) {
-        return;
-      }
-
-      const strongOffset = info.offset.y > CONTENT_STRONG_OFFSET;
-      const strongVelocity = info.velocity.y > CONTENT_STRONG_VELOCITY;
-      if ((strongOffset || strongVelocity) && !hasStrongContentGesture.current) {
-        hasStrongContentGesture.current = true;
-        dragOrigin.current = null;
-        setIsDragging(false);
-        y.stop();
-        y.set(0);
-        onClose();
-      }
-      return;
-    }
-
     y.set(0);
   };
 
@@ -177,39 +233,25 @@ export default function BottomSheet({
     const offsetY = info.offset.y;
     const velocityY = info.velocity.y;
 
-    dragOrigin.current = null;
-
     if (origin === 'handle') {
-      const shouldClose = offsetY > HANDLE_CLOSE_OFFSET || velocityY > HANDLE_CLOSE_VELOCITY;
+      const shouldClose =
+        offsetY > HANDLE_CLOSE_OFFSET || velocityY > HANDLE_CLOSE_VELOCITY;
 
       if (shouldClose && offsetY > 0) {
-        setIsDragging(false);
-        onClose();
+        y.set(Math.max(offsetY, 0));
+        closeSheet();
         return;
       }
 
+      dragOrigin.current = null;
       setIsDragging(false);
-      y.stop();
-      y.set(0);
+      animateTo(0);
       return;
     }
 
-    if (origin === 'content') {
-      if (hasStrongContentGesture.current && offsetY > 0) {
-        hasStrongContentGesture.current = false;
-        onClose();
-        return;
-      }
-
-      hasStrongContentGesture.current = false;
-      y.stop();
-      y.set(0);
-      return;
-    }
-
+    dragOrigin.current = null;
     setIsDragging(false);
-    y.stop();
-    y.set(0);
+    animateTo(0);
   };
 
   const handleOverlayDragEnd = (
@@ -218,7 +260,7 @@ export default function BottomSheet({
   ) => {
     const shouldClose = info.offset.y > 50 || info.velocity.y > 300;
     if (shouldClose && closeOnOverlay) {
-      onClose();
+      closeSheet();
     }
   };
 
@@ -233,9 +275,9 @@ export default function BottomSheet({
       {isOpen && (
         <div className='fixed inset-0 z-50 mx-auto flex max-w-screen-sm items-end justify-center'>
           <motion.div
-            className='absolute inset-0 bg-black/50 backdrop-blur-sm'
+            className='absolute inset-0 bg-black backdrop-blur-sm'
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: 0.5 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
             onClick={handleOverlayClick}
@@ -244,25 +286,19 @@ export default function BottomSheet({
             dragElastic={0}
             onDragEnd={handleOverlayDragEnd}
             dragMomentum={false}
+            style={isDragging || isClosing ? { opacity: overlayOpacity } : undefined}
           />
           <motion.div
             ref={sheetRef}
             role='dialog'
             aria-modal='true'
             className={`relative z-10 w-full ${heightClasses[height]} flex flex-col rounded-t-3xl bg-white shadow-xl`}
-            initial={{ y: '100%' }}
-            animate={isDragging ? false : { y: 0 }}
+            animate={false}
             exit={{ y: '100%' }}
-            transition={{
-              type: 'spring',
-              damping: 30,
-              stiffness: 300,
-              mass: 1,
-              velocity: 2,
-            }}
+            transition={{ duration: 0 }}
             drag='y'
             dragConstraints={{ top: 0, bottom: 0 }}
-            dragElastic={{ top: 0, bottom: 0.1 }}
+            dragElastic={0}
             dragDirectionLock={false}
             onDragStart={handleDragStart}
             onDrag={handleDrag}
@@ -272,7 +308,7 @@ export default function BottomSheet({
               power: 0.3,
               timeConstant: 200,
             }}
-            style={isDragging ? { y } : undefined}
+            style={{ y }}
           >
             {/* 드래그 핸들 */}
             <div
@@ -285,18 +321,42 @@ export default function BottomSheet({
             {/* 컨텐츠 영역 */}
             <div
               ref={contentRef}
+              data-no-drag="true"
               className={`flex-1 overflow-y-auto p-4 ${
                 !showCancelButton && !showConfirmButton
                   ? 'pb-[max(1rem,env(safe-area-inset-bottom))]'
                   : ''
               }`}
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+              }}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+              }}
             >
               {children}
             </div>
 
             {/* 버튼 영역 */}
             {(showCancelButton || showConfirmButton) && (
-              <div className='border-t border-gray-100 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]'>
+              <div
+                data-no-drag="true"
+                className='border-t border-gray-100 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]'
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+                onTouchStart={(e) => {
+                  e.stopPropagation();
+                }}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                }}
+              >
                 <div className='flex gap-3'>
                   {showCancelButton && (
                     <Button
