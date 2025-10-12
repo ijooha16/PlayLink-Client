@@ -3,19 +3,34 @@
 // import { HeartIcon, MessagesSquareIcon } from 'lucide-react';
 import { PATHS } from '@/constant';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
-import {
-  extractSportsFromResponse,
-  getSportName,
-} from '@/libs/helpers/sport';
+import { extractSportsFromResponse, getSportName } from '@/libs/helpers/sport';
 import { MatchType } from '@/types/match/match';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+
+type ImageErrorState = {
+  src: string;
+  error: boolean;
+};
+
+const initialImageErrorState: ImageErrorState = {
+  src: '',
+  error: false,
+};
 
 const MatchCards = (data: { data: MatchType }) => {
   const router = useRouter();
   const { data: sports } = useGetSportsQuery();
-  const [imageError, setImageError] = useState(false);
+  const [imageError, setImageError] =
+    useState<ImageErrorState>(initialImageErrorState);
+  const [sportImageError, setSportImageError] = useState<{
+    sportsType: number | null;
+    error: boolean;
+  }>({
+    sportsType: null,
+    error: false,
+  });
 
   const {
     matchId,
@@ -27,10 +42,20 @@ const MatchCards = (data: { data: MatchType }) => {
     start_time,
     placeAddress,
     date,
+    imgUrl,
   } = data.data;
 
   const sportsList = extractSportsFromResponse(sports);
-  const sportsName = getSportName(sportsList, sportsType);
+  const sportsName = useMemo(
+    () => getSportName(sportsList, sportsType),
+    [sportsList, sportsType],
+  );
+
+  const hasRemoteImageError =
+    imageError.error && imageError.src === (imgUrl || '');
+
+  const hasSportFallbackError =
+    sportImageError.error && sportImageError.sportsType === sportsType;
 
   const handleMatchClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -45,24 +70,42 @@ const MatchCards = (data: { data: MatchType }) => {
     >
       <div className='my-2 flex rounded-xl border'>
         <div className='flex aspect-square h-[128px] min-h-[128px] w-[128px] min-w-[128px] items-center justify-center overflow-hidden p-2'>
-          {imageError ? (
+          {!hasRemoteImageError && imgUrl ? (
+            <Image
+              src={imgUrl}
+              alt={`${title} 썸네일`}
+              width={150}
+              height={150}
+              className='rounded object-cover'
+              sizes='150px'
+              onError={() => {
+                setImageError({
+                  src: imgUrl,
+                  error: true,
+                });
+              }}
+            />
+          ) : !hasSportFallbackError ? (
+            <Image
+              src={`/images/sport-images/${sportsType}.png`}
+              alt={`${sportsName || '스포츠'} 기본 이미지`}
+              width={150}
+              height={150}
+              className='rounded object-contain'
+              sizes='150px'
+              onError={() =>
+                setSportImageError({
+                  sportsType,
+                  error: true,
+                })
+              }
+            />
+          ) : (
             <div className='flex h-full w-full items-center justify-center rounded bg-gray-100 text-gray-400'>
               <div className='text-center'>
                 <div className='text-xs'>{sportsName || '스포츠'}</div>
               </div>
             </div>
-          ) : (
-            <Image
-              src={`/images/sport-images/${sportsType}.png`}
-              alt={`${sportsName || '스포츠'} 이미지`}
-              width={150}
-              height={150}
-              className='rounded object-contain'
-              sizes='150px'
-              onError={() => {
-                setImageError(true);
-              }}
-            />
           )}
         </div>
         <div className='relative flex w-full flex-col justify-evenly truncate p-2'>

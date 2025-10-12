@@ -97,7 +97,7 @@ export default function SignIn() {
   };
 
   const handleAppleLogin = () => {
-    window.location.href = '/api/auth/apple/login';
+    alert('애플 로그인 기능은 준비 중입니다.');
   };
 
   return (

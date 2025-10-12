@@ -293,9 +293,8 @@ export default function WheelPicker({
 
   const handlePointerDownCapture = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    if (e.pointerType === 'touch') {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    }
+    // Removed pointer capture to prevent blocking other elements
+    // Mouse events and touch-action CSS property are sufficient
   }, []);
 
   const handlePointerMoveCapture = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
@@ -304,8 +303,12 @@ export default function WheelPicker({
 
   const handlePointerUpCapture = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-      e.currentTarget.releasePointerCapture(e.pointerId);
+    try {
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+    } catch (err) {
+      // Ignore errors from releasePointerCapture
     }
   }, []);
 
@@ -408,6 +411,20 @@ export default function WheelPicker({
       stopMomentum();
       if (wheelTimeoutRef.current) {
         clearTimeout(wheelTimeoutRef.current);
+      }
+      // Release any pointer captures that might still be active
+      if (containerRef.current) {
+        try {
+          const element = containerRef.current;
+          // Release all possible pointer captures
+          for (let i = 0; i < 10; i++) {
+            if (element.hasPointerCapture(i)) {
+              element.releasePointerCapture(i);
+            }
+          }
+        } catch (e) {
+          // Ignore errors from releasePointerCapture
+        }
       }
     };
   }, [stopMomentum]);
