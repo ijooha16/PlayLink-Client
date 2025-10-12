@@ -24,6 +24,8 @@ export interface EmailInputProps extends Omit<BaseInputProps, 'onChange'> {
   showCancelToggle?: boolean;
   validateOnChange?: boolean;
   showCheckIcon?: boolean;
+  isSignupFlow?: boolean;
+  showSuccessMessage?:boolean;
 }
 
 export interface PhoneInputProps extends Omit<BaseInputProps, 'onChange'> {
@@ -43,6 +45,8 @@ export interface PasswordInputProps extends Omit<BaseInputProps, 'onChange'> {
   onConfirmChange?: (value: string) => void;
   isConfirm?: boolean;
   validateOnChange?: boolean;
+  isSignupFlow?: boolean;
+  showSuccessMessage?:boolean;
 }
 
 export interface CodeInputProps extends Omit<BaseInputProps, 'onChange'> {
@@ -61,6 +65,7 @@ export interface NicknameInputProps extends Omit<BaseInputProps, 'onChange'> {
   onValidate?: (isValid: boolean, error?: string) => void;
   showCancelToggle?: boolean;
   validateOnChange?: boolean;
+  isSignupFlow?: boolean;
 }
 
 export interface AddressInputProps extends Omit<BaseInputProps, 'onChange'> {

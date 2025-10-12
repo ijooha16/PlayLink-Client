@@ -2,6 +2,7 @@
 
 import Input from '@/components/ui/input';
 import { validatePassword, validatePasswordConfirm } from '@/libs/valid/auth';
+import { SUCCESS_MESSAGES } from '@/constant';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { PasswordInputProps } from './types';
 
@@ -24,6 +25,8 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
       isConfirm = false,
       confirmValue,
       validateOnChange = false,
+      isSignupFlow = true,
+      showSuccessMessage=true,
       ...props
     },
     ref
@@ -52,6 +55,9 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
 
       const error = result.error || '';
       setLocalError(error);
+      if (!error) {
+        setTouched(true); // validation 성공 시 touched 상태 설정
+      }
       onValidate?.(result.isValid, error);
 
       return result.isValid;
@@ -97,6 +103,10 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
 
     const displayError = externalErrorMessage || localError;
     const hasError = externalHasError || Boolean(displayError);
+    
+    const isValid = !hasError && Boolean(value) && touched;
+    const displaySuccess = externalHasSuccess || isValid;
+    const displaySuccessMessage = externalSuccessMessage || (isValid && isSignupFlow && showSuccessMessage ? (isConfirm ? SUCCESS_MESSAGES.PASSWORD_CONFIRM : SUCCESS_MESSAGES.PASSWORD) : '');
 
     return (
       <Input
@@ -109,13 +119,13 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         onBlur={handleBlur}
         hasError={hasError}
         errorMessage={displayError}
-        hasSuccess={externalHasSuccess}
-        successMessage={externalSuccessMessage}
+        hasSuccess={displaySuccess}
+        successMessage={displaySuccessMessage}
         helperText={helperText || defaultHelperText}
         showCancelToggle={showCancelToggle && Boolean(value)}
         disabled={disabled}
         autoComplete={isConfirm ? 'new-password' : 'current-password'}
-        isSignupFlow
+        isSignupFlow={isSignupFlow}
         {...props}
       />
     );

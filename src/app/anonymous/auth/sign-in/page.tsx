@@ -49,6 +49,8 @@ const SignIn = () => {
               onChange={setEmail}
               onValidate={(isValid) => setIsEmailValid(isValid)}
               validateOnChange
+              isSignupFlow
+              showSuccessMessage={false}
             />
 
             <Input.Password
@@ -57,6 +59,8 @@ const SignIn = () => {
               onValidate={(isValid) => setIsPasswordValid(isValid)}
               placeholder='비밀번호를 입력해주세요.'
               validateOnChange
+              isSignupFlow
+              showSuccessMessage={false}
             />
 
             <Button
