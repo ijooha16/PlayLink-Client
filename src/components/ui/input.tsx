@@ -94,7 +94,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       hasError,
       hasSuccess,
-      isSignupFlow,
+      isSignupFlow=false,
       label,
       timer,
       showPasswordToggle,
@@ -132,7 +132,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       if (disabled) return 'disabled';
       if (focused) return 'focused';
       if (hasError) return 'error';
-      if (isSignupFlow && finalSuccess) return 'success';
+      if (isSignupFlow && finalSuccess && successMessage) return 'success';
       // if (hover) return 'hover';
       return state;
     }, [disabled, hasError, finalSuccess, focused, hover, state]);
@@ -246,7 +246,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                   {showStatusIcons &&
                     hasError &&
                     !rightElement &&
-                    !isSignupFlow && (
+                    isSignupFlow && (
                       <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-system-error'>
                         <ErrorIcon />
                       </div>
@@ -255,10 +255,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                   {/* 성공 상태 아이콘 - disabled 상태에서는 표시 안 함 */}
                   {!disabled &&
                     showStatusIcons &&
-                    finalSuccess &&
+                    hasSuccess &&
                     !hasError &&
                     !rightElement &&
-                    !isSignupFlow && (
+                    successMessage &&
+                    isSignupFlow && (
                       <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-primary-800'>
                         <Check size={12} className='text-white' />
                       </div>
@@ -301,6 +302,22 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {typeof errorMessage === 'string'
               ? errorMessage
               : JSON.stringify(errorMessage)}
+          </p>
+        )}
+
+        {/* 성공 메시지 */}
+        {(() => {
+          const shouldShowSuccess = !focused && hasSuccess && successMessage;
+
+          return shouldShowSuccess;
+        })() && (
+          <p
+            id={describedById}
+            className='w-full text-left text-caption-01 text-system-information'
+          >
+            {typeof successMessage === 'string'
+              ? successMessage
+              : JSON.stringify(successMessage)}
           </p>
         )}
 

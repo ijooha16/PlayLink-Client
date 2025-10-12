@@ -2,6 +2,7 @@
 
 import Input from '@/components/ui/input';
 import { validateNickname } from '@/libs/valid/auth/nickname';
+import { SUCCESS_MESSAGES } from '@/constant';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { NicknameInputProps } from './types';
 import { checkNicknameDuplicate } from '@/libs/api';
@@ -25,6 +26,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
       showCancelToggle = true,
       validateOnChange = true,
       autoFocus = false,
+      isSignupFlow = true,
       ...props
     },
     ref
@@ -138,6 +140,12 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
     const displayError = externalErrorMessage || localError;
     const hasError = externalHasError || Boolean(displayError);
 
+    const isValid = !hasError && Boolean(value) && touched;
+    const displaySuccess = externalHasSuccess || isValid;
+    const displaySuccessMessage =
+      externalSuccessMessage ||
+      (isValid && isSignupFlow ? SUCCESS_MESSAGES.NICKNAME : '');
+
     return (
       <Input
         ref={ref}
@@ -151,13 +159,13 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
         onBlur={handleBlur}
         hasError={hasError}
         errorMessage={displayError}
-        hasSuccess={externalHasSuccess}
-        successMessage={externalSuccessMessage}
+        hasSuccess={displaySuccess}
+        successMessage={displaySuccessMessage}
         helperText={helperText || defaultHelperText}
         showCancelToggle={showCancelToggle && Boolean(value)}
         disabled={disabled}
         autoFocus={autoFocus}
-        isSignupFlow
+        isSignupFlow={isSignupFlow}
         {...props}
       />
     );
