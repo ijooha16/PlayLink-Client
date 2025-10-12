@@ -5,6 +5,7 @@ import { validateNickname } from '@/libs/valid/auth/nickname';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { NicknameInputProps } from './types';
 import { checkNicknameDuplicate } from '@/libs/api';
+import useDebounce from '@/hooks/common/use-debounce';
 
 export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
   (
@@ -36,6 +37,8 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
       ? '한글, 영문, 숫자 2~12자로 입력해주세요'
       : '';
 
+    const debouncedValue = useDebounce(value, 1000);
+
     const validate = useCallback(
       async (nickname: string) => {
         const trimmed = nickname.trim();
@@ -49,18 +52,30 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
 
         const myId = ++reqIdRef.current;
         try {
-          const { data } = await checkNicknameDuplicate(trimmed);
+          const response = await checkNicknameDuplicate(trimmed);
+
           if (myId !== reqIdRef.current) {
             return false;
           }
 
-          if (data?.isDuplicate === 1) {
-            const msg = '이미 존재하는 닉네임입니다.';
+          // API 응답: { status, errCode, message, data }
+          if (response.status === 'error') {
+            const msg =
+              response.message || '닉네임 확인 중 오류가 발생했습니다.';
             setLocalError(msg);
             onValidate?.(false, msg);
             return false;
           }
 
+          // errCode가 0이 아니면 중복 또는 에러
+          if (response.errCode !== 0) {
+            const msg = response.message || '이미 사용 중인 닉네임입니다.';
+            setLocalError(msg);
+            onValidate?.(false, msg);
+            return false;
+          }
+
+          // errCode가 0이면 사용 가능
           setLocalError('');
           onValidate?.(true, '');
           return true;
@@ -79,20 +94,13 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
         const newValue = e.target.value;
         onChange?.(newValue);
 
-        // 실시간 validation 또는 touched 상태일 때 validation
-        if (validateOnChange || (touched && newValue)) {
-          if (newValue) {
-            validate(newValue);
-          } else {
-            setLocalError('');
-            onValidate?.(false, '');
-          }
-        } else if (!newValue) {
+        // 입력 중에는 서버 검증하지 않고 에러만 초기화
+        if (!newValue) {
           setLocalError('');
           onValidate?.(false, '');
         }
       },
-      [onChange, validate, touched, validateOnChange, onValidate]
+      [onChange, onValidate]
     );
 
     const handleBlur = useCallback(
@@ -105,6 +113,21 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
       },
       [value, validate, onBlur]
     );
+
+    // 디바운스
+    useEffect(() => {
+      if (!validateOnChange) return;
+
+      if (!debouncedValue || !debouncedValue.trim()) {
+        setLocalError('');
+        onValidate?.(false, '');
+        return;
+      }
+
+      // 서버 페칭
+      validate(debouncedValue);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debouncedValue, validateOnChange]);
 
     useEffect(() => {
       if (externalErrorMessage) {
