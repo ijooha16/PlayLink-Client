@@ -77,6 +77,8 @@ type InputProps = Omit<
     buttonText?: string;
     /** 우측 버튼 클릭 핸들러 */
     onButtonClick?: () => void;
+    /** 우측 상태 아이콘 표시 여부 */
+    showStatusIcons?: boolean;
   };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -107,6 +109,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       wrapperClassName,
       id,
       disabled,
+      showStatusIcons = true,
       ...props
     },
     ref
@@ -240,18 +243,26 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               {!focused && (
                 <>
                   {/* 에러 상태 아이콘 */}
-                  {hasError && !rightElement && (
-                    <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-system-error'>
-                      <ErrorIcon />
-                    </div>
-                  )}
+                  {showStatusIcons &&
+                    hasError &&
+                    !rightElement &&
+                    !isSignupFlow && (
+                      <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-system-error'>
+                        <ErrorIcon />
+                      </div>
+                    )}
 
                   {/* 성공 상태 아이콘 - disabled 상태에서는 표시 안 함 */}
-                  {!disabled && finalSuccess && !hasError && !rightElement && (
-                    <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-primary-800'>
-                      <Check size={12} className='text-white' />
-                    </div>
-                  )}
+                  {!disabled &&
+                    showStatusIcons &&
+                    finalSuccess &&
+                    !hasError &&
+                    !rightElement &&
+                    !isSignupFlow && (
+                      <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-primary-800'>
+                        <Check size={12} className='text-white' />
+                      </div>
+                    )}
                 </>
               )}
 

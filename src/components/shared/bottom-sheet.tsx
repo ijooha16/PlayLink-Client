@@ -8,7 +8,6 @@ import { useEffect, useRef, useState } from 'react';
 const HANDLE_CLOSE_OFFSET = 80;
 const HANDLE_CLOSE_VELOCITY = 1100;
 const SPRING_CONFIG: SpringOptions = {
-  type: 'spring',
   stiffness: 360,
   damping: 36,
   mass: 0.92,
@@ -48,6 +47,7 @@ export default function BottomSheet({
   const handleRef = useRef<HTMLDivElement>(null);
   const sheetHeightRef = useRef(0);
   const closingAnimationRef = useRef<Promise<void> | null>(null);
+  const closeFallbackTimeoutRef = useRef<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const dragOrigin = useRef<'handle' | null>(null);
@@ -65,6 +65,13 @@ export default function BottomSheet({
     animationControls.current = null;
   };
 
+  const clearCloseFallbackTimeout = () => {
+    if (closeFallbackTimeoutRef.current !== null) {
+      clearTimeout(closeFallbackTimeoutRef.current);
+      closeFallbackTimeoutRef.current = null;
+    }
+  };
+
   const animateTo = (target: number, options?: Partial<SpringOptions>) => {
     stopActiveAnimation();
     const controls = animate(y, target, {
@@ -74,12 +81,14 @@ export default function BottomSheet({
     });
     animationControls.current = controls;
     return new Promise<void>((resolve) => {
-      controls.then(() => {
+      const finish = () => {
         if (animationControls.current === controls) {
           animationControls.current = null;
         }
         resolve();
-      });
+      };
+
+      controls.then(finish, finish);
     });
   };
 
@@ -91,6 +100,11 @@ export default function BottomSheet({
     return measured;
   };
 
+  const clampToSheetHeight = (value: number) => {
+    const height = sheetHeightRef.current || measureSheetHeight();
+    return Math.min(Math.max(value, 0), height);
+  };
+
   const closeSheet = () => {
     if (closingAnimationRef.current) {
       return closingAnimationRef.current;
@@ -100,13 +114,33 @@ export default function BottomSheet({
     setIsDragging(false);
     dragOrigin.current = null;
 
-    const targetY = sheetHeightRef.current || measureSheetHeight();
-    const promise = animateTo(targetY).then(() => {
-      closingAnimationRef.current = null;
-      onClose();
+    const targetY = measureSheetHeight();
+    clearCloseFallbackTimeout();
+    const promise = animateTo(targetY).catch(() => {
+      // Swallow animation errors and continue closing flow
     });
+    let finished = false;
+    const finalizeClose = () => {
+      if (finished) {
+        return;
+      }
+      finished = true;
+      clearCloseFallbackTimeout();
+      setIsClosing(false);
+      if (closingAnimationRef.current === promise) {
+        closingAnimationRef.current = null;
+      }
+      onClose();
+    };
 
     closingAnimationRef.current = promise;
+    promise.then(finalizeClose);
+
+    if (typeof window !== 'undefined') {
+      closeFallbackTimeoutRef.current = window.setTimeout(finalizeClose, 600);
+    } else {
+      finalizeClose();
+    }
     return promise;
   };
 
@@ -118,6 +152,7 @@ export default function BottomSheet({
       document.body.style.overflow = 'hidden';
 
       stopActiveAnimation();
+      clearCloseFallbackTimeout();
       closingAnimationRef.current = null;
       dragOrigin.current = null;
       setIsClosing(false);
@@ -131,8 +166,8 @@ export default function BottomSheet({
     } else {
       document.body.style.overflow = '';
       stopActiveAnimation();
+      clearCloseFallbackTimeout();
       closingAnimationRef.current = null;
-      y.set(0);
       dragOrigin.current = null;
       setIsDragging(false);
       setIsClosing(false);
@@ -143,6 +178,7 @@ export default function BottomSheet({
         cancelAnimationFrame(frame);
       }
       document.body.style.overflow = previousOverflow;
+      clearCloseFallbackTimeout();
       stopActiveAnimation();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -217,8 +253,7 @@ export default function BottomSheet({
     const origin = dragOrigin.current;
 
     if (origin === 'handle') {
-      const nextY = Math.max(info.offset.y, 0);
-      y.set(nextY);
+      y.set(clampToSheetHeight(info.offset.y));
       return;
     }
 
@@ -238,7 +273,7 @@ export default function BottomSheet({
         offsetY > HANDLE_CLOSE_OFFSET || velocityY > HANDLE_CLOSE_VELOCITY;
 
       if (shouldClose && offsetY > 0) {
-        y.set(Math.max(offsetY, 0));
+        y.set(clampToSheetHeight(offsetY));
         closeSheet();
         return;
       }
@@ -297,7 +332,6 @@ export default function BottomSheet({
             exit={{ y: '100%' }}
             transition={{ duration: 0 }}
             drag='y'
-            dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={0}
             dragDirectionLock={false}
             onDragStart={handleDragStart}
@@ -329,7 +363,6 @@ export default function BottomSheet({
               }`}
               onPointerDown={(e) => {
                 e.stopPropagation();
-                e.preventDefault();
               }}
               onTouchStart={(e) => {
                 e.stopPropagation();
@@ -348,7 +381,6 @@ export default function BottomSheet({
                 className='border-t border-gray-100 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]'
                 onPointerDown={(e) => {
                   e.stopPropagation();
-                  e.preventDefault();
                 }}
                 onTouchStart={(e) => {
                   e.stopPropagation();

@@ -59,7 +59,14 @@ function KakaoCallbackPage() {
         }
 
         const { email, name, profileImage } = kakaoResponse.data.data;
-        const phoneNumber = '01039481599'; // 하드코딩된 전화번호
+
+        const phoneNumber =
+          window.prompt('전화번호를 입력하세요 (예: 01012345678)') || '';
+        if (!phoneNumber || !/^01[0-9]{8,9}$/.test(phoneNumber)) {
+          openAlert('입력 오류', '올바른 전화번호를 입력해주세요.');
+          router.push(PATHS.SPLASH);
+          return;
+        }
 
         // 2. 디바이스 정보 가져오기
         const deviceInfo = await getDeviceInfo();
@@ -83,7 +90,7 @@ function KakaoCallbackPage() {
           });
 
           toast.success(TOAST_ALERT_MESSAGES.KAKAO_LOGIN_SUCCESS);
-          router.replace(PATHS.HOME);
+          router.push(PATHS.HOME);
           return;
         }
 
@@ -115,7 +122,7 @@ function KakaoCallbackPage() {
           });
 
           toast.success(TOAST_ALERT_MESSAGES.KAKAO_LOGIN_SUCCESS);
-          router.replace(PATHS.AUTH.WELCOME);
+          router.push(PATHS.AUTH.WELCOME);
           return;
         }
 

@@ -8,6 +8,7 @@ export type MatchType = {
   createdAt: string;
   likeCount: number;
   placeAddress: string;
+  imgUrl: string;
 };
 
 export type MatchDetailType = {
@@ -26,6 +27,8 @@ export type MatchDetailType = {
   placeAddress: string;
   placeLocation: string;
   image_url: string;
+  match_imgUrl?: string;
+  user_imgUrl?: string;
   user_nickname: string;
   likeCount: number;
   created_at: string;

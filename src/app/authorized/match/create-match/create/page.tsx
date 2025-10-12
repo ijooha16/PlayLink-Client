@@ -246,7 +246,6 @@ const CreateMatchPage = () => {
           const endTime = format(endDate, 'HH:mm');
 
           updateDateTime(date, startTime, endTime);
-          setOpenSheet(null);
         }}
       >
         <DateTimePicker
@@ -282,7 +281,6 @@ const CreateMatchPage = () => {
               : `최소 ${tempPeople.min}명 | 최대 ${tempPeople.max}명`;
           setSelectedPeople(formattedPeople);
           updatePeople(tempPeople.min, tempPeople.max ?? 999);
-          setOpenSheet(null);
         }}
       >
         <PeoplePicker
@@ -302,7 +300,6 @@ const CreateMatchPage = () => {
         confirmText='선택'
         onConfirm={() => {
           updateLevels(tempLevels);
-          setOpenSheet(null);
         }}
       >
         <LevelPicker
@@ -322,7 +319,6 @@ const CreateMatchPage = () => {
         confirmText='선택'
         onConfirm={() => {
           updateGender(tempGender);
-          setOpenSheet(null);
         }}
       >
         <GenderPicker
@@ -342,7 +338,6 @@ const CreateMatchPage = () => {
         confirmText='선택'
         onConfirm={() => {
           updateGeneration(tempAges);
-          setOpenSheet(null);
         }}
       >
         <AgePicker

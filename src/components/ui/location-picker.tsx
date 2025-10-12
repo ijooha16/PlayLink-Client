@@ -87,6 +87,8 @@ export default function LocationPicker({
           type='text'
           placeholder='어디서 만나나요?'
           value={searchQuery}
+          isSignupFlow={false}
+          showStatusIcons={false}
           onChange={(e) => handleSearch(e.target.value)}
           variant='gray'
           sizes='lg'
