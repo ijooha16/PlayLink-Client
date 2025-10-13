@@ -97,7 +97,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     }, [value, resize]);
 
     const finalSuccess = React.useMemo(
-      () => hasSuccess || (touched && !hasError && Boolean(value)),
+      () => hasSuccess || successMessage,
       [hasSuccess, touched, hasError, value]
     );
 
