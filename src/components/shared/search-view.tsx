@@ -1,6 +1,7 @@
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
 import SportCard from '@/components/features/match/sport-card';
 import Tag from '@/components/ui/tag';
+import { extractSportsFromResponse, Sport } from '@/libs/helpers/sport';
 import { useSearchStore } from '@/store/search-store';
 import { ChevronLeft } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
@@ -15,18 +16,11 @@ const SearchView = ({
   const { setKeyword, setType } = useSearchStore();
   const { data: sportsData } = useGetSportsQuery();
 
-  const categories = sportsData && sportsData?.data?.data?.Categories;
-  const sports = sportsData && sportsData?.data?.data?.sports;
+  const categories = sportsData?.data?.data?.Categories;
+  const sports = extractSportsFromResponse(sportsData);
 
   const items =
-    sports &&
-    sports.filter(
-      (sport: {
-        sports_name: string;
-        sports_id: number;
-        category_id: number;
-      }) => sport.category_id === selectedCategory
-    );
+    sports && sports.filter((sport: Sport) => sport.category_id === selectedCategory);
   const remainder = items && items.length % 5;
   const emptySlots = remainder && remainder === 0 ? 0 : 5 - remainder;
 
@@ -80,7 +74,7 @@ const SearchView = ({
         </div>
         <div className='grid grid-cols-5 gap-3'>
           {items &&
-            items.map((sport: { sports_name: string; sports_id: number }) => (
+            items.map((sport: Sport) => (
               <SportCard
                 sport={sport.sports_id}
                 sport_name={sport.sports_name}

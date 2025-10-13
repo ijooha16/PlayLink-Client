@@ -3,9 +3,10 @@
 import MatchCards from '@/components/features/match/match-cards';
 import MainHeader from '@/components/features/navigation/main-header';
 import MainNewButton from '@/components/features/navigation/main-new-button';
+import { PATHS } from '@/constant';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-matches-query';
 // import { useGetNotificationQuery } from '@/hooks/notification/use-get-notification-query';
-import { sendNotificationToken } from '@/libs/api/notification/send-notification-token';
+import { sendNotificationToken } from '@/libs/api/frontend/notification/send-notification-token';
 import {
   onForegroundMessage,
   requestPermissionAndGetToken,
@@ -25,7 +26,7 @@ export default function Home() {
   //검색 페이지 이동
   useEffect(() => {
     if (keyword || type)
-      router.replace(`/authorized/query?keyword=${keyword}&type=${type}`);
+      router.replace(`${PATHS.QUERY}?keyword=${keyword}&type=${type}`);
   }, [keyword, type, router]);
 
   //알림 수신
@@ -49,7 +50,7 @@ export default function Home() {
   return (
     <div>
       <MainHeader />
-      <div className='overflow-auto'>
+      <div className='overflow-auto pb-20'>
         {data && data.data.map((d) => <MatchCards key={d.matchId} data={d} />)}
       </div>
       <MainNewButton />

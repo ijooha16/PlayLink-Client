@@ -1,5 +1,6 @@
 'use client';
 
+import { PATHS } from '@/constant';
 import {
   CircleUserIcon,
   HomeIcon,
@@ -8,7 +9,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { PATHS } from '@/constant/paths';
 
 const TabNavigation = () => {
   const pathname = usePathname();
@@ -16,7 +16,7 @@ const TabNavigation = () => {
   const mainPaths = [PATHS.HOME, PATHS.MY_NEAR, PATHS.CHAT, PATHS.MY_PAGE];
 
   // main paths 외의 경로에서 네비게이션 숨기기
-  const shouldHideNavigation = mainPaths.includes(pathname);
+  const shouldHideNavigation = mainPaths.includes(pathname as typeof mainPaths[number]);
 
   if (!shouldHideNavigation) {
     return null;

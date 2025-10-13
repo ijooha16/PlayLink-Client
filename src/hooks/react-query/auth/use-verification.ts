@@ -1,15 +1,21 @@
-import { useState } from 'react';
-import { useSms } from '@/hooks/react-query/sms/useSms';
-import { useSmsVerify } from '@/hooks/react-query/sms/useSmsVerify';
 import { useEmail } from '@/hooks/react-query/email/useEmail';
 import { useEmailVerify } from '@/hooks/react-query/email/useEmailVerify';
+import { useSms } from '@/hooks/react-query/sms/useSms';
+import { useSmsVerify } from '@/hooks/react-query/sms/useSmsVerify';
+import { useState } from 'react';
 import { handleVerificationError } from './use-find-account';
 
 type VerificationType = 'phone' | 'email';
 
+interface VerificationResponse {
+  status: string;
+  message?: string;
+  data?: unknown;
+}
+
 interface UseVerificationOptions {
   type: VerificationType;
-  onVerifySuccess?: (data: any) => void;
+  onVerifySuccess?: (data?: VerificationResponse) => void;
   onSendSuccess?: () => void;
 }
 
@@ -45,7 +51,7 @@ export const useVerification = (options: UseVerificationOptions): UseVerificatio
   const { mutate: smsSend, isPending: isSmsSending } = useSms({
     onSuccess: () => {
       setErrors({});
-      alert('인증번호를 발송하였습니다.');
+      // alert('인증번호를 발송하였습니다.');
       onSendSuccess?.();
     },
     onError: (err: Error) => {

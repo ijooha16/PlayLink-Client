@@ -18,6 +18,8 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
       label = '인증번호',
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
+      hasSuccess: externalHasSuccess,
+      successMessage: externalSuccessMessage,
       timer,
       isTimeout,
       isResending,
@@ -30,49 +32,64 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
     const [localError, setLocalError] = useState('');
     const [touched, setTouched] = useState(false);
 
-    const validate = useCallback((code: string) => {
-      const trimmed = code.trim();
-      const result = validateVerificationCode(trimmed);
-      const error = result.error || '';
+    const validate = useCallback(
+      (code: string) => {
+        const trimmed = code.trim();
+        const result = validateVerificationCode(trimmed);
+        const error = result.error || '';
 
-      setLocalError(error);
-      onValidate?.(result.isValid, error);
+        setLocalError(error);
+        onValidate?.(result.isValid, error);
 
-      return result.isValid;
-    }, [onValidate]);
+        return result.isValid;
+      },
+      [onValidate]
+    );
 
-    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value.replace(/\D/g, '').slice(0, maxLength);
-      onChange?.(newValue);
+    const handleChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value.replace(/\D/g, '').slice(0, maxLength);
+        onChange?.(newValue);
 
-      // maxLength 달성 시 즉시 validation 또는 touched 상태일 때 validation
-      if ((validateOnComplete && newValue.length === maxLength) || (touched && newValue)) {
-        if (newValue) {
-          validate(newValue);
-        } else {
+        // maxLength 달성 시 즉시 validation 또는 touched 상태일 때 validation
+        if (
+          (validateOnComplete && newValue.length === maxLength) ||
+          (touched && newValue)
+        ) {
+          if (newValue) {
+            validate(newValue);
+          } else {
+            setLocalError('');
+            onValidate?.(false, '');
+          }
+        } else if (!newValue) {
           setLocalError('');
           onValidate?.(false, '');
         }
-      } else if (!newValue) {
-        setLocalError('');
-        onValidate?.(false, '');
-      }
-    }, [onChange, validate, touched, validateOnComplete, onValidate, maxLength]);
+      },
+      [onChange, validate, touched, validateOnComplete, onValidate, maxLength]
+    );
 
-    const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-      setTouched(true);
-      if (value) {
-        validate(value);
-      }
-      onBlur?.(e);
-    }, [value, validate, onBlur]);
+    const handleBlur = useCallback(
+      (e: React.FocusEvent<HTMLInputElement>) => {
+        setTouched(true);
+        if (value) {
+          validate(value);
+        }
+        onBlur?.(e);
+      },
+      [value, validate, onBlur]
+    );
 
-    const handleBeforeInput = useCallback((e: any) => {
-      const be = e;
-      if (be.data && /[^\d]/.test(be.data)) {
-        e.preventDefault();
-      }
-    }, []);
+    const handleBeforeInput = useCallback(
+      (e: React.FormEvent<HTMLInputElement>) => {
+        const inputEvent = e.nativeEvent as InputEvent;
+        if (inputEvent.data && /[^\d]/.test(inputEvent.data)) {
+          e.preventDefault();
+        }
+      },
+      []
+    );
 
     useEffect(() => {
       if (externalErrorMessage) {
@@ -80,14 +97,17 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
       }
     }, [externalErrorMessage]);
 
-    const displayError = externalErrorMessage || localError || (isTimeout ? '인증번호를 다시 보내주세요.' : '');
+    const displayError =
+      externalErrorMessage ||
+      localError ||
+      (isTimeout ? '인증번호를 다시 보내주세요.' : '');
     const hasError = externalHasError || Boolean(displayError) || isTimeout;
 
     const resendButton = onResend && (
       <button
-        type="button"
+        type='button'
         onClick={onResend}
-        className="text-primary-800 text-label-l font-semibold whitespace-nowrap"
+        className='whitespace-nowrap text-label-l font-semibold text-primary-800'
         disabled={isResending || disabled}
       >
         재전송
@@ -98,9 +118,9 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
       <Input
         ref={ref}
         label={label}
-        type="text"
-        inputMode="numeric"
-        variant="splited"
+        type='text'
+        inputMode='numeric'
+        variant='splited'
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
@@ -108,10 +128,13 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
         onBeforeInput={handleBeforeInput}
         hasError={hasError}
         errorMessage={displayError}
+        hasSuccess={externalHasSuccess}
+        successMessage={externalSuccessMessage}
         timer={timer}
         maxLength={maxLength}
         disabled={disabled}
         splitedRightElement={resendButton}
+        rightElement
         {...props}
       />
     );

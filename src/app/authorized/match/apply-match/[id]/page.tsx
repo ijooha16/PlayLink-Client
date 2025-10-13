@@ -1,13 +1,16 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
-import { useAlertStore } from '@/store/alert-store';
-import { useApplyMatchMutation } from '@/hooks/react-query/match/use-apply-match-mutation';
 import Header from '@/components/layout/header';
-
-import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import { PATHS } from '@/constant';
+import { useApplyMatchMutation } from '@/hooks/react-query/match/use-apply-match-mutation';
 import { useGetMatchesQuery } from '@/hooks/react-query/match/use-get-match-detail-query';
-import { PATHS } from '@/constant/paths';
+import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import {
+  extractSportsFromResponse,
+  getSportName,
+} from '@/libs/helpers/sport';
+import { useAlertStore } from '@/store/alert-store';
+import { useParams, useRouter } from 'next/navigation';
 
 export default function ApplyPage() {
   const params = useParams();
@@ -34,10 +37,8 @@ export default function ApplyPage() {
     match_id,
   } = data?.data || {};
 
-  const sportTypes = (sports && sports?.data?.data?.sports) || [];
-  const sportTypeForThisMatch = sportTypes.filter(
-    (sport: { sports_id: number }) => sport.sports_id === sports_type
-  );
+  const sportsList = extractSportsFromResponse(sports);
+  const sportName = getSportName(sportsList, sports_type);
 
   if (!data) {
     return <div>매치 정보를 찾을 수 없습니다.</div>;
@@ -69,7 +70,7 @@ export default function ApplyPage() {
           </div>
           <div className='flex flex-col'>
             <span className='text-sm font-semibold text-blue-600'>
-              {sportTypeForThisMatch[0]?.sports_name}
+              {sportName}
             </span>
             <h3 className='text-xl font-bold'>{title}</h3>
             <p className='text-sm text-gray-600'>
@@ -91,9 +92,7 @@ export default function ApplyPage() {
         </div>
         <div>
           <p className='font-bold'>종목</p>
-          <span className='mt-6 font-semibold text-blue-500'>
-            {sportTypeForThisMatch[0]?.sports_name}
-          </span>
+          <span className='mt-6 font-semibold text-blue-500'>{sportName}</span>
         </div>
         <div>
           <p className='font-bold'>날짜</p>

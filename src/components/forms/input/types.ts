@@ -12,6 +12,8 @@ export interface BaseInputProps {
   label?: string;
   hasError?: boolean;
   errorMessage?: string;
+  hasSuccess?: boolean;
+  successMessage?: string;
   helperText?: string;
   autoFocus?: boolean;
 }
@@ -22,6 +24,8 @@ export interface EmailInputProps extends Omit<BaseInputProps, 'onChange'> {
   showCancelToggle?: boolean;
   validateOnChange?: boolean;
   showCheckIcon?: boolean;
+  isSignupFlow?: boolean;
+  showSuccessMessage?:boolean;
 }
 
 export interface PhoneInputProps extends Omit<BaseInputProps, 'onChange'> {
@@ -41,6 +45,8 @@ export interface PasswordInputProps extends Omit<BaseInputProps, 'onChange'> {
   onConfirmChange?: (value: string) => void;
   isConfirm?: boolean;
   validateOnChange?: boolean;
+  isSignupFlow?: boolean;
+  showSuccessMessage?:boolean;
 }
 
 export interface CodeInputProps extends Omit<BaseInputProps, 'onChange'> {
@@ -59,6 +65,7 @@ export interface NicknameInputProps extends Omit<BaseInputProps, 'onChange'> {
   onValidate?: (isValid: boolean, error?: string) => void;
   showCancelToggle?: boolean;
   validateOnChange?: boolean;
+  isSignupFlow?: boolean;
 }
 
 export interface AddressInputProps extends Omit<BaseInputProps, 'onChange'> {
@@ -73,5 +80,15 @@ export interface AddressInputProps extends Omit<BaseInputProps, 'onChange'> {
     gu: string;
     dong: string;
   }>;
-  onResultSelect?: (item: { full: string; si: string; gu: string; dong: string }) => void;
+  onResultSelect?: (item: {
+    full: string;
+    si: string;
+    gu: string;
+    dong: string;
+  }) => void;
+  selectedValue?: string;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
+  totalCount?: number;
+  onClick?: (selectedFull?: string) => void;
 }

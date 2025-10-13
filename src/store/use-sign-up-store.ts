@@ -18,7 +18,7 @@ type Profile = {
   address: string;
   favor: string;
   prefer_sports: string;
-  img: File;
+  img: File | string;
 };
 
 type Store = {

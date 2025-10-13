@@ -2,23 +2,32 @@ import { PATHS } from '@/constant';
 import {
   findAccountByPhone,
   findAccountByPhoneEmail,
-} from '@/libs/api/auth/find-account';
+} from '@/libs/api/frontend/auth/find-account';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 type FindAccountRequestType = {
   phoneNumber: string;
   email?: string;
+  account_type: string;
 };
 
 type ErrorCode = 0 | 1008 | 4006 | 6001 | 99999;
+
+interface AccountData {
+  user_id?: number | string;
+  email?: string;
+  nickname?: string;
+  created_at?: string;
+  account_type?: number;
+}
 
 type AuthError = {
   response?: {
     data?: {
       errCode?: ErrorCode;
       message?: string;
-      data?: any;
+      data?: AccountData;
     };
   };
   message?: string;
@@ -29,9 +38,9 @@ type UseFindAccountOptions = {
   type: 'phone' | 'email';
   context?: 'sign-up' | 'find-id' | 'reset-password';
   isAfterVerification?: boolean;
-  onAccountExists?: (accountData: any) => void;
+  onAccountExists?: (accountData: AccountData) => void;
   onAccountNotFound?: () => void;
-  onNeedVerification?: (accountData?: any) => void;
+  onNeedVerification?: (accountData?: AccountData) => void;
   onInvalidInput?: (message: string) => void;
   onError?: (message: string) => void;
 };
@@ -52,7 +61,7 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
   // 공통 처리 로직
   const processAccountData = (
     errCode: ErrorCode | undefined,
-    accountData: any
+    accountData?: AccountData
   ) => {
     // errCode 0이면 기존 계정이 있음
     if (errCode === 0 && accountData) {
@@ -91,7 +100,7 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
     // 다른 에러 코드 처리
     switch (errCode) {
       case 6001:
-          onNeedVerification?.();
+        onNeedVerification?.();
         // 인증이 필요한 경우
         // if (context === 'sign-up') {
         //   onNeedVerification?.();
@@ -107,7 +116,9 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
         if (context === 'find-id' && isAfterVerification) {
           router.push(PATHS.AUTH.NOT_FOUND);
         } else if (context === 'reset-password') {
-          onInvalidInput?.('등록되지 않은 계정입니다. 회원가입을 진행해주세요.');
+          onInvalidInput?.(
+            '등록되지 않은 계정입니다. 회원가입을 진행해주세요.'
+          );
         } else if (context === 'find-id') {
           // find-id에서 계정이 없어도 일단 인증번호 전송
           onAccountNotFound?.();
@@ -126,7 +137,12 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
     return false;
   };
 
-  const handleResponse = (data: any) => {
+  interface FindAccountResponse {
+    errCode?: ErrorCode;
+    data?: AccountData;
+  }
+
+  const handleResponse = (data: FindAccountResponse) => {
     processAccountData(data?.errCode, data?.data);
   };
 
@@ -137,17 +153,21 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
     processAccountData(errCode, errorData);
   };
 
-  return useMutation<any, AuthError, FindAccountRequestType>({
+  return useMutation<FindAccountResponse, AuthError, FindAccountRequestType>({
     mutationFn: async (params) => {
       // email이 있으면 findAccountByPhoneEmail 호출
       if (params.email) {
         return findAccountByPhoneEmail({
           phoneNumber: params.phoneNumber,
           email: params.email,
+          account_type: params.account_type,
         });
       }
       // email이 없으면 findAccountByPhone만 호출
-      return findAccountByPhone({ phoneNumber: params.phoneNumber });
+      return findAccountByPhone({
+        phoneNumber: params.phoneNumber,
+        account_type: params.account_type,
+      });
     },
     onSuccess: handleResponse,
     onError: handleError,

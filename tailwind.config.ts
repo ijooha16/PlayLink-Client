@@ -107,26 +107,26 @@ const config: Config = {
         },
         text: {
           disabled: 'var(--color-gray-400)',
-          netural: 'var(--color-gray-500)',
+          neutral: 'var(--color-gray-500)',
           alternative: 'var(--color-gray-700)',
           strong: 'var(--color-gray-900)',
         },
         border: {
           normal: 'var(--color-gray-100)',
-          netural: 'var(--color-gray-200)',
+          neutral: 'var(--color-gray-200)',
           alternative: 'var(--color-gray-300)',
           strong: 'var(--color-gray-900)',
         },
         line: {
           normal: 'var(--color-line-normal)',
-          netural: 'var(--color-line-netural)',
+          neutral: 'var(--color-line-neutral)',
           alternative: 'var(--color-line-alternative)',
           strong: 'var(--color-line-strong)',
         },
         bg: {
           white: 'var(--color-gray-0)',
           normal: 'var(--color-gray-50)',
-          netural: 'var(--color-gray-100)',
+          neutral: 'var(--color-gray-100)',
           alternative: 'var(--color-gray-200)',
         },
         system: {
@@ -138,7 +138,7 @@ const config: Config = {
         icon: {
           white: 'var(--color-gray-0)',
           disabled: 'var(--color-gray-400)',
-          netural: 'var(--color-gray-600)',
+          neutral: 'var(--color-gray-600)',
           strong: 'var(--color-gray-900)',
         },
         brand: {
@@ -171,6 +171,14 @@ const config: Config = {
           '0%': { opacity: '1', transform: 'translateX(0)' },
           '100%': { opacity: '0', transform: 'translateX(-30px)' },
         },
+        'bottom-sheet-enter': {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+        'modal-enter': {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
       },
       animation: {
         fadeInOnce: 'fadeInBottom 0.5s ease-out forwards',
@@ -179,6 +187,8 @@ const config: Config = {
         'fade-in-left': 'fadeInLeft 0.4s ease-out forwards',
         'fade-out-right': 'fadeOutRight 0.4s ease-in forwards',
         'fade-out-left': 'fadeOutLeft 0.4s ease-in forwards',
+        'bottom-sheet-enter': 'bottom-sheet-enter 0.3s ease-out',
+        'modal-enter': 'modal-enter 0.2s ease-out',
       },
     },
   },

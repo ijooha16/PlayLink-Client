@@ -1,9 +1,9 @@
 'use client';
 
+import { PATHS } from '@/constant';
 import { useAlertStore } from '@/store/alert-store';
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { PATHS } from '@/constant/paths';
 
 type MyTownProps = { myList: string[] };
 

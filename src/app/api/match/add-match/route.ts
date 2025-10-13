@@ -1,24 +1,10 @@
-import { backendClient } from '@/libs/api/axios';
-import { NextResponse } from 'next/server';
+import { BackendMatchAPI } from '@/libs/api/backend';
+import { withApiHandler } from '@/utills/api-handler';
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.formData();
-    const token = request.headers.get('Authorization');
+export const POST = withApiHandler(async (request) => {
+  const body = await request.formData();
 
-    const { data } = await backendClient.post('/playlink/match', body, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: token || ''
-      }
-    });
+  const { data } = await BackendMatchAPI.addMatch(body);
 
-    return NextResponse.json({ status: 'success', data });
-  } catch (err: any) {
-    console.error('Add match Route Handler error:', err);
-    return NextResponse.json({
-      status: 'error',
-      message: err.response?.data?.message || err.message || 'Unknown error',
-    }, { status: err.response?.status || 500 });
-  }
-}
+  return { status: 'success', data };
+});

@@ -2,8 +2,12 @@
 
 import SportCard from '@/components/features/match/sport-card';
 import Button from '@/components/ui/button';
+import { PATHS } from '@/constant';
+import { clearFlow, completeStep } from '@/hooks/auth/use-signup-flow';
 import { useUpdateProfile } from '@/hooks/react-query/profile/use-profile-query';
 import { useGetSportsQuery } from '@/hooks/react-query/sport/get-sport-query';
+import { extractSportsFromResponse } from '@/libs/helpers/sport';
+import { validateSports } from '@/libs/valid/auth';
 import useSignUpStore from '@/store/use-sign-up-store';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -17,8 +21,7 @@ export default function SportsSelectionPage() {
   );
   const { data: sports } = useGetSportsQuery();
 
-  const sportsList: { sports_name: string; sports_id: number }[] =
-    sports?.data?.data?.sports ?? [];
+  const sportsList = extractSportsFromResponse(sports);
 
   // 운동 토글 (최대 3개)
   const toggleSport = (id: number) => {
@@ -40,11 +43,21 @@ export default function SportsSelectionPage() {
 
   const { mutate: updateProfileMutation } = useUpdateProfile({
     onSuccess: () => {
-      router.replace('/');
+      completeStep('sports');
+      clearFlow();
+      router.push(PATHS.HOME);
     },
   });
 
   const handleNext = () => {
+    // 검증
+    const errorMessage = validateSports(selectedSports);
+
+    if (errorMessage) {
+      alert(errorMessage);
+      return;
+    }
+
     // Store 업데이트
     updateProfile('prefer_sports', JSON.stringify(selectedSports));
 
@@ -79,7 +92,7 @@ export default function SportsSelectionPage() {
       </div>
 
       {/* 그라데이션 배경 */}
-      <div className='fixed bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white/90 via-white/60 to-transparent pointer-events-none z-40' />
+      <div className='pointer-events-none fixed bottom-0 left-0 right-0 z-40 h-32 bg-gradient-to-t from-white/90 via-white/60 to-transparent' />
 
       {/* 하단 버튼 */}
       <Button

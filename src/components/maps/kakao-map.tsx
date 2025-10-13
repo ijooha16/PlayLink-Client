@@ -16,7 +16,7 @@ const KakaoMap = ({
   onMapClick
 }: KakaoMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstance = useRef<any>(null);
+  const mapInstance = useRef<KakaoMap | null>(null);
 
   useEffect(() => {
     if (window.kakao?.maps) {
@@ -41,7 +41,7 @@ const KakaoMap = ({
 
 
     if (onMapClick) {
-      window.kakao.maps.event.addListener(map, 'click', (e: any) => {
+      window.kakao.maps.event.addListener(map, 'click', (e) => {
         onMapClick(e.latLng.getLat(), e.latLng.getLng());
       });
     }

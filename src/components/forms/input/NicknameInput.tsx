@@ -2,8 +2,11 @@
 
 import Input from '@/components/ui/input';
 import { validateNickname } from '@/libs/valid/auth/nickname';
-import { forwardRef, useCallback, useEffect, useState } from 'react';
+import { SUCCESS_MESSAGES } from '@/constant';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { NicknameInputProps } from './types';
+import { checkNicknameDuplicate } from '@/libs/api';
+import useDebounce from '@/hooks/common/use-debounce';
 
 export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
   (
@@ -17,55 +20,124 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
       label = '닉네임',
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
+      hasSuccess: externalHasSuccess,
+      successMessage: externalSuccessMessage,
       helperText,
       showCancelToggle = true,
       validateOnChange = true,
       autoFocus = false,
+      isSignupFlow = true,
       ...props
     },
     ref
   ) => {
     const [localError, setLocalError] = useState('');
     const [touched, setTouched] = useState(false);
+    const [isValidated, setIsValidated] = useState(false);
+    const reqIdRef = useRef(0);
 
     const defaultHelperText = !value.length
-      ? '닉네임은 글자 또는 숫자 2자 이상 15자 이하로 입력해주세요'
+      ? '한글, 영문, 숫자 2~12자로 입력해주세요'
       : '';
 
-    const validate = useCallback((nickname: string) => {
-      const error = validateNickname(nickname);
+    const debouncedValue = useDebounce(value, 1000);
 
-      setLocalError(error || '');
-      onValidate?.(!error, error || '');
+    const validate = useCallback(
+      async (nickname: string) => {
+        const trimmed = nickname.trim();
 
-      return !error;
-    }, [onValidate]);
+        const syncError = validateNickname(trimmed);
+        if (syncError) {
+          setLocalError(syncError);
+          setIsValidated(false);
+          onValidate?.(false, syncError);
+          return false;
+        }
 
-    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      onChange?.(newValue);
+        const myId = ++reqIdRef.current;
+        try {
+          const response = await checkNicknameDuplicate(trimmed);
 
-      // 실시간 validation 또는 touched 상태일 때 validation
-      if (validateOnChange || (touched && newValue)) {
-        if (newValue) {
-          validate(newValue);
-        } else {
+          if (myId !== reqIdRef.current) {
+            return false;
+          }
+
+          // API 응답: { status, errCode, message, data }
+          if (response.status === 'error') {
+            const msg =
+              response.message || '닉네임 확인 중 오류가 발생했습니다.';
+            setLocalError(msg);
+            setIsValidated(false);
+            onValidate?.(false, msg);
+            return false;
+          }
+
+          // errCode가 0이 아니면 중복 또는 에러
+          if (response.errCode !== 0) {
+            const msg = response.message || '이미 사용 중인 닉네임입니다.';
+            setLocalError(msg);
+            setIsValidated(false);
+            onValidate?.(false, msg);
+            return false;
+          }
+
+          // errCode가 0이면 사용 가능
           setLocalError('');
+          setIsValidated(true);
+          onValidate?.(true, '');
+          return true;
+        } catch (e) {
+          const msg = '닉네임 중복 확인 중 오류가 발생했어요.';
+          setLocalError(msg);
+          setIsValidated(false);
+          onValidate?.(false, msg);
+          return false;
+        }
+      },
+      [onValidate]
+    );
+
+    const handleChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        onChange?.(newValue);
+
+        // 입력 중에는 서버 검증하지 않고 에러만 초기화
+        if (!newValue) {
+          setLocalError('');
+          setIsValidated(false);
           onValidate?.(false, '');
         }
-      } else if (!newValue) {
-        setLocalError('');
-        onValidate?.(false, '');
-      }
-    }, [onChange, validate, touched, validateOnChange, onValidate]);
+      },
+      [onChange, onValidate]
+    );
 
-    const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-      setTouched(true);
-      if (value) {
-        validate(value);
+    const handleBlur = useCallback(
+      (e: React.FocusEvent<HTMLInputElement>) => {
+        setTouched(true);
+        if (value) {
+          validate(value);
+        }
+        onBlur?.(e);
+      },
+      [value, validate, onBlur]
+    );
+
+    // 디바운스
+    useEffect(() => {
+      if (!validateOnChange) return;
+
+      if (!debouncedValue || !debouncedValue.trim()) {
+        setLocalError('');
+        setIsValidated(false);
+        onValidate?.(false, '');
+        return;
       }
-      onBlur?.(e);
-    }, [value, validate, onBlur]);
+
+      // 서버 페칭
+      validate(debouncedValue);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debouncedValue, validateOnChange]);
 
     useEffect(() => {
       if (externalErrorMessage) {
@@ -73,27 +145,36 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
       }
     }, [externalErrorMessage]);
 
-
     const displayError = externalErrorMessage || localError;
     const hasError = externalHasError || Boolean(displayError);
+
+    // 실제로 validation이 성공했을 때만 성공 상태로 판단
+    const isValid = isValidated && !hasError && Boolean(value) && touched;
+    const displaySuccess = externalHasSuccess || isValid;
+    const displaySuccessMessage =
+      externalSuccessMessage ||
+      (isValid && !hasError && isSignupFlow ? SUCCESS_MESSAGES.NICKNAME : '');
 
     return (
       <Input
         ref={ref}
         label={label}
-        type="text"
-        variant="default"
-        sizes="lg"
+        type='text'
+        variant='default'
+        sizes='lg'
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}
         hasError={hasError}
         errorMessage={displayError}
+        hasSuccess={displaySuccess}
+        successMessage={displaySuccessMessage}
         helperText={helperText || defaultHelperText}
         showCancelToggle={showCancelToggle && Boolean(value)}
         disabled={disabled}
         autoFocus={autoFocus}
+        isSignupFlow={isSignupFlow}
         {...props}
       />
     );

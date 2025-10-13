@@ -1,4 +1,4 @@
-import { applyMatch } from '@/libs/api/match/join-match';
+import { applyMatch } from '@/libs/api/frontend/match/join-match';
 import { useMutation } from '@tanstack/react-query';
 
 export const useApplyMatchMutation = () => {

@@ -1,8 +1,8 @@
 'use client';
 
+import { PATHS } from '@/constant';
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { PATHS } from '@/constant/paths';
 
 const MainNewButton = () => {
   const router = useRouter();
@@ -14,11 +14,11 @@ const MainNewButton = () => {
   };
 
   return (
-    <div className='fixed bottom-16 flex w-full max-w-[640px] px-4 pb-4 pt-2'>
-      <div className='relative ml-auto mr-7 flex w-full justify-end'>
+    <div className='pointer-events-none fixed bottom-16 flex w-full max-w-[640px] px-4 pb-4 pt-2'>
+      <div className='relative ml-auto mr-7 flex justify-end'>
         <button
           onClick={handleCreateClick}
-          className='flex h-12 w-fit place-items-center justify-center gap-2 rounded-full bg-blue-500 px-3'
+          className='pointer-events-auto flex h-12 w-fit place-items-center justify-center gap-2 rounded-full bg-blue-500 px-3'
         >
           <PlusIcon color='white' size={28} />
           <span className='font-medium text-white'>글쓰기</span>

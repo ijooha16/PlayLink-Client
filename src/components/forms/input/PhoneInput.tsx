@@ -3,8 +3,7 @@
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import Input from '@/components/ui/input';
 import { PhoneInputProps } from './types';
-import { validatePhone, normalizePhone } from '@/libs/valid/auth';
-import { formatPhoneNumber } from '@/utills/format/phone-formats';
+import { validatePhone, normalizePhone, formatPhoneNumber } from '@/libs/valid/auth';
 
 export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
   (
@@ -18,6 +17,8 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
       label = '휴대폰 번호',
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
+      hasSuccess: externalHasSuccess,
+      successMessage: externalSuccessMessage,
       showCancelToggle = true,
       validateOnComplete = true,
       autoFocus = false,
@@ -88,9 +89,12 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         onBlur={handleBlur}
         hasError={hasError}
         errorMessage={displayError}
+        hasSuccess={externalHasSuccess}
+        successMessage={externalSuccessMessage}
         showCancelToggle={showCancelToggle && Boolean(value)}
         disabled={disabled}
         autoFocus={autoFocus}
+        isSignupFlow
         {...props}
       />
     );

@@ -3,12 +3,13 @@
 import * as React from 'react';
 import { useToastStore, ToastItem } from '@/store/toast-alert-store';
 import { Circle } from 'lucide-react';
+import { ErrorIcon, SuccessIcon } from '../shared/icons';
 
 const icons = {
   default: <Circle />,
-  error: <Circle />,
+  error: <ErrorIcon />,
   warning: <Circle />,
-  success: <Circle />,
+  success: <SuccessIcon />,
 };
 
 const colors = {

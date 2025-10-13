@@ -1,4 +1,4 @@
-import { fetchSmsVerify } from '@/libs/api/auth/sms';
+import { fetchSmsVerify } from '@/libs/api/frontend/auth/sms';
 import { useMutation } from '@tanstack/react-query';
 
 type VerifyType = {

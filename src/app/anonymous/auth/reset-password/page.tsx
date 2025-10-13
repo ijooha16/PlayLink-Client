@@ -2,11 +2,11 @@
 
 import { Input } from '@/components/forms/input';
 import Button from '@/components/ui/button';
-import { PATHS } from '@/constant/paths';
+import { PATHS } from '@/constant';
+import { useSessionToken } from '@/hooks/auth/use-reset-token';
 import { useTimer } from '@/hooks/common/use-timer';
 import { useFindAccount } from '@/hooks/react-query/auth/use-find-account';
 import { useVerification } from '@/hooks/react-query/auth/use-verification';
-import { useSessionToken } from '@/hooks/auth/use-reset-token';
 import { normalizePhone } from '@/libs/valid/auth';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
@@ -33,69 +33,70 @@ const ResetPassword = () => {
   const { mutate: findAccount, isPending: isFindingAccount } = useFindAccount({
     type: 'phone',
     context: 'reset-password',
-    onAccountExists: function() {
+    onAccountExists: function () {
       send(normalizePhone(phone));
     },
-    onNeedVerification: function() {
+    onNeedVerification: function () {
       send(normalizePhone(phone));
     },
-    onInvalidInput: function(message) {
+    onInvalidInput: function (message) {
       setErrors({ phone: message });
     },
-    onError: function(message) {
+    onError: function (message) {
       setErrors({ phone: message });
     },
-    onAccountNotFound: function() {
+    onAccountNotFound: function () {
       send(normalizePhone(phone));
-    }
+    },
   });
 
   // 인증 후 사용자 찾기
-  const { mutate: findAccountAfterVerify, isPending: isFindingAfterVerify } = useFindAccount({
-    type: 'phone',
-    context: 'reset-password',
-    isAfterVerification: true,
-    onAccountExists: function(accountData) {
-      // 인증 후 사용자 확인되면 ID로 이동
-      if (accountData?.user_id) {
-        setToken(accountData.user_id);
-        router.push(PATHS.AUTH.RESET_PASSWORD_ID(accountData.user_id.toString()));
-      }
-    },
-    onInvalidInput: function(message) {
-      setErrors({ phone: message });
-    },
-    onError: function(message) {
-      setErrors({ phone: message });
-    }
-  });
+  const { mutate: findAccountAfterVerify, isPending: isFindingAfterVerify } =
+    useFindAccount({
+      type: 'phone',
+      context: 'reset-password',
+      isAfterVerification: true,
+      onAccountExists: function (accountData) {
+        if (accountData?.user_id) {
+          const userId =
+            typeof accountData.user_id === 'string'
+              ? parseInt(accountData.user_id, 10)
+              : accountData.user_id;
+          const path = PATHS.AUTH.RESET_PASSWORD_ID(userId.toString());
+          setToken(userId);
+          setTimeout(() => {
+            router.push(path);
+          }, 100);
+        }
+      },
+      onInvalidInput: function (message) {
+        setErrors({ phone: message });
+      },
+      onError: function (message) {
+        setErrors({ phone: message });
+      },
+    });
 
-  const {
-    send,
-    verify,
-    resend,
-    errors,
-    setErrors,
-    isLoading
-  } = useVerification({
-    type: 'phone',
-    onSendSuccess: function() {
-      setIsCodeSent(true);
-      start();
-      // 코드 입력 필드로 포커스 이동
-      setTimeout(() => {
-        codeInputRef.current?.focus();
-      }, 100);
-    },
-    onVerifySuccess: function() {
-      stop(); // 인증 성공 시 타이머 중지
-      // 인증 성공 후 사용자 확인을 위해 다시 찾기
-      findAccountAfterVerify({
-        phoneNumber: normalizePhone(phone),
-        email: email.trim()
-      });
-    }
-  });
+  const { send, verify, resend, errors, setErrors, isLoading } =
+    useVerification({
+      type: 'phone',
+      onSendSuccess: function () {
+        setIsCodeSent(true);
+        start();
+        // 코드 입력 필드로 포커스 이동
+        setTimeout(() => {
+          codeInputRef.current?.focus();
+        }, 100);
+      },
+      onVerifySuccess: function () {
+        stop();
+        findAccountAfterVerify({
+          phoneNumber: normalizePhone(phone),
+          email: email.trim(),
+          account_type: '0',
+        });
+      },
+    });
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
@@ -133,7 +134,8 @@ const ResetPassword = () => {
         setIsAccountChecking(false);
         findAccount({
           phoneNumber: normalizePhone(phone),
-          email: email.trim()
+          email: email.trim(),
+          account_type: '0',
         });
       }, 1500);
     } else {
@@ -152,7 +154,7 @@ const ResetPassword = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="gap-s-24 flex flex-col">
+      <div className='flex flex-col gap-s-24'>
         <Input.Email
           ref={emailInputRef}
           value={email}
@@ -184,19 +186,24 @@ const ResetPassword = () => {
             isTimeout={isTimeout}
             isResending={isLoading.sending}
             errorMessage={errors.code}
-            placeholder="인증번호 6자리를 입력해 주세요"
+            placeholder='인증번호 6자리를 입력해 주세요'
             validateOnComplete
           />
         )}
       </div>
 
-      <Button
-        type="submit"
-        isFloat
-      >
+      <Button type='submit' isFloat>
         {!isCodeSent
-          ? (isAccountChecking ? '가입 여부 확인 중...' : isLoading.sending ? '전송 중...' : '다음')
-          : (isLoading.verifying ? '확인 중...' : isFindingAfterVerify ? '사용자 확인 중...' : '확인')}
+          ? isAccountChecking
+            ? '가입 여부 확인 중...'
+            : isLoading.sending
+              ? '전송 중...'
+              : '다음'
+          : isLoading.verifying
+            ? '확인 중...'
+            : isFindingAfterVerify
+              ? '사용자 확인 중...'
+              : '확인'}
       </Button>
     </form>
   );

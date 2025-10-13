@@ -1,8 +1,8 @@
 // /firebase/firebaseMessaging.ts
+import { PATHS } from '@/constant';
+import { requestPermissions } from '@/libs/permissions/permission';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { firebaseApp } from './firebase-config';
-import { PATHS } from '@/constant/paths';
-import { requestPermissions } from '@/libs/permissions/permission';
 
 let messaging: ReturnType<typeof getMessaging> | null = null;
 

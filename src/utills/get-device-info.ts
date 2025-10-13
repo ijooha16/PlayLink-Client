@@ -1,5 +1,5 @@
 import { UAParser } from 'ua-parser-js';
-import axios from 'axios';
+import { externalClient } from '@/libs/http';
 
 type DeviceInfoResults = {
   deviceId: string;
@@ -42,7 +42,9 @@ export const getDeviceInfo = async (): Promise<DeviceInfoResults> => {
 
   const ip: string | null = null;
   try {
-    const response = await axios.get('https://api.ipify.org?format=json');
+    const response = await externalClient.get(
+      'https://api.ipify.org?format=json'
+    );
     // const data = response.data;
     // ip = data.ip;
   } catch (error) {

@@ -1,6 +1,8 @@
 'use client';
 
 import Button from '@/components/ui/button';
+import { PATHS } from '@/constant';
+import { completeStep } from '@/hooks/auth/use-signup-flow';
 import useSignUpStore from '@/store/use-sign-up-store';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -17,7 +19,8 @@ const Interest = () => {
     if (selectedType === null) return;
 
     updateProfile('favor', selectedType);
-    router.replace('/anonymous/auth/sign-up/sports');
+    completeStep('interest');
+    router.push(PATHS.AUTH.SPORTS);
   };
 
   const options = [
@@ -43,41 +46,39 @@ const Interest = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-s-16 pb-[24px]">
+      <div className='flex flex-col gap-s-16 pb-[24px]'>
         {options.map((option) => (
           <div
             key={option.index}
             onClick={() => setSelectedType(option.id)}
-            className={`flex items-center gap-s-16 p-s-20 rounded-lg transition-colors cursor-pointer ${
+            className={`flex cursor-pointer items-center gap-s-16 rounded-lg p-s-20 transition-colors ${
               selectedType === option.id
                 ? 'border border-brand-primary bg-primary-50'
-                : 'border border-border-netural bg-white'
+                : 'border-border-neutral border bg-white'
             }`}
           >
-                        <div
-              className={`w-[20px] h-[20px] rounded-full border-border-netural transition-colors ${
+            <div
+              className={`border-border-neutral h-[20px] w-[20px] rounded-full transition-colors ${
                 selectedType === option.id
-                  ? 'bg-brand-primary border-brand-primary border-4'
-                  : 'border-icon-disabled border-2'
+                  ? 'border-4 border-brand-primary bg-brand-primary'
+                  : 'border-2 border-icon-disabled'
               }`}
             >
               {selectedType === option.id && (
-                <div className="w-full h-full rounded-full bg-white scale-75" />
+                <div className='h-full w-full scale-75 rounded-full bg-white' />
               )}
             </div>
-            <div className="flex-1 text-left">
-              <h3 className="text-label-l font-semibold text-text-strong">
+            <div className='flex-1 text-left'>
+              <h3 className='text-label-l font-semibold text-text-strong'>
                 {option.title}
               </h3>
-
             </div>
-
           </div>
         ))}
       </div>
 
       <Button
-        variant="default"
+        variant='default'
         disabled={selectedType === null}
         onClick={handleNext}
         isFloat

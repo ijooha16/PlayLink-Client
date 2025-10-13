@@ -32,7 +32,9 @@ const RootLayout = ({
         <Providers>
           <LayoutClientSide />
           <div className='flex h-full flex-col'>
-            <div className='flex-1 overflow-hidden px-s-24 pt-s-24'>{children}</div>
+            <div className='flex-1 overflow-hidden px-s-20 pt-s-24'>
+              {children}
+            </div>
             <TabNavigation />
           </div>
           <ToastContainer />

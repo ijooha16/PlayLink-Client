@@ -1,12 +1,11 @@
 'use client';
 
+import { Input } from '@/components/forms/input';
 import Header from '@/components/layout/header';
 import Button from '@/components/ui/button';
-import { Input } from '@/components/forms/input';
 import Loading from '@/components/ui/loading';
-import { PATHS } from '@/constant/paths';
+import { LOGIN_DEVICE_IDS, PATHS } from '@/constant';
 import { useSignin } from '@/hooks/react-query/auth/use-signin';
-import { getDeviceInfo } from '@/utills/get-device-info';
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 
@@ -26,12 +25,10 @@ const SignIn = () => {
 
     if (!isEmailValid || !isPasswordValid) return;
 
-    const infos = await getDeviceInfo();
-
     signIn({
       email: trimmedEmail,
       password: trimmedPassword,
-      device_id: infos.deviceId,
+      device_id: LOGIN_DEVICE_IDS.DEFAULT,
     });
   };
 
@@ -45,13 +42,15 @@ const SignIn = () => {
           <form
             noValidate
             onSubmit={handleLoginSubmit}
-            className='gap-y-s-16 flex flex-col'
+            className='flex flex-col gap-y-s-16'
           >
             <Input.Email
               value={email}
               onChange={setEmail}
               onValidate={(isValid) => setIsEmailValid(isValid)}
               validateOnChange
+              isSignupFlow
+              showSuccessMessage={false}
             />
 
             <Input.Password
@@ -60,27 +59,34 @@ const SignIn = () => {
               onValidate={(isValid) => setIsPasswordValid(isValid)}
               placeholder='비밀번호를 입력해주세요.'
               validateOnChange
+              isSignupFlow
+              showSuccessMessage={false}
             />
 
             <Button
               className='mt-s-8'
               fontSize='lg'
               type='submit'
-              disabled={!trimmedEmail || !trimmedPassword || !isEmailValid || !isPasswordValid}
+              disabled={
+                !trimmedEmail ||
+                !trimmedPassword ||
+                !isEmailValid ||
+                !isPasswordValid
+              }
             >
               로그인
             </Button>
           </form>
 
-          <div className='text-label-s text-text-netural mt-s-16 gap-s-8 mx-auto flex w-full justify-center font-semibold'>
+          <div className='text-text-neutral mx-auto mt-s-16 flex w-full justify-center gap-s-8 text-label-s font-semibold'>
             <Link href={PATHS.AUTH.FIND_ID}>
               <p>아이디 찾기</p>
             </Link>
-            <span className='text-line-netural'>|</span>
+            <span className='text-line-neutral'>|</span>
             <Link href={PATHS.AUTH.RESET_PASSWORD}>
               <p>비밀번호 찾기</p>
             </Link>
-            <span className='text-line-netural'>|</span>
+            <span className='text-line-neutral'>|</span>
             <Link prefetch={true} href={PATHS.AUTH.SIGN_UP}>
               <p className='text-brand-primary'>회원가입</p>
             </Link>

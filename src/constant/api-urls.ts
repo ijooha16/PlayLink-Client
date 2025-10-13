@@ -13,6 +13,7 @@ export const API_URLS = {
       SEND: '/api/auth/sms/send',
       VERIFY: '/api/auth/sms/verify',
     },
+    CHECK_NICKNAME: '/api/auth/check-nickname',
   },
   CHAT: {
     LIST: '/api/chatlist',

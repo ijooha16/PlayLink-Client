@@ -1,4 +1,4 @@
-import { PATHS } from '@/constant/paths';
+import { PATHS } from '@/constant';
 import { redirect } from 'next/navigation';
 
 const SignUp = () => {

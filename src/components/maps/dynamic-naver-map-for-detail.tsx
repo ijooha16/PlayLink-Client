@@ -2,12 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 
-declare global {
-  interface Window {
-    naver: Record<string, unknown>;
-  }
-}
-
 interface DynamicNaverMapForDetailProps {
   lat?: number;
   lng?: number;
@@ -18,8 +12,8 @@ const DynamicNaverMapForDetail = ({
   lng = 127.0276, // 강남역 기본 경도
 }: DynamicNaverMapForDetailProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const naverMapInstance = useRef<Record<string, unknown> | null>(null);
-  const naverMarkerInstance = useRef<Record<string, unknown> | null>(null);
+  const naverMapInstance = useRef<NaverMap | null>(null);
+  const naverMarkerInstance = useRef<NaverMarker | null>(null);
 
   useEffect(() => {
     // 네이버 지도 스크립트가 이미 로드되었는지 확인
@@ -38,11 +32,11 @@ const DynamicNaverMapForDetail = ({
     return () => {
       // 컴포넌트 언마운트 시 지도 인스턴스 및 마커 정리
       if (naverMapInstance.current) {
-        (naverMapInstance.current as any).destroy();
+        naverMapInstance.current.destroy();
         naverMapInstance.current = null;
       }
       if (naverMarkerInstance.current) {
-        (naverMarkerInstance.current as any).setMap(null);
+        naverMarkerInstance.current.setMap(null);
         naverMarkerInstance.current = null;
       }
       // 스크립트 제거 (선택 사항, 메모리 누수 방지)
@@ -60,15 +54,15 @@ const DynamicNaverMapForDetail = ({
     if (mapRef.current && window.naver) {
       // 기존 지도 인스턴스 정리 (의존성 변경 시)
       if (naverMapInstance.current) {
-        (naverMapInstance.current as any).destroy();
+        naverMapInstance.current.destroy();
         naverMapInstance.current = null;
       }
       if (naverMarkerInstance.current) {
-        (naverMarkerInstance.current as any).setMap(null);
+        naverMarkerInstance.current.setMap(null);
         naverMarkerInstance.current = null;
       }
 
-      const naverMaps = window.naver.maps as any;
+      const naverMaps = window.naver.maps;
       const map = new naverMaps.Map(mapRef.current, {
         center: new naverMaps.LatLng(lat, lng),
         zoom: 15,

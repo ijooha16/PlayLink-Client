@@ -1,17 +1,14 @@
 'use client';
 
 import Header from '@/components/layout/header';
-import { PATHS } from '@/constant/paths';
-import { useGetProfileQuery, useUpdateProfile } from '@/hooks/react-query/profile/use-profile-query';
-import { Auth } from '@/libs/api/auth/auth';
-import { useAuthStore } from '@/store/auth-store';
+import { PATHS } from '@/constant';
 import {
-  Camera,
-  Check,
-  ChevronRight,
-  Edit3,
-  X
-} from 'lucide-react';
+  useGetProfileQuery,
+  useUpdateProfile,
+} from '@/hooks/react-query/profile/use-profile-query';
+import { Auth } from '@/libs/api/frontend/auth/auth';
+import { useAuthStore } from '@/store/auth-store';
+import { Camera, Check, ChevronRight, Edit3, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 
@@ -35,7 +32,7 @@ export default function MyPage() {
     },
     onError: (error) => {
       console.error('프로필 업데이트 실패:', error);
-    }
+    },
   });
 
   const router = useRouter();
@@ -149,7 +146,7 @@ export default function MyPage() {
               <button
                 onClick={handleImageUpload}
                 disabled={!selectedImage || isUpdating}
-                className='bg-green-500 hover:bg-green-600 flex h-8 w-8 items-center justify-center rounded-full text-white transition-colors disabled:cursor-not-allowed disabled:bg-gray-400'
+                className='flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:bg-gray-400'
               >
                 {isUpdating ? (
                   <div className='h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
@@ -159,7 +156,7 @@ export default function MyPage() {
               </button>
               <button
                 onClick={handleImageEditCancel}
-                className='bg-red-500 hover:bg-red-600 flex h-8 w-8 items-center justify-center rounded-full text-white transition-colors'
+                className='flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white transition-colors hover:bg-red-600'
               >
                 <X size={16} />
               </button>
@@ -189,7 +186,7 @@ export default function MyPage() {
               <Check
                 size={18}
                 onClick={() => handleUpdateProfile()}
-                className='text-green-500 hover:text-green-600 cursor-pointer'
+                className='cursor-pointer text-green-500 hover:text-green-600'
               />
             </>
           ) : (

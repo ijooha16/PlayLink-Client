@@ -1,8 +1,8 @@
 'use client';
 
 import SocialIconButton from '@/components/shared/social-icon-button';
+import { PATHS } from '@/constant';
 import { SPORT_ICONS } from '@/constant/images';
-import { PATHS } from '@/constant/paths';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -55,7 +55,7 @@ function ScrollingIcons({
           return (
             <div
               key={`${dir}-${i}`}
-              className='mr-4 flex h-[72px] w-[72px] flex-shrink-0 items-center justify-center rounded-12 border border-line-netural bg-white shadow-level-1'
+              className='mr-4 flex h-[72px] w-[72px] flex-shrink-0 items-center justify-center rounded-12 border border-line-neutral bg-white shadow-level-1'
               style={{
                 transform: 'translateZ(0)',
                 backfaceVisibility: 'hidden',
@@ -94,6 +94,10 @@ export default function SignIn() {
 
   const handleKakaoLogin = () => {
     window.location.href = '/api/auth/kakao/login';
+  };
+
+  const handleAppleLogin = () => {
+    alert('애플 로그인 기능은 준비 중입니다.');
   };
 
   return (
@@ -137,9 +141,10 @@ export default function SignIn() {
       <div className='flex-1' />
 
       <div className='fixed bottom-3 left-0 right-0 z-50 flex w-full flex-col items-center gap-s-12'>
-        <SocialIconButton type='kakao' onClick={handleKakaoLogin} />
+        <SocialIconButton type='1' onClick={handleKakaoLogin} />
+        <SocialIconButton type='2' onClick={handleAppleLogin} />
         <SocialIconButton
-          type='email'
+          type='0'
           onClick={() => router.push(PATHS.AUTH.SIGN_IN)}
         />
       </div>

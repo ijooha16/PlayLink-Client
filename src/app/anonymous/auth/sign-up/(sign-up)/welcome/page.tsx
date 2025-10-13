@@ -8,6 +8,7 @@ import {
   Welcome,
 } from '@/components/shared/icons';
 import Button from '@/components/ui/button';
+import { PATHS } from '@/constant';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
@@ -15,21 +16,20 @@ const WelcomePage = () => {
   const router = useRouter();
 
   const floatingItems = [
-    { Component: Sparkle1, y: -10, duration: 3, ease: 'linear' },
-    { Component: Circle1, y: 8, duration: 3, ease: 'linear' },
-    { Component: Sparkle2, y: -8, duration: 3, ease: 'easeInOut' },
-    { Component: Circle2, y: 10, duration: 3, ease: 'easeInOut' },
+    { Component: Sparkle1, y: -10, duration: 3 },
+    { Component: Circle1, y: 8, duration: 3 },
+    { Component: Sparkle2, y: -8, duration: 3 },
+    { Component: Circle2, y: 10, duration: 3 },
   ];
 
   return (
-    <
-    >
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-[335px] h-[146px] relative flex items-center justify-center">
+    <>
+      <div className='fixed inset-0 flex items-center justify-center'>
+        <div className='relative h-[146px] w-[335px]'>
           {floatingItems.map((item, i) => (
             <motion.div
               key={i}
-              className="absolute w-[335px] h-[146px]"
+              className='absolute inset-0'
               animate={{ y: [0, item.y, 0] }}
               transition={{
                 duration: item.duration,
@@ -37,15 +37,19 @@ const WelcomePage = () => {
                 repeatType: 'loop',
               }}
             >
-              <item.Component size={24} />
+              <item.Component width={335} height={146} />
             </motion.div>
           ))}
-          <div className="absolute w-[335px] h-[146px]">
+          <div className='absolute inset-0'>
             <Welcome size={335} />
           </div>
         </div>
       </div>
-      <Button variant='default' onClick={() => router.replace('/anonymous/auth/sign-up/profile')} isFloat>
+      <Button
+        variant='default'
+        onClick={() => router.push(PATHS.AUTH.PROFILE)}
+        isFloat
+      >
         프로필 완성하기
       </Button>
     </>
