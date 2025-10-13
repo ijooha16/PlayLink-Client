@@ -2,7 +2,6 @@
 
 import { Input } from '@/components/forms/input';
 import { Edit, Profile } from '@/components/shared/icons';
-
 import Button from '@/components/ui/button';
 import { ERROR_MESSAGES, PATHS } from '@/constant';
 import { completeStep } from '@/hooks/auth/use-signup-flow';
@@ -11,7 +10,7 @@ import { validateNickname } from '@/libs/valid/auth/nickname';
 import useSignUpStore from '@/store/use-sign-up-store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const ProfileSetup = () => {
   const { updateProfile, profile } = useSignUpStore();
@@ -25,12 +24,8 @@ const ProfileSetup = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isCheckingNickname, setIsCheckingNickname] = useState(false);
-  const [isNicknameValid, setIsNicknameValid] = useState(false);
   const [nicknameError, setNicknameError] = useState('');
 
-  const normalizedNickname = useMemo(() => nickname.trim(), [nickname]);
-
-  // 미리보기: File이면 objectURL, string이면 그대로 URL
   useEffect(() => {
     if (!profileImage) {
       setPreview(null);
@@ -42,7 +37,6 @@ const ProfileSetup = () => {
       setPreview(url);
       return () => URL.revokeObjectURL(url);
     } else {
-      // string URL
       setPreview(profileImage);
     }
   }, [profileImage]);
@@ -51,13 +45,11 @@ const ProfileSetup = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // 파일 크기 5MB 제한
     if (file.size > 5 * 1024 * 1024) {
       alert('파일 크기는 5MB 이하여야 합니다');
       return;
     }
 
-    // 파일 타입 체크
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     if (!allowedTypes.includes(file.type)) {
       alert('JPG, JPEG, PNG 파일만 업로드 가능합니다');
@@ -77,31 +69,29 @@ const ProfileSetup = () => {
     return new File([blob], fileName, { type: mimeType ?? blob.type });
   }
 
-  // 서버가 File만 받는다면: 문자열이면 File로 변환
   const handleNext = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
     if (isCheckingNickname) return;
 
-    if (!normalizedNickname.length) {
+    const trimmedNickname = nickname.trim();
+
+    if (!trimmedNickname) {
       setNicknameError(ERROR_MESSAGES.NICKNAME.LENGTH_ERROR);
-      setIsNicknameValid(false);
       return;
     }
 
-    const formatError = validateNickname(normalizedNickname);
+    const formatError = validateNickname(trimmedNickname);
     if (formatError) {
       setNicknameError(formatError);
-      setIsNicknameValid(false);
       return;
     }
 
-    setIsNicknameValid(true);
     setIsCheckingNickname(true);
     setNicknameError('');
 
     try {
-      const response = await checkNicknameDuplicate(normalizedNickname);
+      const response = await checkNicknameDuplicate(trimmedNickname);
 
       if (response.status === 'error') {
         setNicknameError(
@@ -110,21 +100,14 @@ const ProfileSetup = () => {
         return;
       }
 
-      if (response.errCode !== 0) {
+      if (response.errCode !== 0 || response.data?.isDuplicate === 1) {
         setNicknameError(
-          response.message || '닉네임 확인 중 오류가 발생했습니다.'
+          response.message || ERROR_MESSAGES.NICKNAME.DUPLICATED
         );
         return;
       }
 
-      const isDuplicate = Number(response.data?.isDuplicate ?? 0) === 1;
-
-      if (isDuplicate) {
-        setNicknameError(ERROR_MESSAGES.NICKNAME.DUPLICATED);
-        return;
-      }
-
-      updateProfile('nickname', normalizedNickname);
+      updateProfile('nickname', trimmedNickname);
 
       if (profileImage) {
         const imgToSave = isFile(profileImage)
@@ -195,23 +178,16 @@ const ProfileSetup = () => {
                 setNicknameError('');
               }
             }}
-            onValidate={(isValid, error) => {
-              setIsNicknameValid(isValid);
-              setNicknameError(error || '');
-            }}
             autoFocus
             hasError={Boolean(nicknameError)}
             errorMessage={nicknameError}
-            // TODO SUCCESS 및 디바운싱 db호출 구현
           />
         </div>
 
         <Button
           variant='default'
           type='submit'
-          disabled={
-            !normalizedNickname || !isNicknameValid || isCheckingNickname
-          }
+          disabled={!nickname.trim() || isCheckingNickname}
           isFloat
         >
           {isCheckingNickname ? '확인 중...' : '다음'}

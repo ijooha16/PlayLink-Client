@@ -30,7 +30,7 @@ const AccountExistsContent = () => {
   };
   return (
     <AuthLayoutContainer
-      title={`해당 정보로 \n 이미 가입된 계정이 있어요!`}
+      title={`해당 정보로 \n 이미 가입된 계정이 있어요`}
       content={`해당 계정으로 로그인해 주세요.`}
     >
       <div className='mt-s-24 flex items-center rounded-[8px] border border-brand-primary p-s-16'>
@@ -68,7 +68,7 @@ const AccountExistsContent = () => {
             {email}
           </p>
           <div className='flex items-center gap-[4px]'>
-            <p className='text-text-neutral text-caption-01 font-medium'>
+            <p className='text-caption-01 font-medium text-text-neutral'>
               가입일
             </p>
             <p className='text-caption-01 font-medium text-text-strong'>

@@ -1,7 +1,7 @@
 export const SUCCESS_MESSAGES = {
   NICKNAME: '멋진 닉네임이에요!',
   EMAIL: '사용할 수 있는 이메일이에요',
-  PASSWORD: '사용할수 있는 비밀번호에요',
+  PASSWORD: '사용할 수 있는 비밀번호에요',
   PASSWORD_CONFIRM: '비밀번호가 일치해요',
 } as const;
 

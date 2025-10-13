@@ -164,53 +164,63 @@ const EmailCheckNonCheck = () => {
           errorMessage={emailError}
           validateOnChange
           showCheckIcon={isEmailVerified}
-          disabled={isEmailVerified}
           autoFocus
         />
 
-        {isEmailVerified && (
-          <div className='flex flex-col gap-s-24'>
-            <Input.Password
-              ref={passwordInputRef}
-              value={password}
-              onChange={setPassword}
-              onValidate={(isValid, error) => {
-                setIsPasswordValid(isValid);
-                setPasswordError(error || '');
-              }}
-              onBlur={() => setPasswordTouched(true)}
-              validateOnChange
-              hasError={
-                passwordTouched &&
-                confirmPasswordTouched &&
-                !isConfirmValid &&
-                confirmPassword.length > 0
-              }
-              errorMessage={
-                passwordTouched &&
-                confirmPasswordTouched &&
-                !isConfirmValid &&
-                confirmPassword.length > 0
-                  ? ERROR_MESSAGES.PASSWORD_CONFIRM
-                  : passwordError
-              }
-            />
-            <Input.Password
-              ref={confirmPasswordInputRef}
-              isConfirm
-              value={confirmPassword}
-              onChange={setConfirmPassword}
-              onValidate={(isValid, error) => {
-                setIsConfirmValid(isValid);
-                setConfirmPasswordError(error || '');
-              }}
-              onBlur={() => setConfirmPasswordTouched(true)}
-              confirmValue={password}
-              validateOnChange
-              errorMessage={confirmPasswordError}
-            />
-          </div>
-        )}
+        <div className='flex flex-col gap-s-24'>
+          <Input.Password
+            ref={passwordInputRef}
+            value={password}
+            onChange={setPassword}
+            onValidate={(isValid, error) => {
+              setIsPasswordValid(isValid);
+              setPasswordError(error || '');
+            }}
+            onBlur={() => setPasswordTouched(true)}
+            validateOnChange
+            hasError={
+              passwordTouched &&
+              confirmPasswordTouched &&
+              !isConfirmValid &&
+              confirmPassword.length > 0
+            }
+            errorMessage={
+              passwordTouched &&
+              confirmPasswordTouched &&
+              !isConfirmValid &&
+              confirmPassword.length > 0
+                ? ERROR_MESSAGES.PASSWORD_CONFIRM
+                : passwordError
+            }
+          />
+          <Input.Password
+            ref={confirmPasswordInputRef}
+            isConfirm
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+            onValidate={(isValid, error) => {
+              setIsConfirmValid(isValid);
+              setConfirmPasswordError(error || '');
+            }}
+            onBlur={() => setConfirmPasswordTouched(true)}
+            confirmValue={password}
+            validateOnChange
+            hasError={
+              passwordTouched &&
+              confirmPasswordTouched &&
+              !isConfirmValid &&
+              confirmPassword.length > 0
+            }
+            errorMessage={
+              passwordTouched &&
+              confirmPasswordTouched &&
+              !isConfirmValid &&
+              confirmPassword.length > 0
+                ? ERROR_MESSAGES.PASSWORD_CONFIRM
+                : ''
+            }
+          />
+        </div>
       </div>
 
       <Button

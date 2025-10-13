@@ -1,12 +1,12 @@
 'use client';
 
 import Input from '@/components/ui/input';
-import { validateNickname } from '@/libs/valid/auth/nickname';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@/constant';
+import useDebounce from '@/hooks/common/use-debounce';
+import { checkNicknameDuplicate } from '@/libs/api';
+import { validateNickname } from '@/libs/valid/auth/nickname';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { NicknameInputProps } from './types';
-import { checkNicknameDuplicate } from '@/libs/api';
-import useDebounce from '@/hooks/common/use-debounce';
 
 export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
   (

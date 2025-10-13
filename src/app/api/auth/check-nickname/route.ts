@@ -41,6 +41,12 @@ export const POST = withApiHandler(async (request) => {
   });
 
   const payload = response.data || {};
+  if (response.data?.data?.isDuplicate) {
+    return {
+      status: 'error',
+      message: '이미 사용중인 닉네임입니다.',
+    };
+  }
 
   return {
     status: 'success',
