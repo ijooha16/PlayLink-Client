@@ -24,7 +24,7 @@ import CheckIcon from '../../../public/images/play-icons/ic_check.svg';
 import ChevronDownIcon from '../../../public/images/play-icons/ic_chevron_down.svg';
 import ChevronBackIcon from '../../../public/images/play-icons/ic_chevron_left.svg';
 import ChevronRightIcon from '../../../public/images/play-icons/ic_chevron_right.svg';
-import EditIcon from '../../../public/images/play-icons/Ic_edit.svg';
+import EditIcon from '../../../public/images/play-icons/ic_edit.svg';
 import EmailRoundIcon from '../../../public/images/play-icons/ic_email.svg';
 import EyeIcon from '../../../public/images/play-icons/ic_eye.svg';
 import EyeOffIcon from '../../../public/images/play-icons/ic_eye_off.svg';
