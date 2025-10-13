@@ -29,23 +29,31 @@ const ResetPassword = () => {
   const { start, stop, formattedTime, isTimeout } = useTimer(300);
   const { setToken } = useSessionToken();
 
-  // 초기 사용자 찾기 (인증 전)
+  // 초기 사용자 찾기 (인증 전) - 사용자 존재 여부만 체크
   const { mutate: findAccount, isPending: isFindingAccount } = useFindAccount({
     type: 'phone',
     context: 'reset-password',
     onAccountExists: function () {
+      // 사용자가 존재하면 인증번호 전송
+      setIsAccountChecking(false);
       send(normalizePhone(phone));
     },
     onNeedVerification: function () {
+      // 인증이 필요한 경우 인증번호 전송
+      setIsAccountChecking(false);
       send(normalizePhone(phone));
     },
     onInvalidInput: function (message) {
+      setIsAccountChecking(false);
       setErrors({ phone: message });
     },
     onError: function (message) {
+      setIsAccountChecking(false);
       setErrors({ phone: message });
     },
     onAccountNotFound: function () {
+      // 사용자가 존재하지 않아도 인증번호 전송 (보안상 이유)
+      setIsAccountChecking(false);
       send(normalizePhone(phone));
     },
   });
@@ -128,16 +136,13 @@ const ResetPassword = () => {
         return;
       }
 
-      // 모든 필드가 유효하면 인증번호 전송
+      // 모든 필드가 유효하면 먼저 사용자 존재 여부 체크
       setIsAccountChecking(true);
-      setTimeout(() => {
-        setIsAccountChecking(false);
-        findAccount({
-          phoneNumber: normalizePhone(phone),
-          email: email.trim(),
-          account_type: '0',
-        });
-      }, 1500);
+      findAccount({
+        phoneNumber: normalizePhone(phone),
+        email: email.trim(),
+        account_type: '0',
+      });
     } else {
       // 코드 입력 상태에서는 코드 검증
       if (!code.trim()) {
@@ -194,10 +199,10 @@ const ResetPassword = () => {
 
       <Button type='submit' isFloat>
         {!isCodeSent
-          ? isAccountChecking
-            ? '가입 여부 확인 중...'
+          ? isAccountChecking || isFindingAccount
+            ? '사용자 확인 중...'
             : isLoading.sending
-              ? '전송 중...'
+              ? '인증번호 전송 중...'
               : '다음'
           : isLoading.verifying
             ? '확인 중...'

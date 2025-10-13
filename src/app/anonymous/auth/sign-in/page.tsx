@@ -6,7 +6,6 @@ import Button from '@/components/ui/button';
 import Loading from '@/components/ui/loading';
 import { LOGIN_DEVICE_IDS, PATHS } from '@/constant';
 import { useSignin } from '@/hooks/react-query/auth/use-signin';
-import { toast } from '@/utills/toast';
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 
@@ -14,7 +13,6 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   const trimmedEmail = email.trim();
   const trimmedPassword = password.trim();
@@ -25,11 +23,6 @@ const SignIn = () => {
     e.preventDefault();
 
     if (!isEmailValid || trimmedPassword.length === 0) return;
-
-    if (!isPasswordValid) {
-      toast.error('이메일 또는 비밀번호가 일치하지 않아요');
-      return;
-    }
 
     signIn({
       email: trimmedEmail,
@@ -62,7 +55,6 @@ const SignIn = () => {
             <Input.Password
               value={password}
               onChange={setPassword}
-              onValidate={(isValid) => setIsPasswordValid(isValid)}
               placeholder='비밀번호를 입력해주세요'
               isSignupFlow={false}
               showSuccessMessage={false}
