@@ -122,6 +122,10 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           : SUCCESS_MESSAGES.PASSWORD
         : '');
 
+    // 로그인 플로우일 때는 에러 UI를 표시하지 않음 (validation은 수행하되 toast로만 알림)
+    const finalHasError = isSignupFlow ? hasError : false;
+    const finalErrorMessage = isSignupFlow ? displayError : '';
+
     return (
       <Input
         ref={ref}
@@ -131,8 +135,8 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}
-        hasError={hasError}
-        errorMessage={displayError}
+        hasError={finalHasError}
+        errorMessage={finalErrorMessage}
         hasSuccess={displaySuccess}
         successMessage={displaySuccessMessage}
         helperText={helperText || defaultHelperText}
