@@ -87,6 +87,8 @@ const CreateMatchPage = () => {
 
   const getLevelDisplayText = () => {
     if (tempLevels.length === 0) return '상관없음';
+    if (tempLevels.length === LEVEL_NAMES.length) return '제한없음';
+
     const labels = tempLevels
       .map((id) => {
         const match = id.match(/lv(\d+)/);

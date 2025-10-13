@@ -17,7 +17,7 @@ const CreateMatchLayout = ({
 
   return (
     <>
-      <Header title={'매치 생성하기'} backbtn />
+      <Header title={'모임 만들기'} backbtn />
       <ProgressBar steps={steps} />
       <MatchLayoutContainer flowType='create-match'>
         {children}

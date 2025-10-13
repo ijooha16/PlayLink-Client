@@ -54,7 +54,7 @@ const CreateMatchType = () => {
           >
             <div className='flex items-center gap-3'>
               <div
-                className={`${selectedType === option.id ? 'bg-bg-neutral bg-primary-300' : 'bg-bg-neutral'} flex h-[40px] w-[40px] items-center justify-center rounded-full`}
+                className={`${selectedType === option.id ? 'bg-primary-300' : 'bg-bg-neutral'} flex h-[40px] w-[40px] items-center justify-center rounded-full`}
               >
                 <span className='text-xl'>{option.icon}</span>
               </div>
