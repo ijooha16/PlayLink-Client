@@ -18,7 +18,6 @@ export default function FindId() {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isPhoneValid, setIsPhoneValid] = useState(false);
   const [isCodeValid, setIsCodeValid] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
 
   const { start, stop, formattedTime, isTimeout } = useTimer(300);
 
@@ -57,7 +56,6 @@ export default function FindId() {
       send(normalizePhone(phone));
     },
     Verify: function (e?: React.FormEvent<HTMLFormElement> | React.MouseEvent) {
-      setIsLocked(true);
       e?.preventDefault();
       if (!isCodeValid) return;
       verify(normalizePhone(phone), String(code).trim());
@@ -103,15 +101,14 @@ export default function FindId() {
       <Button
         isFloat
         disabled={
-          isLocked ||
-          (!isCodeSent
+          !isCodeSent
             ? normalizePhone(phone).length !== 11 ||
               !isPhoneValid ||
               isLoading.sending
             : String(code).length !== 6 ||
               !isCodeValid ||
               isLoading.verifying ||
-              isTimeout)
+              isTimeout
         }
         onClick={!isCodeSent ? handleCode.Send : handleCode.Verify}
       >

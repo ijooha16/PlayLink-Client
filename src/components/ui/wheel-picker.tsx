@@ -76,10 +76,10 @@ export default function WheelPicker({
     timestamp: Date.now(),
     isAnimating: false,
   });
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
   const lastDragYRef = useRef(0);
   const lastDragTimeRef = useRef(0);
-  const wheelTimeoutRef = useRef<NodeJS.Timeout>();
+  const wheelTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const isInternalChangeRef = useRef(false);
   const lastReportedIndexRef = useRef<number | null>(null);
 

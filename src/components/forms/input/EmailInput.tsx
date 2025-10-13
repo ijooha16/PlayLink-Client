@@ -3,6 +3,7 @@
 import { Check } from '@/components/shared/icons';
 import Input from '@/components/ui/input';
 import { validateEmail } from '@/libs/valid/auth/email';
+import { SUCCESS_MESSAGES } from '@/constant';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { EmailInputProps } from './types';
 
@@ -14,7 +15,7 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
       onValidate,
       onBlur,
       disabled,
-      placeholder = '이메일을 입력해주세요.',
+      placeholder = '이메일을 입력해주세요',
       label = '이메일',
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
@@ -24,6 +25,8 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
       validateOnChange = false,
       showCheckIcon = false,
       autoFocus = false,
+      isSignupFlow = true,
+      showSuccessMessage = true,
       ...props
     },
     ref
@@ -31,41 +34,53 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
     const [localError, setLocalError] = useState('');
     const [touched, setTouched] = useState(false);
 
-    const validate = useCallback((email: string) => {
-      const trimmed = email.trim();
-      const error = validateEmail(trimmed);
+    const validate = useCallback(
+      (email: string) => {
+        const trimmed = email.trim();
+        const error = validateEmail(trimmed);
 
-      setLocalError(error);
-      onValidate?.(!error, error);
+        setLocalError(error);
+        if (!error) {
+          setTouched(true); // validation 성공 시 touched 상태 설정
+        }
+        onValidate?.(!error, error);
 
-      return !error;
-    }, [onValidate]);
+        return !error;
+      },
+      [onValidate]
+    );
 
-    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      onChange?.(newValue);
+    const handleChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        onChange?.(newValue);
 
-      // 실시간 validation 또는 touched 상태일 때 validation
-      if (validateOnChange || (touched && newValue)) {
-        if (newValue) {
-          validate(newValue);
-        } else {
+        // 실시간 validation 또는 touched 상태일 때 validation
+        if (validateOnChange || (touched && newValue)) {
+          if (newValue) {
+            validate(newValue);
+          } else {
+            setLocalError('');
+            onValidate?.(false, '');
+          }
+        } else if (!newValue) {
           setLocalError('');
           onValidate?.(false, '');
         }
-      } else if (!newValue) {
-        setLocalError('');
-        onValidate?.(false, '');
-      }
-    }, [onChange, validate, touched, validateOnChange, onValidate]);
+      },
+      [onChange, validate, touched, validateOnChange, onValidate]
+    );
 
-    const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-      setTouched(true);
-      if (value) {
-        validate(value);
-      }
-      onBlur?.(e);
-    }, [value, validate, onBlur]);
+    const handleBlur = useCallback(
+      (e: React.FocusEvent<HTMLInputElement>) => {
+        setTouched(true);
+        if (value) {
+          validate(value);
+        }
+        onBlur?.(e);
+      },
+      [value, validate, onBlur]
+    );
 
     useEffect(() => {
       if (externalErrorMessage) {
@@ -78,14 +93,22 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
       if (value && (validateOnChange || autoFocus)) {
         validate(value);
       }
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, []);
 
     const displayError = externalErrorMessage || localError;
     const hasError = externalHasError || Boolean(displayError);
 
+    const isValid = !hasError && Boolean(value) && touched;
+    const displaySuccess = externalHasSuccess || isValid;
+    const displaySuccessMessage =
+      externalSuccessMessage ||
+      (isValid && isSignupFlow && showSuccessMessage
+        ? SUCCESS_MESSAGES.EMAIL
+        : '');
+
     const checkIcon = showCheckIcon ? (
-      <div className="flex items-center justify-center w-[20px] h-[20px] rounded-full bg-primary-800">
-        <Check size={16} className="text-white" />
+      <div className='flex h-[20px] w-[20px] items-center justify-center rounded-full bg-primary-800'>
+        <Check size={16} className='text-white' />
       </div>
     ) : null;
 
@@ -93,23 +116,23 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
       <Input
         ref={ref}
         label={label}
-        type="email"
-        variant="default"
-        sizes="md"
+        type='email'
+        variant='default'
+        sizes='md'
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}
         hasError={hasError}
         errorMessage={displayError}
-        hasSuccess={externalHasSuccess}
-        successMessage={externalSuccessMessage}
+        hasSuccess={displaySuccess}
+        successMessage={displaySuccessMessage}
         showCancelToggle={!showCheckIcon && showCancelToggle && Boolean(value)}
         rightElement={checkIcon}
         disabled={disabled}
-        autoComplete="email"
+        autoComplete='email'
         autoFocus={autoFocus}
-        isSignupFlow
+        isSignupFlow={isSignupFlow}
         {...props}
       />
     );

@@ -5,7 +5,7 @@ import {
   searchPlaces,
   type SearchPlacesResponse,
 } from '@/libs/api/frontend/place/search-place';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, type InfiniteData } from '@tanstack/react-query';
 
 export {
   type KakaoPlace,
@@ -13,10 +13,10 @@ export {
 } from '@/libs/api/frontend/place/search-place';
 
 export const useSearchPlaces = (query: string) => {
-  return useInfiniteQuery<SearchPlacesResponse>({
+  return useInfiniteQuery({
     queryKey: [QUERY_KEYS.PLACE, query],
     queryFn: ({ pageParam = 1 }) =>
-      searchPlaces({ query, page: pageParam, size: 15 }),
+      searchPlaces({ query, page: pageParam as number, size: 15 }),
     getNextPageParam: (lastPage, allPages) => {
       if (!lastPage.meta || lastPage.meta.is_end) {
         return undefined;

@@ -1,11 +1,12 @@
 'use client';
 
 import Input from '@/components/ui/input';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@/constant';
+import useDebounce from '@/hooks/common/use-debounce';
+import { checkNicknameDuplicate } from '@/libs/api';
 import { validateNickname } from '@/libs/valid/auth/nickname';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { NicknameInputProps } from './types';
-import { checkNicknameDuplicate } from '@/libs/api';
-import useDebounce from '@/hooks/common/use-debounce';
 
 export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
   (
@@ -25,16 +26,18 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
       showCancelToggle = true,
       validateOnChange = true,
       autoFocus = false,
+      isSignupFlow = true,
       ...props
     },
     ref
   ) => {
     const [localError, setLocalError] = useState('');
     const [touched, setTouched] = useState(false);
+    const [isValidated, setIsValidated] = useState(false);
     const reqIdRef = useRef(0);
 
     const defaultHelperText = !value.length
-      ? '한글, 영문, 숫자 2~12자로 입력해주세요'
+      ? ERROR_MESSAGES.NICKNAME.LENGTH_ERROR
       : '';
 
     const debouncedValue = useDebounce(value, 1000);
@@ -46,6 +49,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
         const syncError = validateNickname(trimmed);
         if (syncError) {
           setLocalError(syncError);
+          setIsValidated(false);
           onValidate?.(false, syncError);
           return false;
         }
@@ -63,25 +67,29 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
             const msg =
               response.message || '닉네임 확인 중 오류가 발생했습니다.';
             setLocalError(msg);
+            setIsValidated(false);
             onValidate?.(false, msg);
             return false;
           }
 
           // errCode가 0이 아니면 중복 또는 에러
           if (response.errCode !== 0) {
-            const msg = response.message || '이미 사용 중인 닉네임입니다.';
+            const msg = response.message || ERROR_MESSAGES.NICKNAME.DUPLICATED;
             setLocalError(msg);
+            setIsValidated(false);
             onValidate?.(false, msg);
             return false;
           }
 
           // errCode가 0이면 사용 가능
           setLocalError('');
+          setIsValidated(true);
           onValidate?.(true, '');
           return true;
         } catch (e) {
           const msg = '닉네임 중복 확인 중 오류가 발생했어요.';
           setLocalError(msg);
+          setIsValidated(false);
           onValidate?.(false, msg);
           return false;
         }
@@ -97,6 +105,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
         // 입력 중에는 서버 검증하지 않고 에러만 초기화
         if (!newValue) {
           setLocalError('');
+          setIsValidated(false);
           onValidate?.(false, '');
         }
       },
@@ -120,6 +129,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
 
       if (!debouncedValue || !debouncedValue.trim()) {
         setLocalError('');
+        setIsValidated(false);
         onValidate?.(false, '');
         return;
       }
@@ -138,6 +148,13 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
     const displayError = externalErrorMessage || localError;
     const hasError = externalHasError || Boolean(displayError);
 
+    // 실제로 validation이 성공했을 때만 성공 상태로 판단
+    const isValid = isValidated && !hasError && Boolean(value) && touched;
+    const displaySuccess = externalHasSuccess || isValid;
+    const displaySuccessMessage =
+      externalSuccessMessage ||
+      (isValid && !hasError && isSignupFlow ? SUCCESS_MESSAGES.NICKNAME : '');
+
     return (
       <Input
         ref={ref}
@@ -151,13 +168,13 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
         onBlur={handleBlur}
         hasError={hasError}
         errorMessage={displayError}
-        hasSuccess={externalHasSuccess}
-        successMessage={externalSuccessMessage}
+        hasSuccess={displaySuccess}
+        successMessage={displaySuccessMessage}
         helperText={helperText || defaultHelperText}
         showCancelToggle={showCancelToggle && Boolean(value)}
         disabled={disabled}
         autoFocus={autoFocus}
-        isSignupFlow
+        isSignupFlow={isSignupFlow}
         {...props}
       />
     );

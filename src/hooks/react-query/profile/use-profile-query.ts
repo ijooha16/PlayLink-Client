@@ -41,7 +41,9 @@ export const useUpdateProfile = (options?: useUpdateProfileOptions) => {
     },
     onError: (error) => {
       console.error('Profile update error:', error);
-      toast.error(error.response?.data?.message || '프로필 설정에 실패했습니다.');
+      toast.error(
+        error.response?.data?.message || '프로필 설정에 실패했습니다.'
+      );
       options?.onError?.(error);
     },
   });

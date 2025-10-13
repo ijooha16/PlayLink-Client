@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 
 import { Input } from '@/components/forms/input';
 import Button from '@/components/ui/button';
-import { LOGIN_DEVICE_IDS, PATHS } from '@/constant';
+import { ERROR_MESSAGES, LOGIN_DEVICE_IDS, PATHS } from '@/constant';
 
 import { useFindAccount } from '@/hooks/react-query/auth/use-find-account';
 import { useSignUp, useSignin } from '@/hooks/react-query/auth/use-signin';
@@ -164,53 +164,63 @@ const EmailCheckNonCheck = () => {
           errorMessage={emailError}
           validateOnChange
           showCheckIcon={isEmailVerified}
-          disabled={isEmailVerified}
           autoFocus
         />
 
-        {isEmailVerified && (
-          <div className='flex flex-col gap-s-24'>
-            <Input.Password
-              ref={passwordInputRef}
-              value={password}
-              onChange={setPassword}
-              onValidate={(isValid, error) => {
-                setIsPasswordValid(isValid);
-                setPasswordError(error || '');
-              }}
-              onBlur={() => setPasswordTouched(true)}
-              validateOnChange
-              hasError={
-                passwordTouched &&
-                confirmPasswordTouched &&
-                !isConfirmValid &&
-                confirmPassword.length > 0
-              }
-              errorMessage={
-                passwordTouched &&
-                confirmPasswordTouched &&
-                !isConfirmValid &&
-                confirmPassword.length > 0
-                  ? '비밀번호가 일치하지 않습니다.'
-                  : passwordError
-              }
-            />
-            <Input.Password
-              ref={confirmPasswordInputRef}
-              isConfirm
-              value={confirmPassword}
-              onChange={setConfirmPassword}
-              onValidate={(isValid, error) => {
-                setIsConfirmValid(isValid);
-                setConfirmPasswordError(error || '');
-              }}
-              onBlur={() => setConfirmPasswordTouched(true)}
-              confirmValue={password}
-              validateOnChange
-              errorMessage={confirmPasswordError}
-            />
-          </div>
-        )}
+        <div className='flex flex-col gap-s-24'>
+          <Input.Password
+            ref={passwordInputRef}
+            value={password}
+            onChange={setPassword}
+            onValidate={(isValid, error) => {
+              setIsPasswordValid(isValid);
+              setPasswordError(error || '');
+            }}
+            onBlur={() => setPasswordTouched(true)}
+            validateOnChange
+            hasError={
+              passwordTouched &&
+              confirmPasswordTouched &&
+              !isConfirmValid &&
+              confirmPassword.length > 0
+            }
+            errorMessage={
+              passwordTouched &&
+              confirmPasswordTouched &&
+              !isConfirmValid &&
+              confirmPassword.length > 0
+                ? ERROR_MESSAGES.PASSWORD_CONFIRM
+                : passwordError
+            }
+          />
+          <Input.Password
+            ref={confirmPasswordInputRef}
+            isConfirm
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+            onValidate={(isValid, error) => {
+              setIsConfirmValid(isValid);
+              setConfirmPasswordError(error || '');
+            }}
+            onBlur={() => setConfirmPasswordTouched(true)}
+            confirmValue={password}
+            validateOnChange
+            hasError={
+              passwordTouched &&
+              confirmPasswordTouched &&
+              !isConfirmValid &&
+              confirmPassword.length > 0
+            }
+            errorMessage={
+              passwordTouched &&
+              confirmPasswordTouched &&
+              !isConfirmValid &&
+              confirmPassword.length > 0
+                ? ERROR_MESSAGES.PASSWORD_CONFIRM
+                : ''
+            }
+          />
+        </div>
       </div>
 
       <Button

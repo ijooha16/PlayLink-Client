@@ -14,7 +14,7 @@ import { useTimer } from '@/hooks/common/use-timer';
 import { useFindAccount } from '@/hooks/react-query/auth/use-find-account';
 import { useVerification } from '@/hooks/react-query/auth/use-verification';
 
-import { PATHS } from '@/constant';
+import { ERROR_MESSAGES, PATHS } from '@/constant';
 import { normalizePhone } from '@/libs/valid/auth';
 
 const PhoneCheck: React.FC = function () {
@@ -26,6 +26,7 @@ const PhoneCheck: React.FC = function () {
   const [isCodeSent, setIsCodeSent] = useState<boolean>(false);
   const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
   const [isCodeValid, setIsCodeValid] = useState<boolean>(false);
+  const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false);
 
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const codeInputRef = useRef<HTMLInputElement>(null);
@@ -113,6 +114,7 @@ const PhoneCheck: React.FC = function () {
       handleCode.Send();
     } else if (isCodeSent && isCodeValid && !isTimeout) {
       handleCode.Verify();
+      setIsButtonClicked(true);
     }
   };
 
@@ -149,7 +151,7 @@ const PhoneCheck: React.FC = function () {
               isTimeout={isTimeout}
               isResending={isLoading.sending}
               errorMessage={errors.code}
-              placeholder='인증번호 6자리를 입력해 주세요.'
+              placeholder={ERROR_MESSAGES.CODE.LENGTH_ERROR}
               validateOnComplete
             />
           )}
@@ -158,14 +160,15 @@ const PhoneCheck: React.FC = function () {
         <Button
           type='submit'
           disabled={
-            !isCodeSent
+            isButtonClicked ||
+            (!isCodeSent
               ? normalizedPhone.length !== 11 ||
                 !isPhoneValid ||
                 isLoading.sending
               : trimmedCode.length !== 6 ||
                 !isCodeValid ||
                 isLoading.verifying ||
-                isTimeout
+                isTimeout)
           }
           isFloat
         >

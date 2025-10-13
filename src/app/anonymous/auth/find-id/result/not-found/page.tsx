@@ -16,13 +16,13 @@ const AccountLogin = () => {
       <AddUserIcon className='mx-auto mt-24' />
       <div className='fixed bottom-s-20 left-1/2 flex w-full max-w-[640px] -translate-x-1/2 flex-col gap-s-12 px-s-20'>
         <SocialIconButton
-          type='kakao'
+          type='1'
           onClick={() => {
             window.location.href = '/api/auth/kakao/login';
           }}
         />
         <SocialIconButton
-          type='email'
+          type='0'
           onClick={() => {
             router.push(PATHS.AUTH.SIGN_UP);
           }}

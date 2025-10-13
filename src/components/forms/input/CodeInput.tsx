@@ -1,6 +1,7 @@
 'use client';
 
 import Input from '@/components/ui/input';
+import { ERROR_MESSAGES } from '@/constant';
 import { validateVerificationCode } from '@/libs/valid/auth';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { CodeInputProps } from './types';
@@ -14,7 +15,7 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
       onBlur,
       onResend,
       disabled,
-      placeholder = '인증번호 6자리를 입력해주세요',
+      placeholder = '인증번호 6자리',
       label = '인증번호',
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
@@ -100,14 +101,14 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
     const displayError =
       externalErrorMessage ||
       localError ||
-      (isTimeout ? '인증번호를 다시 보내주세요.' : '');
+      (isTimeout ? ERROR_MESSAGES.CODE.RESEND : '');
     const hasError = externalHasError || Boolean(displayError) || isTimeout;
 
     const resendButton = onResend && (
       <button
         type='button'
         onClick={onResend}
-        className='whitespace-nowrap text-label-l font-semibold text-primary-800'
+        className='w-[80px] whitespace-nowrap text-label-l font-semibold text-primary-800'
         disabled={isResending || disabled}
       >
         재전송
@@ -135,6 +136,7 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
         disabled={disabled}
         splitedRightElement={resendButton}
         rightElement
+        forceShowError={isTimeout}
         {...props}
       />
     );
