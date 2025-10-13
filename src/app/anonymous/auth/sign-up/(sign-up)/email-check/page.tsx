@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 
 import { Input } from '@/components/forms/input';
 import Button from '@/components/ui/button';
-import { LOGIN_DEVICE_IDS, PATHS } from '@/constant';
+import { ERROR_MESSAGES, LOGIN_DEVICE_IDS, PATHS } from '@/constant';
 
 import { useFindAccount } from '@/hooks/react-query/auth/use-find-account';
 import { useSignUp, useSignin } from '@/hooks/react-query/auth/use-signin';
@@ -191,7 +191,7 @@ const EmailCheckNonCheck = () => {
                 confirmPasswordTouched &&
                 !isConfirmValid &&
                 confirmPassword.length > 0
-                  ? '비밀번호가 일치하지 않습니다.'
+                  ? ERROR_MESSAGES.PASSWORD_CONFIRM
                   : passwordError
               }
             />

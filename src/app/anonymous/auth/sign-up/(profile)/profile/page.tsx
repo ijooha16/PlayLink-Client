@@ -4,7 +4,7 @@ import { Input } from '@/components/forms/input';
 import { Edit, Profile } from '@/components/shared/icons';
 
 import Button from '@/components/ui/button';
-import { PATHS } from '@/constant';
+import { ERROR_MESSAGES, PATHS } from '@/constant';
 import { completeStep } from '@/hooks/auth/use-signup-flow';
 import { checkNicknameDuplicate } from '@/libs/api/frontend/auth/check-nickname';
 import { validateNickname } from '@/libs/valid/auth/nickname';
@@ -84,7 +84,7 @@ const ProfileSetup = () => {
     if (isCheckingNickname) return;
 
     if (!normalizedNickname.length) {
-      setNicknameError('닉네임을 입력해 주세요.');
+      setNicknameError(ERROR_MESSAGES.NICKNAME.LENGTH_ERROR);
       setIsNicknameValid(false);
       return;
     }
@@ -120,7 +120,7 @@ const ProfileSetup = () => {
       const isDuplicate = Number(response.data?.isDuplicate ?? 0) === 1;
 
       if (isDuplicate) {
-        setNicknameError('이미 사용 중인 닉네임입니다.');
+        setNicknameError(ERROR_MESSAGES.NICKNAME.DUPLICATED);
         return;
       }
 
