@@ -39,7 +39,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
       ? '비밀번호를 다시 한번 입력해 주세요'
       : '비밀번호를 입력해주세요';
     const defaultHelperText =
-      !isConfirm && !value ? '영문, 숫자, 특수문자 조합 8~16자' : '';
+      !isConfirm && !value && isSignupFlow ? '영문, 숫자, 특수문자 조합 8~16자' : '';
 
     const validate = useCallback(
       (password: string) => {
