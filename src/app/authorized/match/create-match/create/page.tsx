@@ -23,7 +23,11 @@ import {
   validateLocation,
   validatePeople,
 } from '@/libs/valid/match';
-import useCreateMatchStore from '@/store/use-create-match-store';
+import useCreateMatchStore, {
+  bitFlagToAges,
+  bitFlagToLevels,
+  numberToGender,
+} from '@/store/use-create-match-store';
 import { toast } from '@/utills/toast';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -41,8 +45,14 @@ const CreateMatchPage = () => {
     updateLocation,
   } = useCreateMatchStore();
 
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedPeople, setSelectedPeople] = useState('');
+  const [selectedDate, setSelectedDate] = useState(matchData.date);
+  const [selectedPeople, setSelectedPeople] = useState(
+    matchData.maxSize === null
+      ? `최소 ${matchData.leastSize}명 | 최대 제한없음`
+      : `최소 ${matchData.leastSize}명 | 최대 ${matchData.maxSize}명`
+  );
+
+  console.log(matchData);
 
   // BottomSheet 상태 - 하나의 상태로 통합
   const [openSheet, setOpenSheet] = useState<
@@ -66,10 +76,16 @@ const CreateMatchPage = () => {
     max: 2,
   });
 
-  const [tempLevels, setTempLevels] = useState<string[]>([]);
-  const [tempGender, setTempGender] = useState<string>('');
-  const [tempAges, setTempAges] = useState<string[]>([]);
-  const [tempLocation, setTempLocation] = useState<LocationData | null>(null);
+  const [tempLevels, setTempLevels] = useState<string[]>(
+    bitFlagToLevels(matchData.matchLevel)
+  );
+  const [tempGender, setTempGender] = useState<string>(
+    numberToGender(matchData.gender)
+  );
+  const [tempAges, setTempAges] = useState<string[]>(
+    bitFlagToAges(matchData.generation)
+  );
+  const [tempLocation, setTempLocation] = useState<LocationData | null>(matchData.location);
 
   // 구분자로 레이블 조인
   const joinLabels = (labels: string[]) => (

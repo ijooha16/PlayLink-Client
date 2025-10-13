@@ -12,7 +12,8 @@ import { useState } from 'react';
 const CreateMatchType = () => {
   const router = useRouter();
   const updateMatchType = useCreateMatchStore((state) => state.updateMatchType);
-  const [selectedType, setSelectedType] = useState<string | null>('play');
+  const matchType = useCreateMatchStore(state => state.matchData.matchType)
+  const [selectedType, setSelectedType] = useState<string | null>(matchType === 0 ? 'play' : 'watch');
 
   const handleNext = () => {
     const error = validateMatchType(selectedType);
