@@ -33,6 +33,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
   ) => {
     const [localError, setLocalError] = useState('');
     const [touched, setTouched] = useState(false);
+    const [isValidated, setIsValidated] = useState(false);
     const reqIdRef = useRef(0);
 
     const defaultHelperText = !value.length
@@ -48,6 +49,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
         const syncError = validateNickname(trimmed);
         if (syncError) {
           setLocalError(syncError);
+          setIsValidated(false);
           onValidate?.(false, syncError);
           return false;
         }
@@ -65,6 +67,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
             const msg =
               response.message || '닉네임 확인 중 오류가 발생했습니다.';
             setLocalError(msg);
+            setIsValidated(false);
             onValidate?.(false, msg);
             return false;
           }
@@ -73,17 +76,20 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
           if (response.errCode !== 0) {
             const msg = response.message || '이미 사용 중인 닉네임입니다.';
             setLocalError(msg);
+            setIsValidated(false);
             onValidate?.(false, msg);
             return false;
           }
 
           // errCode가 0이면 사용 가능
           setLocalError('');
+          setIsValidated(true);
           onValidate?.(true, '');
           return true;
         } catch (e) {
           const msg = '닉네임 중복 확인 중 오류가 발생했어요.';
           setLocalError(msg);
+          setIsValidated(false);
           onValidate?.(false, msg);
           return false;
         }
@@ -99,6 +105,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
         // 입력 중에는 서버 검증하지 않고 에러만 초기화
         if (!newValue) {
           setLocalError('');
+          setIsValidated(false);
           onValidate?.(false, '');
         }
       },
@@ -122,6 +129,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
 
       if (!debouncedValue || !debouncedValue.trim()) {
         setLocalError('');
+        setIsValidated(false);
         onValidate?.(false, '');
         return;
       }
@@ -140,11 +148,12 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
     const displayError = externalErrorMessage || localError;
     const hasError = externalHasError || Boolean(displayError);
 
-    const isValid = !hasError && Boolean(value) && touched;
+    // 실제로 validation이 성공했을 때만 성공 상태로 판단
+    const isValid = isValidated && !hasError && Boolean(value) && touched;
     const displaySuccess = externalHasSuccess || isValid;
     const displaySuccessMessage =
       externalSuccessMessage ||
-      (isValid && isSignupFlow ? SUCCESS_MESSAGES.NICKNAME : '');
+      (isValid && !hasError && isSignupFlow ? SUCCESS_MESSAGES.NICKNAME : '');
 
     return (
       <Input

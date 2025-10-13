@@ -47,7 +47,6 @@ const ProfileSetup = () => {
     }
   }, [profileImage]);
 
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -138,7 +137,9 @@ const ProfileSetup = () => {
       completeStep('profile');
       router.push(PATHS.AUTH.ADDRESS);
     } catch (error) {
-      setNicknameError('닉네임 확인에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      setNicknameError(
+        '닉네임 확인에 실패했습니다. 잠시 후 다시 시도해주세요.'
+      );
     } finally {
       setIsCheckingNickname(false);
     }
@@ -169,7 +170,7 @@ const ProfileSetup = () => {
           <button
             type='button'
             onClick={() => fileInputRef.current?.click()}
-            className='bg-bg-neutral absolute bottom-0 right-0 flex h-[32px] w-[32px] items-center justify-center rounded-full border-2 border-white'
+            className='absolute bottom-0 right-0 flex h-[32px] w-[32px] items-center justify-center rounded-full border-2 border-white bg-bg-neutral'
           >
             <Edit size={24} />
           </button>
