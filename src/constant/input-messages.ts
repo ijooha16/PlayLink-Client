@@ -12,7 +12,7 @@ export const ERROR_MESSAGES = {
     DUPLICATED: '이미 사용중인 닉네임이에요',
     LENGTH_ERROR: '2자 이상으로 입력해주세요',
   },
-  EMAIL: '올바른 형식의 이메일 주소를 입력해 주세요.',
+  EMAIL: '올바른 형식의 이메일 주소를 입력해주세요.',
   PASSWORD: '영문, 숫자, 특수문자 조합 8~16자로 입력해 주세요',
   PASSWORD_CONFIRM: '비밀번호가 일치하지 않아요',
   CODE: {

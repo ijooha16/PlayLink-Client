@@ -4,6 +4,7 @@ import { useSms } from '@/hooks/react-query/sms/useSms';
 import { useSmsVerify } from '@/hooks/react-query/sms/useSmsVerify';
 import { useState } from 'react';
 import { handleVerificationError } from './use-find-account';
+import { ERROR_MESSAGES } from '@/constant';
 
 type VerificationType = 'phone' | 'email';
 
@@ -66,11 +67,11 @@ export const useVerification = (options: UseVerificationOptions): UseVerificatio
         setErrors({});
         onVerifySuccess?.(data);
       } else {
-        setErrors({ code: '인증번호가 올바르지 않습니다.' });
+        setErrors({ code: ERROR_MESSAGES.CODE.ERROR });
       }
     },
     onError: () => {
-      setErrors({ code: '인증번호가 올바르지 않습니다.' });
+      setErrors({ code: ERROR_MESSAGES.CODE.ERROR });
     },
   });
 
@@ -93,11 +94,11 @@ export const useVerification = (options: UseVerificationOptions): UseVerificatio
         setErrors({});
         onVerifySuccess?.(data);
       } else {
-        setErrors({ code: '인증번호가 올바르지 않습니다.' });
+        setErrors({ code: ERROR_MESSAGES.CODE.ERROR });
       }
     },
     onError: () => {
-      setErrors({ code: '인증번호가 올바르지 않습니다.' });
+      setErrors({ code: ERROR_MESSAGES.CODE.ERROR });
     },
   });
 

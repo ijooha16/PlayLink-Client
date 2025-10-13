@@ -163,6 +163,7 @@ const ResetPassword = () => {
           validateOnChange
           disabled={isCodeSent}
           autoFocus
+          showSuccessMessage={false}
         />
 
         <Input.Phone
