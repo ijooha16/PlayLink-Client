@@ -25,6 +25,7 @@ const PhoneCheck: React.FC = function () {
   const [isCodeSent, setIsCodeSent] = useState<boolean>(false);
   const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
   const [isCodeValid, setIsCodeValid] = useState<boolean>(false);
+  const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false);
 
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const codeInputRef = useRef<HTMLInputElement>(null);
@@ -107,11 +108,12 @@ const PhoneCheck: React.FC = function () {
 
   const handleSubmit = function (e: React.FormEvent) {
     e.preventDefault();
-
+    
     if (!isCodeSent) {
       handleCode.Send();
     } else if (isCodeSent && isCodeValid && !isTimeout) {
       handleCode.Verify();
+      setIsButtonClicked(true);
     }
   };
 
@@ -156,14 +158,15 @@ const PhoneCheck: React.FC = function () {
       <Button
         type='submit'
         disabled={
-          !isCodeSent
+          isButtonClicked ||
+          (!isCodeSent
             ? normalizedPhone.length !== 11 ||
               !isPhoneValid ||
               isLoading.sending
             : trimmedCode.length !== 6 ||
               !isCodeValid ||
               isLoading.verifying ||
-              isTimeout
+              isTimeout)
         }
         isFloat
       >
