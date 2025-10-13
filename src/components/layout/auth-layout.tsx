@@ -8,12 +8,12 @@ const SIGN_UP_FLOW = [
   {
     key: 'terms',
     path: PATHS.AUTH.TERMS,
-    title: '서비스 이용을 위해 \n 약관 동의가 필요해요!',
+    title: '서비스 이용을 위해 \n 약관 동의가 필요해요',
   },
   {
     key: 'phone-check',
     path: PATHS.AUTH.PHONE_CHECK,
-    title: '휴대폰 번호를 \n 입력해 주세요!',
+    title: '휴대폰 번호를 \n 입력해 주세요',
   },
   {
     key: 'email-check',
@@ -24,18 +24,18 @@ const SIGN_UP_FLOW = [
     key: 'welcome',
     path: PATHS.AUTH.WELCOME,
     title: '플레이링크에\n 오신 것을 환영해요!',
-    content: '운동메이트를 찾기 위해 프로필을 완성해 주세요.',
+    content: '운동메이트를 찾기 위해 프로필을 완성해 주세요',
   },
   {
     key: 'profile',
     path: PATHS.AUTH.PROFILE,
-    title: '프로필 사진과 닉네임을 \n설정해주세요!',
+    title: '프로필 사진과 닉네임을 \n설정해 주세요',
     content: '나중에 변경할 수 있어요.',
   },
   {
     key: 'address',
     path: PATHS.AUTH.ADDRESS,
-    title: '활동하는 동네를 \n 알려주세요!',
+    title: '활동하는 동네를 \n 알려주세요',
   },
   {
     key: 'interest',
@@ -45,7 +45,7 @@ const SIGN_UP_FLOW = [
   {
     key: 'sports',
     path: PATHS.AUTH.SPORTS,
-    title: '좋아하는 운동을 \n모두 선택해 주세요!',
+    title: '좋아하는 운동을 \n모두 선택해 주세요',
   },
   {
     key: 'complete',
