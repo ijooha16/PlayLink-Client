@@ -97,7 +97,7 @@ const TermsScreen = () => {
               className='cursor-pointer p-1'
               onClick={() => showTermsModal(policy.id)}
             >
-              <ChevronRight size={18} />
+              <ChevronRight />
             </button>
           </div>
         ))}

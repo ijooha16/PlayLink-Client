@@ -1,6 +1,7 @@
 'use client';
 
 import Header from '@/components/layout/header';
+import { ChevronRight } from '@/components/shared/icons';
 import { PATHS } from '@/constant';
 import {
   useGetProfileQuery,
@@ -8,7 +9,7 @@ import {
 } from '@/hooks/react-query/profile/use-profile-query';
 import { Auth } from '@/libs/api/frontend/auth/auth';
 import { useAuthStore } from '@/store/auth-store';
-import { Camera, Check, ChevronRight, Edit3, X } from 'lucide-react';
+import { Camera, Check, Edit3, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 
