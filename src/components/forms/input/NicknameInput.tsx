@@ -2,7 +2,7 @@
 
 import Input from '@/components/ui/input';
 import { validateNickname } from '@/libs/valid/auth/nickname';
-import { SUCCESS_MESSAGES } from '@/constant';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@/constant';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { NicknameInputProps } from './types';
 import { checkNicknameDuplicate } from '@/libs/api';
@@ -37,7 +37,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
     const reqIdRef = useRef(0);
 
     const defaultHelperText = !value.length
-      ? '한글, 영문, 숫자 2~12자로 입력해주세요'
+      ? ERROR_MESSAGES.NICKNAME.LENGTH_ERROR
       : '';
 
     const debouncedValue = useDebounce(value, 1000);
@@ -74,7 +74,7 @@ export const NicknameInput = forwardRef<HTMLInputElement, NicknameInputProps>(
 
           // errCode가 0이 아니면 중복 또는 에러
           if (response.errCode !== 0) {
-            const msg = response.message || '이미 사용 중인 닉네임입니다.';
+            const msg = response.message || ERROR_MESSAGES.NICKNAME.DUPLICATED;
             setLocalError(msg);
             setIsValidated(false);
             onValidate?.(false, msg);

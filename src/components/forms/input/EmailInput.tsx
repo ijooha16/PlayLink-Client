@@ -15,7 +15,7 @@ export const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
       onValidate,
       onBlur,
       disabled,
-      placeholder = '이메일을 입력해주세요.',
+      placeholder = '이메일을 입력해주세요',
       label = '이메일',
       hasError: externalHasError,
       errorMessage: externalErrorMessage,
