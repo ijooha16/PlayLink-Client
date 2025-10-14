@@ -14,8 +14,6 @@ import useSignUpStore from '@/store/use-sign-up-store';
 
 import { getDeviceInfo } from '@/utills/get-device-info';
 
-// Email verification without code confirmation - simplified signup flow
-// Skip code verification step: Email -> Password -> Complete
 const EmailCheckNonCheck = () => {
   const router = useRouter();
   const { signUp: signUpData, resetSignUp, updateSignUp } = useSignUpStore();
@@ -179,8 +177,8 @@ const EmailCheckNonCheck = () => {
             }}
             onBlur={() => setPasswordTouched(true)}
             validateOnChange
-            hasError={passwordTouched && Boolean(passwordError)}
-            errorMessage={passwordError}
+            hasError={passwordTouched && !isPasswordValid}
+            errorMessage={passwordTouched ? passwordError : ''}
           />
           <Input.Password
             ref={confirmPasswordInputRef}

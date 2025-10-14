@@ -13,7 +13,8 @@ import { useState } from 'react';
 const CreateMatchSports = () => {
   const router = useRouter();
   const updateSportType = useCreateMatchStore((state) => state.updateSportType);
-  const [selectedSport, setSelectedSport] = useState<number | null>(null);
+  const sportType = useCreateMatchStore(state => state.matchData.sportType)
+  const [selectedSport, setSelectedSport] = useState<number | null>(sportType);
 
   const { data: sports } = useGetSportsQuery();
 

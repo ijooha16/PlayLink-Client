@@ -250,9 +250,24 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     hasError &&
                     !rightElement &&
                     isSignupFlow && (
-                      <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-system-error'>
-                        <ErrorIcon />
-                      </div>
+                      <button
+                        type='button'
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          const syntheticEvent = {
+                            target: { value: '' },
+                            currentTarget: { value: '' },
+                          } as React.ChangeEvent<HTMLInputElement>;
+                          props.onChange?.(syntheticEvent);
+                        }}
+                        className='transition-opacity hover:opacity-80'
+                        aria-label='입력 지우기'
+                        tabIndex={-1}
+                      >
+                        <div className='pointer-events-none flex h-[20px] w-[20px] flex-shrink-0 items-center justify-center rounded-full bg-system-error'>
+                          <ErrorIcon />
+                        </div>
+                      </button>
                     )}
 
                   {/* 성공 상태 아이콘 - disabled 상태에서는 표시 안 함 */}

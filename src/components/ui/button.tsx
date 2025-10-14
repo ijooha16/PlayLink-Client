@@ -50,24 +50,29 @@ const Button = ({
   const keyboardHeight = useKeyboardHeight();
 
   return (
-    <button
-      className={twMerge(
-        buttonVariants({ variant, size }),
-        isFloat &&
-          'fixed bottom-3 left-0 right-0 z-50 mx-auto mb-[env(safe-area-inset-bottom)] w-[calc(100%-40px)] max-w-[640px]'
+    <>
+      {isFloat && (
+        <div
+          aria-hidden
+          className='w-full'
+          style={{
+            height: `calc(72px + env(safe-area-inset-bottom))`,
+          }}
+        />
       )}
-      style={
-        isFloat && keyboardHeight > 0
-          ? {
-              bottom: `${keyboardHeight + 12}px`,
-              transition: 'bottom 0.15s ease-out',
-            }
-          : undefined
-      }
-      {...props}
-    >
-      {children}
-    </button>
+
+      <button
+        className={twMerge(
+          buttonVariants({ variant, size }),
+          isFloat &&
+            'fixed bottom-3 left-0 right-0 z-50 mx-auto mb-[env(safe-area-inset-bottom)] w-[calc(100%-40px)] max-w-[640px]',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </button>
+    </>
   );
 };
 
