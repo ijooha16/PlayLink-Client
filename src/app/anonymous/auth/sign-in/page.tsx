@@ -13,7 +13,6 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   const trimmedEmail = email.trim();
   const trimmedPassword = password.trim();
@@ -23,7 +22,7 @@ const SignIn = () => {
   const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!isEmailValid || !isPasswordValid) return;
+    if (!isEmailValid || trimmedPassword.length === 0) return;
 
     signIn({
       email: trimmedEmail,
@@ -56,9 +55,7 @@ const SignIn = () => {
             <Input.Password
               value={password}
               onChange={setPassword}
-              onValidate={(isValid) => setIsPasswordValid(isValid)}
               placeholder='비밀번호를 입력해주세요'
-              validateOnChange
               isSignupFlow={false}
               showSuccessMessage={false}
             />
@@ -67,12 +64,7 @@ const SignIn = () => {
               className='mt-s-8'
               fontSize='lg'
               type='submit'
-              disabled={
-                !trimmedEmail ||
-                !trimmedPassword ||
-                !isEmailValid ||
-                !isPasswordValid
-              }
+              disabled={!isEmailValid || trimmedPassword.length === 0}
             >
               로그인
             </Button>

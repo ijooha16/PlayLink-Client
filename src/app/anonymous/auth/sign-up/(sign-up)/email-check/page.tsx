@@ -27,7 +27,6 @@ const EmailCheckNonCheck = () => {
   const [isConfirmValid, setIsConfirmValid] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [passwordError, setPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [passwordTouched, setPasswordTouched] = useState(false);
   const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
 
@@ -139,16 +138,13 @@ const EmailCheckNonCheck = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isEmailVerified) {
-      handleVerifyEmail();
-    } else {
-      updateSignUp('emailCheck', {
-        email: trimmedEmail,
-        password: trimmedPassword,
-        passwordCheck: trimmedConfirmPassword,
-      });
-      handleComplete();
-    }
+    handleVerifyEmail();
+    updateSignUp('emailCheck', {
+      email: trimmedEmail,
+      password: trimmedPassword,
+      passwordCheck: trimmedConfirmPassword,
+    });
+    handleComplete();
   };
 
   return (
@@ -169,7 +165,12 @@ const EmailCheckNonCheck = () => {
           <Input.Password
             ref={passwordInputRef}
             value={password}
-            onChange={setPassword}
+            onChange={(v) => {
+              setPassword(v);
+              // 비밀번호 바뀌면 확인 상태 초기화
+              setIsConfirmValid(false);
+              setConfirmPasswordTouched(false);
+            }}
             onValidate={(isValid, error) => {
               setIsPasswordValid(isValid);
               setPasswordError(error || '');
@@ -186,19 +187,16 @@ const EmailCheckNonCheck = () => {
             onChange={setConfirmPassword}
             onValidate={(isValid, error) => {
               setIsConfirmValid(isValid);
-              setConfirmPasswordError(error || '');
             }}
             onBlur={() => setConfirmPasswordTouched(true)}
             confirmValue={password}
             validateOnChange
             hasError={
-              passwordTouched &&
               confirmPasswordTouched &&
               !isConfirmValid &&
               confirmPassword.length > 0
             }
             errorMessage={
-              passwordTouched &&
               confirmPasswordTouched &&
               !isConfirmValid &&
               confirmPassword.length > 0

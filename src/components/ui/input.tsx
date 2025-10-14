@@ -79,6 +79,8 @@ type InputProps = Omit<
     onButtonClick?: () => void;
     /** 우측 상태 아이콘 표시 여부 */
     showStatusIcons?: boolean;
+    /** 포커스 상태와 관계없이 에러 메시지 강제 표시 (타임아웃 등) */
+    forceShowError?: boolean;
   };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -110,6 +112,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       id,
       disabled,
       showStatusIcons = true,
+      forceShowError = false,
       ...props
     },
     ref
@@ -169,7 +172,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 line,
                 align,
               }),
-              'flex items-center'
+              'flex min-w-0 flex-1 items-center'
             )}
             onMouseEnter={(e) => {
               setHover(true);
@@ -206,15 +209,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
             {/* 우측 요소 컨테이너 */}
             <div className='flex flex-shrink-0 items-center gap-s-8'>
-              {/* 타이머 표시 */}
-              {timer && (
+              {/* 타이머 표시 - disabled 상태에서는 표시 안 함 */}
+              {!disabled && timer && (
                 <span className='text-caption-01 font-medium text-system-error'>
                   {timer}
                 </span>
               )}
 
               {/* 포커스 중일 때만 보이는 요소들 */}
-              {focused && (
+              {focused && !disabled && (
                 <>
                   {/* 캔슬 요소 */}
                   {showCancelToggle && (
@@ -228,7 +231,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                         } as React.ChangeEvent<HTMLInputElement>;
                         props.onChange?.(syntheticEvent);
                       }}
-                      className='transition-opacity hover:opacity-80'
+                      className='-m-2 p-2 transition-opacity hover:opacity-80'
                       aria-label='입력 지우기'
                       tabIndex={-1}
                     >
@@ -240,7 +243,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                   )}
                 </>
               )}
-              {!focused && (
+              {!focused && !disabled && (
                 <>
                   {/* 에러 상태 아이콘 */}
                   {showStatusIcons &&
@@ -268,8 +271,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     )}
 
                   {/* 성공 상태 아이콘 - disabled 상태에서는 표시 안 함 */}
-                  {!disabled &&
-                    showStatusIcons &&
+                  {showStatusIcons &&
                     hasSuccess &&
                     !hasError &&
                     !rightElement &&
@@ -282,34 +284,33 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 </>
               )}
 
-              {/* 사용자 정의 우측 요소 */}
-              {rightElement}
+              {/* 사용자 정의 우측 요소 - disabled 상태에서는 표시 안 함 */}
+              {!disabled && rightElement}
               {hasSuccess && <div>success</div> && hasError && <div>error</div>}
             </div>
           </div>
 
-          {/* 오른쪽 분리 요소 (예: 인증요청 버튼) */}
-          {splitedRightElement && (
-            <div className='flex items-center justify-center rounded-r-12 border-y border-r border-border-neutral px-[19px]'>
+          {/* 오른쪽 분리 요소 (예: 인증요청 버튼) - disabled 상태에서는 표시 안 함 */}
+          {!disabled && splitedRightElement && (
+            <div className='flex flex-shrink-0 items-center justify-center rounded-r-12 border-y border-r border-border-neutral'>
               {splitedRightElement}
             </div>
           )}
 
-          {/* 우측 버튼 (재전송, 확인 등) */}
-          {buttonText && onButtonClick && (
+          {/* 우측 버튼 (재전송, 확인 등) - disabled 상태에서는 표시 안 함 */}
+          {!disabled && buttonText && onButtonClick && (
             <button
               type='button'
               onClick={onButtonClick}
-              className='ml-s-8 whitespace-nowrap text-label-l font-semibold text-primary-800 disabled:text-primary-800'
-              disabled={disabled}
+              className='ml-s-8 whitespace-nowrap text-label-l font-semibold text-primary-800'
             >
               {buttonText}
             </button>
           )}
         </div>
 
-        {/* 에러 메시지 - 포커스 해제 시에만 표시 */}
-        {!focused && hasError && errorMessage && (
+        {/* 에러 메시지 - 포커스 해제 시 또는 forceShowError일 때 표시 */}
+        {(forceShowError || !focused) && hasError && errorMessage && (
           <p
             id={describedById}
             className='w-full text-left text-caption-01 text-system-error'

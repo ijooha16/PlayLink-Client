@@ -1,10 +1,10 @@
 'use client';
 
 import Input from '@/components/ui/input';
+import { ERROR_MESSAGES } from '@/constant';
 import { validateVerificationCode } from '@/libs/valid/auth';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { CodeInputProps } from './types';
-import { ERROR_MESSAGES } from '@/constant';
 
 export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
   (
@@ -108,7 +108,7 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
       <button
         type='button'
         onClick={onResend}
-        className='whitespace-nowrap text-label-l font-semibold text-primary-800'
+        className='w-[80px] whitespace-nowrap text-label-l font-semibold text-primary-800'
         disabled={isResending || disabled}
       >
         재전송
@@ -136,6 +136,7 @@ export const CodeInput = forwardRef<HTMLInputElement, CodeInputProps>(
         disabled={disabled}
         splitedRightElement={resendButton}
         rightElement
+        forceShowError={isTimeout}
         {...props}
       />
     );

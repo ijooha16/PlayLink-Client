@@ -1,6 +1,9 @@
+'use client';
+
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 import { twMerge } from 'tailwind-merge';
+import { useKeyboardHeight } from '@/hooks/common/use-keyboard-height';
 
 const buttonVariants = cva(
   `w-full h-[48px] box-border cursor-pointer rounded-12 bg-primary-800 
@@ -44,6 +47,8 @@ const Button = ({
   isFloat = false,
   ...props
 }: ButtonProps) => {
+  const keyboardHeight = useKeyboardHeight();
+
   return (
     <>
       {isFloat && (
