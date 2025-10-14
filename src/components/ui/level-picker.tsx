@@ -8,7 +8,7 @@ interface LevelPickerProps {
   initialLevels?: string[];
 }
 
-const LEVELS = [
+export const LEVELS = [
   {
     id: 'lv1',
     label: 'Lv1. 입문',

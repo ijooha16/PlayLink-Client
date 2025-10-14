@@ -1,3 +1,4 @@
+import { LEVELS } from '@/components/ui/level-picker';
 import { create } from 'zustand';
 
 export type LocationData = {
@@ -99,6 +100,7 @@ export const bitFlagToLevels = (flagLike: unknown, max = 5): string[] => {
   for (let i = 0; i < max; i++) {
     if (flag & (1 << i)) out.push(`lv${i + 1}`);
   }
+
   return out;
 };
 
