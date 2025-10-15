@@ -38,11 +38,6 @@ const ResetPassword = () => {
       setIsAccountChecking(false);
       send(normalizePhone(phone));
     },
-    onNeedVerification: function () {
-      // 인증이 필요한 경우 인증번호 전송
-      setIsAccountChecking(false);
-      send(normalizePhone(phone));
-    },
     onInvalidInput: function (message) {
       setIsAccountChecking(false);
       setErrors({ phone: message });

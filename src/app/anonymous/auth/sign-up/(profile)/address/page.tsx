@@ -8,6 +8,7 @@ import useDebounce from '@/hooks/common/use-debounce';
 import { useKakaoSdk } from '@/hooks/map/use-kakao-sdk';
 import { requestPermissions } from '@/libs/permissions/permission';
 import useSignUpStore from '@/store/use-sign-up-store';
+import { parseKoreanAddress } from '@/utills/kakao-map';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
@@ -47,11 +48,7 @@ type KakaoGeocoder = {
   addressSearch: (
     query: string,
     callback: (data: KakaoSearchResult[], status: KakaoStatus) => void,
-    options?: {
-      analyze_type?: string;
-      page?: number;
-      size?: number;
-    }
+    options?: { analyze_type?: string; page?: number; size?: number }
   ) => void;
   coord2RegionCode: (
     lng: number,
@@ -60,9 +57,31 @@ type KakaoGeocoder = {
   ) => void;
 };
 
+// Places(키워드 검색) 타입
+type KakaoPlace = {
+  address_name: string; // 지번 주소
+  road_address_name: string; // 도로명 주소
+  place_name: string;
+  x: string;
+  y: string;
+};
+
+type KakaoPlaces = {
+  keywordSearch: (
+    query: string,
+    callback: (
+      data: KakaoPlace[],
+      status: KakaoStatus,
+      pagination: { hasNextPage?: boolean; last?: number; current?: number }
+    ) => void,
+    options?: { page?: number; size?: number; location?: any }
+  ) => void;
+};
+
 const Address = () => {
   const sdkReady = useKakaoSdk(APP_KEY);
   const geocoderRef = useRef<KakaoGeocoder | null>(null);
+  const placesRef = useRef<KakaoPlaces | null>(null);
   const { profile, updateProfile } = useSignUpStore();
   const router = useRouter();
 
@@ -72,12 +91,15 @@ const Address = () => {
   const [results, setResults] = useState<SearchItem[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // Kakao SDK 준비되면 Geocoder + Places 준비
   useEffect(() => {
     if (!sdkReady) return;
     geocoderRef.current =
       new window.kakao.maps.services.Geocoder() as KakaoGeocoder;
+    placesRef.current = new window.kakao.maps.services.Places();
   }, [sdkReady]);
 
+  // 현재 위치에서 행정동 가져오기 (그대로 유지)
   const handleUseCurrentLocation = async () => {
     const geocoder = geocoderRef.current;
     if (!sdkReady || !geocoder) return;
@@ -113,129 +135,131 @@ const Address = () => {
 
   const debounced = useDebounce(address, 300);
 
+  // Places.keywordSearch 기반 키워드 검색 + 동까지만 + 중복제거
   useEffect(() => {
-    const geocoder = geocoderRef.current;
+    const places = placesRef.current;
+    if (!sdkReady || !places) return;
 
-    console.log('=== 검색 useEffect 시작 ===');
-    console.log('sdkReady:', sdkReady);
-    console.log('geocoder:', geocoder);
-    console.log('debounced:', debounced);
-
-    if (!sdkReady || !geocoder) return;
     const q = debounced.trim();
     if (!q) {
-      console.log('검색어가 비어있음, 결과 초기화');
       setResults([]);
       return;
     }
 
-    console.log('=== Kakao 주소 검색 시작 ===');
-    console.log('검색어:', q);
+    // 1페이지 검색을 Promise로
+    const keywordSearchOnce = (
+      query: string,
+      page = 1,
+      size = 15
+    ): Promise<{ data: KakaoPlace[]; hasNext: boolean }> =>
+      new Promise((resolve, reject) => {
+        places.keywordSearch(
+          query,
+          (data, status, pagination) => {
+            if (
+              status === window.kakao.maps.services.Status.OK &&
+              Array.isArray(data)
+            ) {
+              resolve({
+                data,
+                hasNext: Boolean(pagination?.hasNextPage),
+              });
+            } else if (
+              status === window.kakao.maps.services.Status.ZERO_RESULT
+            ) {
+              resolve({ data: [], hasNext: false });
+            } else {
+              reject(new Error('kakao keywordSearch error'));
+            }
+          },
+          { page, size }
+        );
+      });
 
-    setLoading(true);
-    geocoder.addressSearch(
-      q,
-      (res: KakaoSearchResult[], status: KakaoStatus) => {
-        console.log('=== Kakao 주소 검색 콜백 실행 ===');
-        console.log('상태:', status);
-        console.log('결과 개수:', res?.length || 0);
-        console.log('원본 결과 (첫 5개):', res?.slice(0, 5));
+    // 여러 페이지를 수집
+    const fetchAllPages = async (query: string, maxPages = 7, size = 15) => {
+      const all: KakaoPlace[] = [];
+      for (let p = 1; p <= maxPages; p++) {
+        const { data, hasNext } = await keywordSearchOnce(query, p, size);
+        all.push(...data);
+        if (!hasNext) break;
+      }
+      return all;
+    };
 
-        setLoading(false);
-        if (
-          status !== window.kakao.maps.services.Status.OK ||
-          !Array.isArray(res)
-        ) {
-          console.log('검색 실패 또는 결과 없음');
-          setResults([]);
-          return;
-        }
+    const labelOf = (x: SearchItem) => `${x.si} ${x.gu} ${x.dong}`.trim();
 
-        console.log('=== 주소 파싱 시작 ===');
-        const mapped = res
-          .map((r) => r.address || r.road_address)
-          .filter((a): a is KakaoAddress => Boolean(a))
-          .map((a) => {
-            const full = a.address_name;
-            const parts = full.split(' ').filter(Boolean);
+    (async () => {
+      setLoading(true);
+      try {
+        // "서울" 같은 상위 키워드는 더 많이 모으기
+        const isSingleToken = !q.includes(' ');
+        const maxPages = isSingleToken ? 7 : 3;
 
-            // address_name에서 직접 파싱
-            const si = parts[0] || a.region_1depth_name || '';
-            const gu = parts[1] || a.region_2depth_name || '';
-            const dong = parts[2] || a.region_3depth_name || '';
-            const ri = parts[3] || a.region_4depth_name;
+        const raw = await fetchAllPages(q, maxPages, 15);
 
-            console.log('원본 주소:', a);
-            console.log('파싱된 주소:', { full, parts, si, gu, dong, ri });
-            return { full, si, gu, dong, ri };
-          })
-          .filter((x) => x.dong);
+        // 주소 파싱 (도로명 있으면 우선, 없으면 지번)
+        const parsed = raw
+          .map(
+            (
+              p // Places 예시
+            ) =>
+              (p.road_address_name || p.address_name || '')
+                .replace(/\s+/g, ' ')
+                .trim()
+          )
+          .filter(Boolean)
+          .map((addrStr) => parseKoreanAddress(addrStr))
+          .filter((x) => !!x.dong);
+        // 동 없는 항목 제외
+        const onlyDong = parsed.filter((x) => !!x.dong);
 
-        console.log('=== 동이 있는 주소만 필터링 완료 ===');
-        console.log('필터링 후 개수:', mapped.length);
-
+        // 중복 제거 (si+gu+dong 기준)
         const uniq = new Map<string, SearchItem>();
-        mapped.forEach((x) => {
-          if (!uniq.has(x.full)) uniq.set(x.full, x);
-        });
+        for (const x of onlyDong) {
+          const key = `${x.si} ${x.gu} ${x.dong}`;
+          if (!uniq.has(key)) uniq.set(key, x);
+        }
         const arr = Array.from(uniq.values());
 
-        console.log('=== 중복 제거 완료 ===');
-        console.log('중복 제거 후 개수:', arr.length);
-
-        const starts = arr.filter(
-          (x) => x.dong && String(x.dong).startsWith(q)
+        // 정렬: 시작 일치 → 포함 → 나머지
+        const qLower = q.toLowerCase();
+        const starts = arr.filter((x) =>
+          labelOf(x).toLowerCase().startsWith(qLower)
         );
         const contains = arr.filter(
           (x) =>
-            x.dong &&
-            String(x.dong).includes(q) &&
-            !String(x.dong).startsWith(q)
+            labelOf(x).toLowerCase().includes(qLower) &&
+            !labelOf(x).toLowerCase().startsWith(qLower)
         );
-        const rest = arr.filter((x) => !String(x.dong).includes(q));
-
-        console.log('=== 정렬 완료 ===');
-        console.log('시작하는 주소:', starts.length);
-        console.log('포함하는 주소:', contains.length);
-        console.log('나머지 주소:', rest.length);
-
-        const finalResults = [...starts, ...contains, ...rest];
-        console.log('=== 최종 결과 ===');
-        console.log('총 개수:', finalResults.length);
-        console.log(
-          '첫 10개 동 이름:',
-          finalResults.slice(0, 10).map((x) => x.dong)
+        const rest = arr.filter(
+          (x) => !labelOf(x).toLowerCase().includes(qLower)
         );
 
-        setResults(finalResults);
-      },
-      { analyze_type: 'similar', size: 30, page: 1 }
-    );
+        setResults([...starts, ...contains, ...rest]);
+      } catch (e) {
+        console.error(e);
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [debounced, sdkReady]);
 
   const handlePick = (item: SearchItem) => {
-    console.log('handlePick called:', item);
     const fullAddress = item.full;
-    console.log('Setting address to:', fullAddress);
     setAddress(fullAddress);
     setSelectedAddress(fullAddress);
-    setError('');
+
+    updateProfile('address', selectedAddress.trim());
+    completeStep('address');
+    router.push(PATHS.AUTH.INTEREST);
   };
 
   const handleAddressChange = (v: string) => {
     setAddress(v);
     setSelectedAddress('');
-  };
-
-  const handleNext = (addrFromChild?: string) => {
-    const final = (addrFromChild ?? selectedAddress).trim();
-    if (!final) {
-      setError('주소를 선택해주세요.');
-      return;
-    }
-    updateProfile('address', final);
-    completeStep('address');
-    router.push(PATHS.AUTH.INTEREST);
+    setError('');
   };
 
   return (
@@ -251,7 +275,6 @@ const Address = () => {
         onResultSelect={handlePick}
         onCurrentLocationClick={handleUseCurrentLocation}
         autoFocus
-        onClick={handleNext}
       />
     </>
   );
