@@ -38,6 +38,11 @@ const ResetPassword = () => {
       setIsAccountChecking(false);
       send(normalizePhone(phone));
     },
+    onNeedVerification: function () {
+      // 인증이 필요한 경우 인증번호 전송
+      setIsAccountChecking(false);
+      send(normalizePhone(phone));
+    },
     onInvalidInput: function (message) {
       setIsAccountChecking(false);
       setErrors({ phone: message });
@@ -136,7 +141,7 @@ const ResetPassword = () => {
       findAccount({
         phoneNumber: normalizePhone(phone),
         email: email.trim(),
-        account_type: '0',
+        account_type: '99',
       });
     } else {
       // 코드 입력 상태에서는 코드 검증
@@ -163,7 +168,6 @@ const ResetPassword = () => {
           validateOnChange
           disabled={isCodeSent}
           autoFocus
-          showSuccessMessage={false}
         />
 
         <Input.Phone

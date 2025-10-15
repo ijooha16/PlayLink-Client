@@ -116,11 +116,12 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
         if (context === 'find-id' && isAfterVerification) {
           router.push(PATHS.AUTH.NOT_FOUND);
         } else if (context === 'reset-password') {
-          //계정 없을시 not_found로
-          router.push(PATHS.AUTH.NOT_FOUND);
+          onInvalidInput?.(
+            '등록되지 않은 계정입니다. 회원가입을 진행해주세요.'
+          );
         } else if (context === 'find-id') {
-          //계정 없을시 not_found로
-          router.push(PATHS.AUTH.NOT_FOUND);
+          // find-id에서 계정이 없어도 일단 인증번호 전송
+          onAccountNotFound?.();
         } else if (context === 'sign-up') {
           // 회원가입 시 계정이 없으면 정상 플로우
           onAccountNotFound?.();
