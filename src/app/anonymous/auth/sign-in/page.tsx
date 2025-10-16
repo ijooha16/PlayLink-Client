@@ -13,7 +13,6 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   const trimmedEmail = email.trim();
   const trimmedPassword = password.trim();
@@ -23,7 +22,7 @@ const SignIn = () => {
   const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!isEmailValid || !isPasswordValid) return;
+    if (!isEmailValid || trimmedPassword.length === 0) return;
 
     signIn({
       email: trimmedEmail,
@@ -34,7 +33,7 @@ const SignIn = () => {
 
   return (
     <>
-      <Header title='로그인' backbtn />
+      <Header title='이메일로 시작하기' backbtn />
       <div className='mx-auto flex h-[calc(100vh-144px)] w-full max-w-screen-sm flex-col'>
         {isPending && <Loading variant='white' />}
 
@@ -56,10 +55,8 @@ const SignIn = () => {
             <Input.Password
               value={password}
               onChange={setPassword}
-              onValidate={(isValid) => setIsPasswordValid(isValid)}
-              placeholder='비밀번호를 입력해주세요.'
-              validateOnChange
-              isSignupFlow
+              placeholder='비밀번호를 입력해주세요'
+              isSignupFlow={false}
               showSuccessMessage={false}
             />
 
@@ -67,24 +64,19 @@ const SignIn = () => {
               className='mt-s-8'
               fontSize='lg'
               type='submit'
-              disabled={
-                !trimmedEmail ||
-                !trimmedPassword ||
-                !isEmailValid ||
-                !isPasswordValid
-              }
+              disabled={!isEmailValid || trimmedPassword.length === 0}
             >
               로그인
             </Button>
           </form>
 
-          <div className='text-text-neutral mx-auto mt-s-16 flex w-full justify-center gap-s-8 text-label-s font-semibold'>
+          <div className='mx-auto mt-s-16 flex w-full justify-center gap-s-8 text-label-s font-semibold text-text-neutral'>
             <Link href={PATHS.AUTH.FIND_ID}>
               <p>아이디 찾기</p>
             </Link>
             <span className='text-line-neutral'>|</span>
             <Link href={PATHS.AUTH.RESET_PASSWORD}>
-              <p>비밀번호 찾기</p>
+              <p>비밀번호 재설정</p>
             </Link>
             <span className='text-line-neutral'>|</span>
             <Link prefetch={true} href={PATHS.AUTH.SIGN_UP}>

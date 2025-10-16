@@ -1,15 +1,19 @@
 'use client';
 
 import { PATHS } from '@/constant';
+import useCreateMatchStore from '@/store/use-create-match-store';
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const MainNewButton = () => {
   const router = useRouter();
+  const {reset} = useCreateMatchStore();
 
   const handleCreateClick = (e: React.MouseEvent) => {
     e.preventDefault();
     // 미들웨어가 인증을 처리하므로 바로 이동
+
+    reset();
     router.push(PATHS.MATCH.CREATE_MATCH);
   };
 

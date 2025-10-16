@@ -5,6 +5,7 @@ import { useMemo, useRef, useState } from 'react';
 
 import { Input } from '@/components/forms/input';
 import Button from '@/components/ui/button';
+import KeyboardAvoidingView from '@/components/shared/keyboard-avoiding-view';
 
 import useSignUpStore from '@/store/use-sign-up-store';
 
@@ -118,61 +119,63 @@ const PhoneCheck: React.FC = function () {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className='flex flex-col gap-s-24'>
-        <Input.Phone
-          ref={phoneInputRef}
-          value={phone}
-          onChange={setPhone}
-          onValidate={function (isValid: boolean) {
-            setIsPhoneValid(isValid);
-          }}
-          errorMessage={errors.phone}
-          validateOnComplete
-          disabled={isCodeSent}
-          autoFocus
-        />
-
-        {isCodeSent && (
-          <Input.Code
-            ref={codeInputRef}
-            value={code}
-            onChange={setCode}
+    <KeyboardAvoidingView>
+      <form onSubmit={handleSubmit}>
+        <div className='flex flex-col gap-s-24'>
+          <Input.Phone
+            ref={phoneInputRef}
+            value={phone}
+            onChange={setPhone}
             onValidate={function (isValid: boolean) {
-              setIsCodeValid(isValid);
+              setIsPhoneValid(isValid);
             }}
-            onResend={function () {
-              start();
-              resend(normalizedPhone);
-            }}
-            timer={formattedTime}
-            isTimeout={isTimeout}
-            isResending={isLoading.sending}
-            errorMessage={errors.code}
-            placeholder={ERROR_MESSAGES.CODE.LENGTH_ERROR}
+            errorMessage={errors.phone}
             validateOnComplete
+            disabled={isCodeSent}
+            autoFocus
           />
-        )}
-      </div>
 
-      <Button
-        type='submit'
-        disabled={
-          isButtonClicked ||
-          (!isCodeSent
-            ? normalizedPhone.length !== 11 ||
-              !isPhoneValid ||
-              isLoading.sending
-            : trimmedCode.length !== 6 ||
-              !isCodeValid ||
-              isLoading.verifying ||
-              isTimeout)
-        }
-        isFloat
-      >
-        {!isCodeSent ? '인증번호 받기' : '다음'}
-      </Button>
-    </form>
+          {isCodeSent && (
+            <Input.Code
+              ref={codeInputRef}
+              value={code}
+              onChange={setCode}
+              onValidate={function (isValid: boolean) {
+                setIsCodeValid(isValid);
+              }}
+              onResend={function () {
+                start();
+                resend(normalizedPhone);
+              }}
+              timer={formattedTime}
+              isTimeout={isTimeout}
+              isResending={isLoading.sending}
+              errorMessage={errors.code}
+              placeholder={ERROR_MESSAGES.CODE.LENGTH_ERROR}
+              validateOnComplete
+            />
+          )}
+        </div>
+
+        <Button
+          type='submit'
+          disabled={
+            isButtonClicked ||
+            (!isCodeSent
+              ? normalizedPhone.length !== 11 ||
+                !isPhoneValid ||
+                isLoading.sending
+              : trimmedCode.length !== 6 ||
+                !isCodeValid ||
+                isLoading.verifying ||
+                isTimeout)
+          }
+          isFloat
+        >
+          {!isCodeSent ? '인증번호 받기' : '다음'}
+        </Button>
+      </form>
+    </KeyboardAvoidingView>
   );
 };
 

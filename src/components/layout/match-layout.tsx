@@ -18,17 +18,17 @@ const CREATE_MATCH_FLOW: Array<{
   {
     key: 'sports',
     path: PATHS.MATCH.CREATE_MATCH + '/sports',
-    title: '운동 종목을 선택해주세요!',
+    title: '운동 종목을 선택해주세요',
   },
   {
     key: 'create',
     path: PATHS.MATCH.CREATE_MATCH + '/create',
-    title: '원하시는 모임을 생성해주세요!',
+    title: '원하는 모임을 알려주세요',
   },
   {
     key: 'description',
     path: PATHS.MATCH.CREATE_MATCH + '/description',
-    title: '모임에 대해 설명해주세요',
+    title: '모임을 소개해주세요',
   },
 ];
 

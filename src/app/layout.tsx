@@ -2,7 +2,7 @@ import TabNavigation from '@/components/features/navigation/tab-navigation';
 import { ToastContainer } from '@/components/feedback/toast-alert';
 import LayoutClientSide from '@/components/shared/layout-client-side';
 import Providers from '@/providers/provider';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import '../styles/globals.css';
 
@@ -17,7 +17,12 @@ export const metadata: Metadata = {
   title: '플레이링크',
   description: '당신의 운동 친구! 플레이 링크에서 만나세요.',
 };
-
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 const RootLayout = ({
   children,
 }: Readonly<{

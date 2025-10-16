@@ -18,7 +18,7 @@ const SIGN_UP_FLOW = [
   {
     key: 'email-check',
     path: PATHS.AUTH.EMAIL_CHECK,
-    title: '이메일과 비밀번호를 \n 입력해 주세요!',
+    title: '이메일과 비밀번호를 \n 입력해 주세요',
   },
   {
     key: 'welcome',

@@ -23,7 +23,7 @@ export default function SportsSelectionPage() {
 
   const sportsList = extractSportsFromResponse(sports);
 
-  // 운동 토글 (최대 3개)
+  // 운동 토글 (최대 10개)
   const toggleSport = (id: number) => {
     setSelectedSports((prev) => {
       const exists = prev.includes(id);
@@ -31,11 +31,11 @@ export default function SportsSelectionPage() {
         // 선택된 항목을 클릭하면 제거
         return prev.filter((v) => v !== id);
       }
-      if (prev.length < 3) {
-        // 3개 미만이면 추가
+      if (prev.length < 10) {
+        // 10개 미만이면 추가
         return [...prev, id];
       }
-      // 3개 이상이면 첫 번째 선택된 것을 제거하고 새로운 것 추가
+      // 10개 이상이면 첫 번째 선택된 것을 제거하고 새로운 것 추가
       const newSelection = [...prev.slice(1), id];
       return newSelection;
     });
@@ -98,7 +98,7 @@ export default function SportsSelectionPage() {
       <Button
         variant='default'
         onClick={handleNext}
-        disabled={selectedSports.length === 0}
+        disabled={selectedSports.length < 2}
         isFloat
       >
         가입완료

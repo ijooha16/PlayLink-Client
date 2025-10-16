@@ -59,7 +59,7 @@ export const useSignin = (options: AuthOptions = {}) => {
       }
 
       console.error('로그인 실패:', error?.message ?? error);
-      toast.error('이메일 또는 비밀번호가 일치하지 않아요!');
+      toast.error('이메일 또는 비밀번호가 일치하지 않아요');
     },
   });
 };
