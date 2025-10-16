@@ -61,7 +61,7 @@ type Store = {
 };
 
 const INITIAL_STATE: CreateMatchData = {
-  matchType: null,
+  matchType: 0,
   sportType: null,
   date: '',
   startTime: '',
