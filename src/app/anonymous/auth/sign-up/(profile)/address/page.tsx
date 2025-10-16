@@ -78,6 +78,12 @@ type KakaoPlaces = {
   ) => void;
 };
 
+type KakaoMapsServices = {
+  Status: { OK: 'OK'; ZERO_RESULT: 'ZERO_RESULT'; ERROR: 'ERROR' };
+  Geocoder: new () => KakaoGeocoder;
+  Places: new () => KakaoPlaces;
+};
+
 const Address = () => {
   const sdkReady = useKakaoSdk(APP_KEY);
   const geocoderRef = useRef<KakaoGeocoder | null>(null);
@@ -94,9 +100,10 @@ const Address = () => {
   // Kakao SDK 준비되면 Geocoder + Places 준비
   useEffect(() => {
     if (!sdkReady) return;
-    geocoderRef.current =
-      new window.kakao.maps.services.Geocoder() as KakaoGeocoder;
-    placesRef.current = new window.kakao.maps.services.Places();
+    const services = window.kakao.maps.services as unknown as KakaoMapsServices;
+
+    geocoderRef.current = new services.Geocoder();
+    placesRef.current = new services.Places();
   }, [sdkReady]);
 
   // 현재 위치에서 행정동 가져오기 (그대로 유지)

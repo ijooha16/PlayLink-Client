@@ -75,6 +75,7 @@ export const BackendAuthAPI = {
    */
   sendSMSCode: async (payload: SMSRequest) => {
     const response = await backendClient.post('/playlink/signup/sms', payload);
+
     return response;
   },
 
