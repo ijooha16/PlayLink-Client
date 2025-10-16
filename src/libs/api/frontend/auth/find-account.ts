@@ -1,5 +1,5 @@
-import { apiClient } from '@/libs/http';
 import { API_URLS } from '@/constant/api-urls';
+import { apiClient } from '@/libs/http';
 
 type FindAccountByPhoneType = {
   phoneNumber: string;
@@ -19,7 +19,9 @@ export const findAccountByPhone = async (req: FindAccountByPhoneType) => {
   return data;
 };
 
-export const findAccountByPhoneEmail = async (req: FindAccountByPhoneEmailType) => {
+export const findAccountByPhoneEmail = async (
+  req: FindAccountByPhoneEmailType
+) => {
   console.log('findAccountByPhoneEmail', req);
   const { data } = await apiClient.post(API_URLS.AUTH.FIND_ACCOUNT, req);
   console.log('findAccountByPhoneEmail data', data);

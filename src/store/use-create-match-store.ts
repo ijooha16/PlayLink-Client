@@ -1,3 +1,4 @@
+import { LEVELS } from '@/components/ui/level-picker';
 import { create } from 'zustand';
 
 export type LocationData = {
@@ -60,7 +61,7 @@ type Store = {
 };
 
 const INITIAL_STATE: CreateMatchData = {
-  matchType: null,
+  matchType: 0,
   sportType: null,
   date: '',
   startTime: '',
@@ -88,6 +89,21 @@ const levelsTobitFlag = (levels: string[]): number => {
   }, 0);
 };
 
+// 비트플래그를 레벨ID로
+export const bitFlagToLevels = (flagLike: unknown, max = 5): string[] => {
+  const flag = typeof flagLike === 'number'
+    ? flagLike
+    : Number.parseInt(String(flagLike ?? 0), 10) || 0;
+
+  if (flag <= 0) return [];
+  const out: string[] = [];
+  for (let i = 0; i < max; i++) {
+    if (flag & (1 << i)) out.push(`lv${i + 1}`);
+  }
+
+  return out;
+};
+
 // 연령대 ID를 비트플래그로 변환 (20s -> 0, 30s -> 1, 40s -> 2, 50s -> 3)
 const agesToBitFlag = (ages: string[]): number => {
   if (ages.length === 0) return 0;
@@ -106,6 +122,23 @@ const agesToBitFlag = (ages: string[]): number => {
   }, 0);
 };
 
+export const bitFlagToAges = (flagLike: unknown): string[] => {
+  const flag = typeof flagLike === 'number'
+    ? flagLike
+    : Number.parseInt(String(flagLike ?? 0), 10) || 0;
+
+  if (flag <= 0) return [];
+
+  const ageMap = ['20s', '30s', '40s', '50s'] as const;
+  const result: string[] = [];
+
+  for (let i = 0; i < ageMap.length; i++) {
+    if (flag & (1 << i)) result.push(ageMap[i]);
+  }
+
+  return result;
+};
+
 // 성별 ID를 숫자로 변환
 const genderToNumber = (gender: string): number => {
   const genderMap: Record<string, number> = {
@@ -114,6 +147,20 @@ const genderToNumber = (gender: string): number => {
     female: 2,
   };
   return genderMap[gender] ?? 0;
+};
+
+export const numberToGender = (numLike: unknown): string => {
+  const num = typeof numLike === 'number'
+    ? numLike
+    : Number.parseInt(String(numLike ?? 0), 10) || 0;
+
+  const map: Record<number, string> = {
+    0: 'all',
+    1: 'male',
+    2: 'female',
+  };
+
+  return map[num] ?? 'all';
 };
 
 const useCreateMatchStore = create<Store>((set, get) => ({

@@ -39,7 +39,7 @@ const Interest = () => {
     {
       index: 2,
       id: '0',
-      title: '운동 경기 참여와 관람 모두 선호',
+      title: '운동 경기 참여와 관람 모두 선호해요',
       icon: '🏃‍♂️',
     },
   ] as const;

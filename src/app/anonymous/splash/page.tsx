@@ -55,7 +55,7 @@ function ScrollingIcons({
           return (
             <div
               key={`${dir}-${i}`}
-              className='mr-4 flex h-[72px] w-[72px] flex-shrink-0 items-center justify-center rounded-12 border border-line-neutral bg-white shadow-level-1'
+              className='border-line-neutral mr-4 flex h-[72px] w-[72px] flex-shrink-0 items-center justify-center rounded-12 border bg-white shadow-level-1'
               style={{
                 transform: 'translateZ(0)',
                 backfaceVisibility: 'hidden',

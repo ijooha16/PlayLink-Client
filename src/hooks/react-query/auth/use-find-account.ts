@@ -102,11 +102,11 @@ export const useFindAccount = (options: UseFindAccountOptions) => {
       case 6001:
         onNeedVerification?.();
         // 인증이 필요한 경우
-        // if (context === 'sign-up') {
-        //   onNeedVerification?.();
-        // } else {
-        //   onInvalidInput?.('인증이 필요한 계정입니다. 인증번호를 요청해주세요.');
-        // }
+        if (context === 'sign-up') {
+          onNeedVerification?.();
+        } else {
+          onInvalidInput?.('인증이 필요한 계정입니다.');
+        }
         break;
       case 1008:
         onInvalidInput?.('입력 정보에 오류가 있습니다.');
