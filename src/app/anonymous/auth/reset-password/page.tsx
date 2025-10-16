@@ -141,7 +141,7 @@ const ResetPassword = () => {
       findAccount({
         phoneNumber: normalizePhone(phone),
         email: email.trim(),
-        account_type: '0',
+        account_type: '99',
       });
     } else {
       // 코드 입력 상태에서는 코드 검증
@@ -168,7 +168,6 @@ const ResetPassword = () => {
           validateOnChange
           disabled={isCodeSent}
           autoFocus
-          showSuccessMessage={false}
         />
 
         <Input.Phone

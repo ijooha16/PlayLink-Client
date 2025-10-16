@@ -82,7 +82,7 @@ export const AddressInput = forwardRef<HTMLInputElement, AddressInputProps>(
       (item: { full: string; si: string; gu: string; dong: string }) => {
         console.log('AddressInput handleResultSelect:', item);
         onResultSelect?.(item);
-        onClick?.(item.full);
+        onClick?.();
       },
       [onChange, onResultSelect, onValidate]
     );
